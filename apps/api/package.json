@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "dev": "tsup --watch --onSuccess \"node --env-file-if-exists=../../.env dist/main.js\"",
+    "dev": "tsup --watch",
     "build": "tsup",
     "start": "node --env-file-if-exists=../../.env dist/main.js",
     "start:worker": "node --env-file-if-exists=../../.env dist/main.worker.js",
