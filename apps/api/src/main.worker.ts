@@ -1,24 +1,23 @@
 import "reflect-metadata";
+import { EVAL_QUEUE_NAME } from "@boca/config";
 import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { getEnv } from "./config/env";
+import { AiScoreWorker } from "./modules/evaluation/ai-score.worker";
 
 /**
- * Worker entrypoint STUB: same DI container as the API but no HTTP listener.
- * The queues increment registers BullMQ processors here (outbox relay,
- * escalation scanner, retention purge, AI evaluation) — they will hold Redis
- * connections and keep the event loop alive by themselves.
+ * Worker entrypoint: same DI container as the API but no HTTP listener.
+ * Registers the BullMQ "ai-score" processor; the Worker's Redis connection
+ * keeps the event loop alive. Future processors (outbox relay, escalation
+ * scanner, retention purge, report-pdf) start here too.
  */
 async function bootstrap(): Promise<void> {
   getEnv(); // fail fast on bad env, same as the HTTP entrypoint
   const app = await NestFactory.createApplicationContext(AppModule);
   app.enableShutdownHooks();
-  new Logger("worker").log("worker up");
-
-  // TODO(queues increment): replace with BullMQ Worker registrations; until
-  // then an idle interval keeps the stub process alive for compose parity.
-  setInterval(() => {}, 2 ** 31 - 1);
+  app.get(AiScoreWorker).start();
+  new Logger("worker").log(`worker up — consuming '${EVAL_QUEUE_NAME}'`);
 }
 
 void bootstrap();

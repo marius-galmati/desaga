@@ -1,0 +1,190 @@
+/* ---------------------------------------------------------------------------
+   Boca admin — design tokens & base styles.
+   Warm parchment neutrals, a single bordeaux accent, system serif display
+   stack (Palatino ships on Windows/macOS — no font CDN, no webfont payload).
+--------------------------------------------------------------------------- */
+
+:root {
+  /* surfaces */
+  --paper: #f4efe5;
+  --card: #fdfbf4;
+  --card-soft: #ede6d6;
+  --line: #ded3bf;
+  --line-strong: #c8bba1;
+
+  /* ink */
+  --ink: #26211a;
+  --ink-soft: #6d6252;
+  --ink-faint: #9a8f7c;
+
+  /* the one accent */
+  --accent: #7c2f38;
+  --accent-deep: #5f2129;
+  --accent-wash: #f2e3e0;
+
+  /* score tones (verdicts only, never decoration) */
+  --good: #40603f;
+  --good-wash: #e7ecdf;
+  --mixed: #8f6c2c;
+  --mixed-wash: #f1e9d2;
+  --bad: #8f3629;
+  --bad-wash: #f3e2da;
+
+  /* type */
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --font-body: "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
+
+  /* rhythm */
+  --radius: 6px;
+  --radius-lg: 10px;
+  --shadow: 0 1px 2px rgb(38 33 26 / 0.06), 0 8px 28px rgb(38 33 26 / 0.07);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* --- shared primitives ---------------------------------------------------- */
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--ink-soft);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fdf9f1;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-soft);
+  padding: 10px 12px;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: transparent;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: #fffef9;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 140ms ease;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.form-error {
+  font-size: 13px;
+  color: var(--bad);
+  background: var(--bad-wash);
+  border: 1px solid color-mix(in srgb, var(--bad) 30%, transparent);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+}

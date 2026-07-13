@@ -19,18 +19,20 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: true,
   noExternal: [/^@boca\//],
-  onSuccess: options.watch
-    ? async () => {
-        devChild?.kill();
-        devChild = spawn(
-          process.execPath,
-          ["--env-file-if-exists=../../.env", "dist/main.js"],
-          { stdio: "inherit" },
-        );
-        return () => {
+  // Conditional spread instead of `onSuccess: ... : undefined` — tsup's Options
+  // type rejects an explicit undefined under exactOptionalPropertyTypes.
+  ...(options.watch
+    ? {
+        onSuccess: async () => {
           devChild?.kill();
-          devChild = undefined;
-        };
+          devChild = spawn(process.execPath, ["--env-file-if-exists=../../.env", "dist/main.js"], {
+            stdio: "inherit",
+          });
+          return () => {
+            devChild?.kill();
+            devChild = undefined;
+          };
+        },
       }
-    : undefined,
+    : {}),
 }));

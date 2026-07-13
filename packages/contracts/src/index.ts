@@ -6,6 +6,7 @@ export * from "./routers";
 export * from "./schemas/auth";
 export * from "./schemas/common";
 export * from "./schemas/enums";
+export * from "./schemas/evaluation";
 export * from "./schemas/tenancy";
 export * from "./schemas/transitions";
 // Socket.IO event maps are types only; runtime gateway lands with the orders

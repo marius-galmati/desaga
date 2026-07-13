@@ -1,0 +1,28 @@
+.wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 8vh;
+}
+
+.panel {
+  width: min(420px, 100%);
+  padding: 40px 44px 44px;
+}
+
+.title {
+  font-size: 34px;
+  margin-top: 10px;
+}
+
+.lede {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.form {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}

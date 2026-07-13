@@ -1,0 +1,151 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 34px;
+  margin-top: 6px;
+}
+
+.toolbarActions {
+  display: flex;
+  gap: 4px;
+}
+
+.panel {
+  padding: 34px 40px 36px;
+}
+
+.panelTitle {
+  font-size: 24px;
+}
+
+.panelLede {
+  margin-top: 8px;
+  margin-bottom: 26px;
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+.panelActions {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.counter {
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* --- dish step ------------------------------------------------------------- */
+
+.dishForm {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.dishField {
+  flex: 1;
+}
+
+.dishList {
+  margin-top: 34px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dishItems {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dishItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 2px;
+}
+
+.dishItem + .dishItem {
+  border-top: 1px solid var(--line);
+}
+
+.dishItemName {
+  font-family: var(--font-display);
+  font-size: 17px;
+  display: block;
+}
+
+.dishItemMeta {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+
+/* --- pending evaluation ------------------------------------------------------ */
+
+.pendingPanel {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 36px 40px;
+}
+
+.pendingTitle {
+  font-size: 24px;
+}
+
+.pendingHint {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.spinner {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 2.5px solid var(--card-soft);
+  border-top-color: var(--accent);
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dishForm {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -26,7 +26,8 @@ services:
     image: redis:7
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "127.0.0.1:6379:6379"
+      # Override with BOCA_REDIS_PORT when a local Redis already owns 6379.
+      - "127.0.0.1:${BOCA_REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -42,8 +43,10 @@ services:
       MINIO_ROOT_USER: boca
       MINIO_ROOT_PASSWORD: boca-dev-password
     ports:
-      - "127.0.0.1:9000:9000"
-      - "127.0.0.1:9001:9001"
+      # Override with BOCA_MINIO_PORT / BOCA_MINIO_CONSOLE_PORT when a local
+      # MinIO (or anything else) already owns 9000/9001.
+      - "127.0.0.1:${BOCA_MINIO_PORT:-9000}:9000"
+      - "127.0.0.1:${BOCA_MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - minio_data:/data
     healthcheck:
