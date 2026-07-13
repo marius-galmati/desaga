@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4 # version taken from package.json "packageManager"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      # Switch to --frozen-lockfile once pnpm-lock.yaml is committed.
+      - run: pnpm install
+
+      - run: pnpm exec biome ci .
+
+      - run: pnpm turbo typecheck
+
+      # DB integration tests (RLS denial, migrations, codegen drift) will use
+      # Testcontainers — ubuntu-latest runners provide the Docker daemon, so no
+      # postgres service container is needed here.
+      - run: pnpm turbo test
+
+      - run: pnpm turbo build

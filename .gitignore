@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# build outputs
+dist/
+build/
+out/
+.next/
+.expo/
+
+# caches
+.turbo/
+.swc/
+coverage/
+*.tsbuildinfo
+
+# env files — templates live in infra/env/.env.example
+.env
+.env.*
+!.env.example
+
+# NOTE: packages/db/src/generated IS committed on purpose (kysely-codegen
+# output, regenerated in CI to detect drift). Do not add it here.
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log

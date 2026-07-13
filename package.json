@@ -1,0 +1,25 @@
+{
+  "name": "boca",
+  "private": true,
+  "packageManager": "pnpm@10.30.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "biome format --write .",
+    "boundaries": "turbo boundaries",
+    "db:migrate": "pnpm --filter @boca/db run migrate",
+    "db:migrate:down": "pnpm --filter @boca/db run migrate:down",
+    "db:codegen": "pnpm --filter @boca/db run codegen"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.1.2",
+    "turbo": "^2.5.4",
+    "typescript": "^5.9.2"
+  }
+}

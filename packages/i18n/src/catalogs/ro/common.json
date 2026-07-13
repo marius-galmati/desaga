@@ -1,0 +1,22 @@
+{
+  "app": {
+    "name": "Boca",
+    "loading": "Se încarcă..."
+  },
+  "errors": {
+    "generic": "A apărut o eroare. Te rugăm să încerci din nou.",
+    "network": "Conexiune indisponibilă. Verifică internetul și reîncearcă.",
+    "notFound": "Nu am găsit ce căutai.",
+    "unauthorized": "Sesiunea a expirat. Autentifică-te din nou.",
+    "forbidden": "Nu ai permisiunea necesară pentru această acțiune.",
+    "validation": "Datele trimise nu sunt valide."
+  },
+  "orderStatus": {
+    "submitted": "Trimisă",
+    "accepted": "Acceptată",
+    "fired": "În preparare",
+    "ready": "Gata",
+    "served": "Servită",
+    "voided": "Anulată"
+  }
+}

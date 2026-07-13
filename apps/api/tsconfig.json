@@ -1,0 +1,4 @@
+{
+  "extends": "../../packages/config/tsconfig/nest.json",
+  "include": ["src", "test", "scripts", "tsup.config.ts"]
+}

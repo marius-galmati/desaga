@@ -1,0 +1,22 @@
+{
+  "app": {
+    "name": "Boca",
+    "loading": "Loading..."
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Connection unavailable. Check your internet and retry.",
+    "notFound": "We couldn't find what you were looking for.",
+    "unauthorized": "Your session has expired. Please sign in again.",
+    "forbidden": "You don't have permission to do that.",
+    "validation": "The submitted data is not valid."
+  },
+  "orderStatus": {
+    "submitted": "Submitted",
+    "accepted": "Accepted",
+    "fired": "Being prepared",
+    "ready": "Ready",
+    "served": "Served",
+    "voided": "Cancelled"
+  }
+}

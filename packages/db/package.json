@@ -1,0 +1,32 @@
+{
+  "name": "@boca/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run",
+    "migrate": "dotenv -e ../../.env -- tsx scripts/migrate.ts up",
+    "migrate:down": "dotenv -e ../../.env -- tsx scripts/migrate.ts down",
+    "migrate:status": "dotenv -e ../../.env -- tsx scripts/migrate.ts status",
+    "migration:new": "tsx scripts/new-migration.ts",
+    "codegen": "dotenv -e ../../.env -- kysely-codegen --dialect postgres --out-file src/generated/db.ts",
+    "seed": "dotenv -e ../../.env -- tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "kysely": "^0.28.2",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "dotenv-cli": "^7.4.2",
+    "kysely-codegen": "^0.18.3",
+    "tsx": "^4.19.2",
+    "vitest": "^3.2.4"
+  }
+}
