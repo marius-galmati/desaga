@@ -1,5 +1,13 @@
 # Boca — Arhitectura MVP (schiță v0.2)
 
+> **DECIZIE 2026-07-13 — staff = all-PWA pe Android (fără Expo în MVP).** Aplicația de staff
+> (moduri ospătar + pass) devine PWA web, rulată pe un model Android standardizat la pass
+> (Chrome expune controale de expunere/WB prin ImageCapture; web push matur) și pe telefoanele
+> ospătarilor (BYOD, orice platformă). Referințele la Expo/EAS/Metro/jest-expo din acest
+> document sunt istorice și se înlocuiesc la incrementul staff-PWA. Validare rămasă înainte de
+> lock-in definitiv: spike pe device-ul real (varianța a 20 de poze identice sub lumină fixă +
+> alertă web-push cu ecranul blocat). Stația fixă cu cameră UVC din faza 2 rămâne neschimbată.
+
 > Stadiu: schiță de fundație, validată printr-un review adversarial pe 10 fluxuri end-to-end.
 > Schema de date completă: [`db/schema.sql`](../db/schema.sql).
 > Decizii de produs blocate: scoruri AI = coaching documentat intern (niciodată vizibile oaspeților), poza obligatorie la pass (iPhone în MVP), multi-tenant din prima zi, PWA pentru oaspeți RO/EN, POS necunoscut încă (scenariul B = baseline).

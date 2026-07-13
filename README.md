@@ -58,7 +58,7 @@ actually enforced.
 - [x] Monorepo skeleton: contracts, db (migrations + Kysely), api (health/auth/tenancy)
 - [ ] `apps/guest-pwa` — Next.js App Router PWA (RO/EN, QR sessions, menu, orders, shared tab)
 - [ ] `apps/admin` — Next.js dashboard (menu CMS, photos, staffing, quality, coaching)
-- [ ] `apps/staff` — Expo app (waiter + pass modes)
+- [ ] `apps/staff` — web PWA on Android devices (waiter + pass modes; decision 2026-07-13, spike pending on the real pass device)
 - [ ] Orders + transactional outbox, Socket.IO gateway, BullMQ workers (preprocess, ai-score, ...)
 - [ ] Testcontainers integration suite (RLS cross-tenant denial, migrations, codegen drift)
 - [ ] Prod compose (caddy, images, backup) + deploy workflow
