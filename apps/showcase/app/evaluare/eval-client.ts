@@ -3,8 +3,12 @@
    demo it auto-logs-in with the seeded demo admin — no login wall. Types are
    local (the shapes the API returns); no zod runtime needed for a demo. */
 
-const DEMO = { tenantSlug: "demo", email: "admin@demo.local", password: "demo-Parola1!" };
-const REFRESH_KEY = "boca.showcase.refreshToken";
+// The AI evaluation demo now runs on the REAL Desaga tenant — dishes and
+// reference sets come from the functional admin panel, not synthetic fixtures.
+const DEMO = { tenantSlug: "desaga", email: "admin@desaga.ro", password: "Desaga-2026!" };
+// Bumped when the demo tenant changed (demo -> desaga) so a stale cross-tenant
+// refresh token from a prior session is ignored and a fresh login happens.
+const REFRESH_KEY = "boca.showcase.refreshToken.desaga";
 
 let accessToken: string | null = null;
 
@@ -103,8 +107,16 @@ async function jsonOrThrow<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+type AdminDishItem = {
+  id: string;
+  name: { ro: string; en: string };
+  referenceSet: { versionNo: number; status: string; photoCount: number } | null;
+};
+
 export async function listDishes(): Promise<DemoDish[]> {
-  return jsonOrThrow<DemoDish[]>(await raw("/admin/demo/dishes", { method: "GET" }));
+  // Real menu from the admin panel; the setup screen filters to active reference sets.
+  const items = await jsonOrThrow<AdminDishItem[]>(await raw("/admin/dishes", { method: "GET" }));
+  return items.map((d) => ({ id: d.id, name: d.name, referenceSet: d.referenceSet }));
 }
 
 export async function uploadPhoto(file: File): Promise<string> {
