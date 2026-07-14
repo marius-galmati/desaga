@@ -5,7 +5,14 @@
 
 // The AI evaluation demo now runs on the REAL Desaga tenant — dishes and
 // reference sets come from the functional admin panel, not synthetic fixtures.
-const DEMO = { tenantSlug: "desaga", email: "admin@desaga.ro", password: "Desaga-2026!" };
+// Wired from SEED_ADMIN_* at build time (compose passes them as NEXT_PUBLIC build
+// args) so the owner demo auto-logs-in as the SAME account the prod seed created.
+// Falls back to dev defaults when the build args are absent.
+const DEMO = {
+  tenantSlug: process.env.NEXT_PUBLIC_DEMO_TENANT || "desaga",
+  email: process.env.NEXT_PUBLIC_DEMO_EMAIL || "admin@desaga.ro",
+  password: process.env.NEXT_PUBLIC_DEMO_PASSWORD || "Desaga-2026!",
+};
 // Bumped when the demo tenant changed (demo -> desaga) so a stale cross-tenant
 // refresh token from a prior session is ignored and a fresh login happens.
 const REFRESH_KEY = "boca.showcase.refreshToken.desaga";
@@ -81,7 +88,13 @@ export async function ensureDemoSession(): Promise<void> {
     }
   }
   const res = await raw("/auth/login", jsonInit(DEMO), false);
-  if (!res.ok) throw new Error("Nu m-am putut conecta la server. Pornește API-ul (:3000).");
+  if (!res.ok) {
+    throw new Error(
+      res.status === 401
+        ? "Autentificarea demo a eșuat: contul sau parola nu corespund cu adminul creat de seed (SEED_ADMIN_*)."
+        : `Autentificarea demo a eșuat (${res.status}).`,
+    );
+  }
   storeTokens(await res.json());
 }
 

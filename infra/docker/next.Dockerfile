@@ -48,6 +48,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # which collides on the shared dokploy-network) so it always resolves to OUR api.
 ARG API_ORIGIN=http://boca-api:3000
 ENV API_ORIGIN=${API_ORIGIN}
+# Showcase-only: the owner demo auto-logs-in with these creds (admin ignores
+# them). Compose wires them from SEED_ADMIN_* so the demo matches the seeded
+# admin. WARNING: NEXT_PUBLIC_* is inlined into the PUBLIC client bundle, so the
+# demo password ends up readable in the showcase JS — keep the demo host private.
+ARG NEXT_PUBLIC_DEMO_TENANT=desaga
+ARG NEXT_PUBLIC_DEMO_EMAIL=admin@desaga.ro
+ARG NEXT_PUBLIC_DEMO_PASSWORD=
+ENV NEXT_PUBLIC_DEMO_TENANT=${NEXT_PUBLIC_DEMO_TENANT}
+ENV NEXT_PUBLIC_DEMO_EMAIL=${NEXT_PUBLIC_DEMO_EMAIL}
+ENV NEXT_PUBLIC_DEMO_PASSWORD=${NEXT_PUBLIC_DEMO_PASSWORD}
 RUN pnpm --filter @boca/${APP} build
 # Neither app ships a public/ dir today; create it so the runtime COPY is
 # unconditional (and future assets just work).

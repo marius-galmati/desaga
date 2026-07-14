@@ -265,6 +265,11 @@ services:
       dockerfile: infra/docker/next.Dockerfile
       args:
         APP: showcase
+        # Owner demo auto-login: match the account the seed created. NOTE: baked
+        # into the public client bundle — keep the demo host private/short-lived.
+        NEXT_PUBLIC_DEMO_TENANT: desaga
+        NEXT_PUBLIC_DEMO_EMAIL: ${SEED_ADMIN_EMAIL}
+        NEXT_PUBLIC_DEMO_PASSWORD: ${SEED_ADMIN_PASSWORD}
     image: boca-showcase:latest
     <<: *restart
     environment:
