@@ -25,7 +25,7 @@ import { EvaluatorService } from "./evaluator.service";
 
 export type ServiceResult<T> =
   | { ok: true; value: T }
-  | { ok: false; status: 400 | 404; message: string };
+  | { ok: false; status: 400 | 404 | 409; message: string };
 
 /** Shape of ai_evaluation.raw_ensemble as written by AiScoreWorker. */
 const rawEnsembleSchema = z.object({

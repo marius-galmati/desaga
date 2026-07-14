@@ -3,6 +3,7 @@ import { withTenant } from "@boca/db";
 import { Injectable } from "@nestjs/common";
 import sharp from "sharp";
 import type { Principal } from "../../common/principal";
+import type { ServiceResult } from "../evaluation/evaluation.service";
 import { toOriginalJpeg } from "../evaluation/preprocess";
 import { mintLibraryKey } from "../storage/keys";
 import { StorageService } from "../storage/storage.service";
@@ -67,5 +68,70 @@ export class MediaService {
 
     const url = await this.storage.getSignedUrl(storageKey);
     return { mediaId, storageKey, url, width, height };
+  }
+
+  /**
+   * Delete a library photo + its stored object. media_asset has no FK referrers,
+   * but its storage_key is COPIED by value into dish_version.hero_photo_key and
+   * reference_photo.storage_key — so deleting one still in use would break a live
+   * image. Block that (409); otherwise remove the row, then best-effort the S3
+   * object (a leftover object after a row delete is harmless, storage-only).
+   */
+  async deleteMedia(principal: Principal, id: string): Promise<ServiceResult<{ ok: true }>> {
+    const outcome = await withTenant(
+      principal.tenantId,
+      async (
+        trx,
+      ): Promise<
+        { ok: false; status: 404 | 409; message: string } | { ok: true; storageKey: string }
+      > => {
+        const asset = await trx
+          .selectFrom("media_asset")
+          .select(["storage_key"])
+          .where("tenant_id", "=", principal.tenantId)
+          .where("id", "=", id)
+          .executeTakeFirst();
+        if (!asset) {
+          return { ok: false, status: 404, message: "media not found" };
+        }
+        const heroUse = await trx
+          .selectFrom("dish_version")
+          .select("id")
+          .where("tenant_id", "=", principal.tenantId)
+          .where("hero_photo_key", "=", asset.storage_key)
+          .limit(1)
+          .executeTakeFirst();
+        const refUse = await trx
+          .selectFrom("reference_photo")
+          .select("id")
+          .where("tenant_id", "=", principal.tenantId)
+          .where("storage_key", "=", asset.storage_key)
+          .limit(1)
+          .executeTakeFirst();
+        if (heroUse || refUse) {
+          return {
+            ok: false,
+            status: 409,
+            message:
+              "Fotografia e folosită de un preparat sau un set de referință. Înlocuiește-o acolo întâi.",
+          };
+        }
+        await trx
+          .deleteFrom("media_asset")
+          .where("tenant_id", "=", principal.tenantId)
+          .where("id", "=", id)
+          .execute();
+        return { ok: true, storageKey: asset.storage_key };
+      },
+    );
+    if (!outcome.ok) {
+      return outcome;
+    }
+    try {
+      await this.storage.deleteObject(outcome.storageKey);
+    } catch {
+      /* row already deleted; a leftover object is harmless (storage-only) */
+    }
+    return { ok: true, value: { ok: true } };
   }
 }

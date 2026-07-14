@@ -285,6 +285,10 @@ export async function uploadMedia(file: File): Promise<UploadMediaResponse> {
   return uploadMediaResponseSchema.parse(await res.json());
 }
 
+export function deleteMedia(id: string): Promise<void> {
+  return requestJson(`/admin/media/${id}`, jsonInit("DELETE", {}), () => undefined);
+}
+
 // --- Users -----------------------------------------------------------------
 
 export function listUsers(): Promise<AdminUser[]> {

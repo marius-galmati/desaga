@@ -161,6 +161,28 @@
   font-size: 1.1rem;
   font-weight: 600;
 }
+.dishFootActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.dishDelete {
+  padding: 6px 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink-faint);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.15s var(--ease),
+    border-color 0.15s var(--ease);
+}
+.dishDelete:hover {
+  color: var(--vin-deep, #7a2231);
+  border-color: var(--vin-deep, #7a2231);
+}
 
 /* availability toggle */
 .avail {
@@ -200,6 +222,7 @@
   gap: 16px;
 }
 .photoTile {
+  position: relative;
   margin: 0;
   overflow: hidden;
   border-radius: var(--r);
@@ -210,6 +233,38 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+}
+.photoDelete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: rgba(20, 12, 10, 0.62);
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.15s var(--ease),
+    background 0.15s var(--ease);
+}
+.photoTile:hover .photoDelete,
+.photoDelete:focus-visible {
+  opacity: 1;
+}
+.photoDelete:hover {
+  background: var(--vin-deep, #7a2231);
+}
+.photoDelete:disabled {
+  cursor: default;
+  opacity: 1;
 }
 .photoCap {
   padding: 8px 12px;
@@ -446,7 +501,9 @@
 .segmented button + button {
   border-left: 1px solid var(--line-strong);
 }
-.segOn {
+/* Must out-specify `.segmented button` (0,1,1) or the transparent base wins and
+   the selected pill never shows its ochre fill — looks like nothing is active. */
+.segmented button.segOn {
   background: var(--ochre);
   color: var(--ink-surface);
 }

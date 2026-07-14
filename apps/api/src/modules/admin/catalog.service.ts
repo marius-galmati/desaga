@@ -138,6 +138,23 @@ export class CatalogService {
 
   async archiveCategory(principal: Principal, id: string): Promise<ServiceResult<{ ok: true }>> {
     return withTenant(principal.tenantId, async (trx) => {
+      // Guard: an archived category with live dishes would orphan them (they keep
+      // menu_category_id but vanish from the grouped menu). Require it empty first.
+      const active = await trx
+        .selectFrom("dish")
+        .select((eb) => eb.fn.countAll<string>().as("n"))
+        .where("tenant_id", "=", principal.tenantId)
+        .where("menu_category_id", "=", id)
+        .where("archived_at", "is", null)
+        .executeTakeFirst();
+      const dishCount = Number(active?.n ?? 0);
+      if (dishCount > 0) {
+        return {
+          ok: false as const,
+          status: 409 as const,
+          message: `Categoria are ${dishCount} preparate active. Șterge sau mută preparatele întâi.`,
+        };
+      }
       const updated = await trx
         .updateTable("menu_category")
         .set({ archived_at: new Date() })

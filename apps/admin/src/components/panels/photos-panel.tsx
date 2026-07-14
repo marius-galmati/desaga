@@ -2,7 +2,7 @@
 
 import type { AdminMediaAsset } from "@boca/contracts";
 import { useEffect, useState } from "react";
-import { listMedia } from "@/lib/api";
+import { deleteMedia, listMedia } from "@/lib/api";
 import { Dropzone } from "../uploader";
 import styles from "./panels.module.css";
 
@@ -10,6 +10,23 @@ export function PhotosPanel() {
   const [media, setMedia] = useState<AdminMediaAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
+  async function remove(asset: AdminMediaAsset) {
+    if (!window.confirm("Ștergi definitiv această fotografie? Acțiunea nu poate fi anulată.")) {
+      return;
+    }
+    setRemovingId(asset.id);
+    setError(null);
+    try {
+      await deleteMedia(asset.id);
+      setMedia((prev) => prev.filter((m) => m.id !== asset.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nu am putut șterge fotografia.");
+    } finally {
+      setRemovingId(null);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -75,6 +92,16 @@ export function PhotosPanel() {
           media.map((asset) => (
             <figure key={asset.id} className={styles.photoTile}>
               <img src={asset.url} alt="Fotografie preparat" />
+              <button
+                type="button"
+                className={styles.photoDelete}
+                disabled={removingId === asset.id}
+                title="Șterge fotografia"
+                aria-label="Șterge fotografia"
+                onClick={() => void remove(asset)}
+              >
+                {removingId === asset.id ? "…" : "✕"}
+              </button>
               <figcaption className={styles.photoCap}>
                 <span>
                   {asset.width && asset.height ? `${asset.width} × ${asset.height}` : "imagine"}

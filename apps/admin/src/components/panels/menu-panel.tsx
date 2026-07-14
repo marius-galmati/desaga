@@ -9,6 +9,8 @@ import type {
 } from "@boca/contracts";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import {
+  archiveCategory,
+  archiveDish,
   createCategory,
   getSettings,
   listAllergens,
@@ -82,6 +84,35 @@ export function MenuPanel() {
   }, []);
 
   const primaryLocationId = locations[0]?.id ?? null;
+
+  async function removeDish(dish: AdminDishListItem) {
+    if (
+      !window.confirm(
+        `Ștergi „${dish.name.ro}” din meniu? Se arhivează (dispare din meniu, dar istoricul evaluărilor rămâne).`,
+      )
+    ) {
+      return;
+    }
+    setError(null);
+    try {
+      await archiveDish(dish.id);
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nu am putut șterge preparatul.");
+    }
+  }
+
+  async function removeCategory(cat: AdminCategory) {
+    if (!window.confirm(`Ștergi categoria „${cat.name.ro}”?`)) return;
+    setError(null);
+    try {
+      await archiveCategory(cat.id);
+      await refresh();
+    } catch (err) {
+      // 409 message ("categoria are N preparate active…") surfaces here.
+      setError(err instanceof Error ? err.message : "Nu am putut șterge categoria.");
+    }
+  }
 
   async function toggleAvailability(dish: AdminDishListItem) {
     if (!primaryLocationId) return;
@@ -182,6 +213,14 @@ export function MenuPanel() {
                 >
                   + Preparat
                 </button>
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--sm"
+                  title="Șterge categoria (trebuie să fie goală)"
+                  onClick={() => void removeCategory(cat)}
+                >
+                  Șterge
+                </button>
               </div>
             </div>
 
@@ -246,21 +285,32 @@ export function MenuPanel() {
                       </button>
                       <div className={styles.dishFoot}>
                         <span className={styles.price}>{formatPrice(dish.priceMinor)}</span>
-                        <button
-                          type="button"
-                          className={`${styles.avail} ${is86 ? styles.availOff : styles.availOn}`}
-                          aria-pressed={!is86}
-                          disabled={!primaryLocationId}
-                          title={
-                            primaryLocationId
-                              ? "Comută disponibilitatea"
-                              : "Nicio locație configurată"
-                          }
-                          onClick={() => void toggleAvailability(dish)}
-                        >
-                          {is86 ? "86" : "Disponibil"}
-                          <span className={styles.availDot} aria-hidden />
-                        </button>
+                        <div className={styles.dishFootActions}>
+                          <button
+                            type="button"
+                            className={`${styles.avail} ${is86 ? styles.availOff : styles.availOn}`}
+                            aria-pressed={!is86}
+                            disabled={!primaryLocationId}
+                            title={
+                              primaryLocationId
+                                ? "Comută disponibilitatea"
+                                : "Nicio locație configurată"
+                            }
+                            onClick={() => void toggleAvailability(dish)}
+                          >
+                            {is86 ? "86" : "Disponibil"}
+                            <span className={styles.availDot} aria-hidden />
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.dishDelete}
+                            title="Șterge preparatul din meniu"
+                            aria-label="Șterge preparatul"
+                            onClick={() => void removeDish(dish)}
+                          >
+                            Șterge
+                          </button>
+                        </div>
                       </div>
                     </article>
                   );

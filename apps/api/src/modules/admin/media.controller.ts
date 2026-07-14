@@ -43,6 +43,18 @@ export class AdminMediaController {
     });
   }
 
+  @TsRestHandler(apiContract.admin.deleteMedia)
+  deleteMedia(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.deleteMedia, async ({ params }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.media.deleteMedia(principal, params.id);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 200 as const, body: result.value };
+    });
+  }
+
   /**
    * Multipart image upload (NON-ts-rest). Single image in field
    * MEDIA_UPLOAD_FILE_FIELD, re-encoded (EXIF stripped) and stored in the

@@ -88,7 +88,12 @@ export const adminContract = c.router({
     path: "/admin/categories/:id/archive",
     pathParams: idParams,
     body: z.object({}),
-    responses: { 200: okResponseSchema, 401: apiErrorSchema, 404: apiErrorSchema },
+    responses: {
+      200: okResponseSchema,
+      401: apiErrorSchema,
+      404: apiErrorSchema,
+      409: apiErrorSchema, // category still has active dishes
+    },
   },
 
   // --- Stations ------------------------------------------------------------
@@ -230,6 +235,19 @@ export const adminContract = c.router({
     path: "/admin/media",
     summary: "Photo library (each url is a short-lived presigned GET)",
     responses: { 200: adminMediaListSchema, 401: apiErrorSchema },
+  },
+  deleteMedia: {
+    method: "DELETE",
+    path: "/admin/media/:id",
+    pathParams: idParams,
+    body: z.object({}),
+    summary: "Delete a library photo + its stored object (blocked if still in use)",
+    responses: {
+      200: okResponseSchema,
+      401: apiErrorSchema,
+      404: apiErrorSchema,
+      409: apiErrorSchema, // still referenced by a dish hero or reference photo
+    },
   },
 
   // --- Users ---------------------------------------------------------------
