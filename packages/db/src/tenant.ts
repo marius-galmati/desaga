@@ -26,7 +26,10 @@ function requireEnv(name: string): string {
 }
 
 function getAppDb(): Kysely<DB> {
-  appDb ??= createDb(requireEnv("DATABASE_URL"));
+  // Runtime app pool. APP_DATABASE_URL, when set, is a boca_app LOGIN role so
+  // RLS is enforced; migrations/seeds keep using DATABASE_URL (superuser). In
+  // dev without APP_DATABASE_URL it falls back to DATABASE_URL (RLS bypassed).
+  appDb ??= createDb(process.env.APP_DATABASE_URL ?? requireEnv("DATABASE_URL"));
   return appDb;
 }
 

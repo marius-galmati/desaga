@@ -45,12 +45,18 @@ export class CatalogService {
         .orderBy("created_at")
         .execute();
       const counts = await this.dishCountsByCategory(trx, principal.tenantId);
-      return categories.map((c) => ({
-        id: c.id,
-        name: parseBilingual(c.name),
-        sortOrder: c.sort_order,
-        dishCount: counts.get(c.id) ?? 0,
-      }));
+      return (
+        categories
+          // "Demo AI" is an internal fixture category the evaluation sandbox
+          // creates; it is not a real menu category, so keep it out of the CMS.
+          .filter((c) => parseBilingual(c.name).ro !== "Demo AI")
+          .map((c) => ({
+            id: c.id,
+            name: parseBilingual(c.name),
+            sortOrder: c.sort_order,
+            dishCount: counts.get(c.id) ?? 0,
+          }))
+      );
     });
   }
 
