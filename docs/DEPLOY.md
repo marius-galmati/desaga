@@ -84,22 +84,18 @@ Apasă **Deploy**. Ordinea e automată (prin `depends_on`):
 `api` e sănătos. Traefik emite certificatele TLS la prima accesare a fiecărui
 subdomeniu.
 
-## Pas 6 — bootstrap: tenantul Desaga + contul tău (o singură dată)
+## Pas 6 — bootstrap: tenantul Desaga + contul tău (automat)
 
-După primul deploy, baza de date are schema și rolurile, dar **niciun meniu și
-niciun cont** — deci rulează o dată jobul de seed care creează tenantul „Desaga",
-meniul real și contul tău de admin (folosește `SEED_ADMIN_EMAIL` /
-`SEED_ADMIN_PASSWORD` din Environment):
+Nu ai nimic manual de făcut. Serviciul `seed` rulează **automat la fiecare deploy**
+(exact ca `migrate` și `minio-init`) și creează tenantul „Desaga", meniul real și
+contul de admin din `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`. E sigur la
+re-rulare: tenantul/meniul se creează o singură dată, iar parola de admin se
+setează **doar la prima creare** — un redeploy ulterior nu suprascrie o parolă pe
+care ai schimbat-o din aplicație.
 
-Din Dokploy (terminalul aplicației) sau prin SSH pe VPS, în directorul deploy-ului:
-
-```sh
-docker compose -f infra/compose/docker-compose.prod.yml --profile seed run --rm seed
-```
-
-E idempotent: re-rularea doar resetează parola de admin și sare peste meniu dacă
-preparatele există deja. (Serviciul `seed` NU rulează la deploy-urile normale — e
-protejat de profilul `seed`.)
+Nu ai nevoie de acces SSH la server: totul se întâmplă în timpul deploy-ului din
+Dokploy. (Dacă vrei să resetezi parola de admin, șterge rândul din `app_user` — sau
+schimb-o din aplicație — apoi redeploy.)
 
 ## Pas 7 — autentificare
 

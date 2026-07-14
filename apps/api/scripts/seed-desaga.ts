@@ -142,11 +142,13 @@ async function main(): Promise<void> {
     const passwordHash = await argon2.hash(config.adminPassword);
     const adminId = (
       await client.query<{ id: string }>(
+        // Password is set ONLY on first creation. On conflict we deliberately do
+        // NOT touch password_hash: this seed runs on every deploy, and clobbering
+        // the hash would reset a password the admin later changed in-app.
         `insert into app_user (tenant_id, location_id, role, email, password_hash, full_name)
          values ($1, $2, 'tenant_admin', $3, $4, $5)
          on conflict (tenant_id, email) do update
-           set password_hash = excluded.password_hash, role = excluded.role,
-               full_name = excluded.full_name, is_active = true
+           set role = excluded.role, full_name = excluded.full_name, is_active = true
          returning id`,
         [tenantId, locationId, config.adminEmail, passwordHash, config.adminFullName],
       )

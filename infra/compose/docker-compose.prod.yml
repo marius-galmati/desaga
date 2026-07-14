@@ -157,13 +157,14 @@ services:
 
   # ---- one-shot (MANUAL): bootstrap the first tenant + admin ----------------
   # NOT run on normal deploys (profile: seed). After the FIRST deploy, run once
-  # to create the Desaga tenant, its menu and your admin login:
-  #   docker compose -f infra/compose/docker-compose.prod.yml --profile seed run --rm seed
-  # (or trigger the `seed` service from the Dokploy UI). Idempotent: re-running
-  # only resets the admin password and skips the menu if dishes already exist.
+  # to create the Desaga tenant, its menu and your admin login. It runs on EVERY
+  # deploy (like migrate / minio-init) so a Dokploy-only operator with no host
+  # shell still gets bootstrapped — it is safe to re-run: the tenant/menu upsert
+  # is a no-op once they exist, and the admin row is created only if missing (an
+  # existing admin's password is left untouched, so a redeploy never clobbers a
+  # password you changed in-app). SEED_ADMIN_PASSWORD applies on first creation.
   seed:
     image: boca-migrate:latest
-    profiles: ["seed"]
     restart: "no"
     depends_on:
       migrate:
