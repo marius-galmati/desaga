@@ -5,12 +5,13 @@ import { EvalQueueService } from "./eval-queue.service";
 import { EvaluationController } from "./evaluation.controller";
 import { EvaluationService } from "./evaluation.service";
 import { EvaluatorService } from "./evaluator.service";
+import { StaffController } from "./staff.controller";
 
 // HTTP side: enqueue + polling endpoints. Worker side: AiScoreWorker is only
 // STARTED from main.worker.ts (same DI container, no HTTP listener there).
 @Module({
   imports: [StorageModule],
-  controllers: [EvaluationController],
+  controllers: [EvaluationController, StaffController],
   providers: [EvaluationService, EvalQueueService, EvaluatorService, AiScoreWorker],
   exports: [AiScoreWorker],
 })

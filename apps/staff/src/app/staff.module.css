@@ -60,10 +60,42 @@
   color: var(--vin-deep, #7a2231);
 }
 
+.modeToggle {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.modeToggle button {
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.modeToggle button + button {
+  border-left: 1px solid var(--line-strong);
+}
+.modeToggle button.modeOn {
+  background: var(--ochre);
+  color: var(--ink-surface);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 14px;
+}
+.tableTag {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vin, #7a2231);
 }
 .dishCard {
   display: flex;

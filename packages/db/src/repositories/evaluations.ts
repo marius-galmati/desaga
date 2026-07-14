@@ -166,6 +166,70 @@ export async function createQueuedEvaluation(
   };
 }
 
+export interface CreateEvaluationForItemParams {
+  tenantId: string;
+  locationId: string;
+  orderItemId: string;
+  dishId: string;
+  dishVersionId: string;
+  nonScoreable: boolean;
+  photo: Omit<InsertPassPhotoParams, "tenantId" | "locationId" | "orderItemId">;
+  mode: EvalMode;
+  config: PinnedEvalConfig;
+  ensembleSize?: number;
+}
+
+/**
+ * Queue an evaluation against a REAL order_item (a plate actually ordered): the
+ * pass_photo binds to it instead of a synthetic demo chain, so the evaluation is
+ * part of the real audit trail. Same reference-set/tolerance pinning and
+ * not_scoreable short-circuit as {@link createQueuedEvaluation}.
+ */
+export async function createQueuedEvaluationForOrderItem(
+  trx: TenantTransaction,
+  params: CreateEvaluationForItemParams,
+): Promise<{ evaluation: Selectable<AiEvaluation>; passPhotoId: string }> {
+  const passPhotoId = await insertPassPhoto(trx, {
+    ...params.photo,
+    tenantId: params.tenantId,
+    locationId: params.locationId,
+    orderItemId: params.orderItemId,
+  });
+
+  const referenceSet = await getActiveReferenceSetForDishVersion(trx, params.dishVersionId);
+  const toleranceProfileId = await getActiveToleranceProfileForDish(trx, params.dishId);
+
+  let notScoreableReason: NotScoreableReason | null = null;
+  if (params.nonScoreable) {
+    notScoreableReason = "non_scoreable_dish";
+  } else if (!referenceSet) {
+    notScoreableReason = "refs_stale";
+  } else if (!toleranceProfileId) {
+    notScoreableReason = "no_active_tolerance";
+  }
+
+  const evaluation = await trx
+    .insertInto("ai_evaluation")
+    .values({
+      tenant_id: params.tenantId,
+      pass_photo_id: passPhotoId,
+      mode: params.mode,
+      status: notScoreableReason === null ? "queued" : "not_scoreable",
+      not_scoreable_reason: notScoreableReason,
+      model_id: params.config.modelId,
+      prompt_version: params.config.promptVersion,
+      prompt_hash: params.config.promptHash,
+      preprocessing_version: params.config.preprocessingVersion,
+      reference_set_id: referenceSet?.set.id ?? null,
+      tolerance_profile_id: toleranceProfileId ?? null,
+      ensemble_size: params.ensembleSize ?? 3,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  return { evaluation, passPhotoId };
+}
+
 /** queued -> running; false when the row was not in 'queued'. */
 export async function updateEvaluationRunning(
   trx: TenantTransaction,

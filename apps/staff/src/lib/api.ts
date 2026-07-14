@@ -35,6 +35,9 @@ import {
   adminUserListSchema,
   adminUserSchema,
   aiEvaluationSchema,
+  type CaptureRequest,
+  type CaptureResponse,
+  captureResponseSchema,
   type CreateCategoryRequest,
   type CreateDemoDishRequest,
   type CreateDemoDishResponse,
@@ -51,6 +54,8 @@ import {
   demoDishListSchema,
   dishAvailabilityEntrySchema,
   MEDIA_UPLOAD_FILE_FIELD,
+  type PassQueueItem,
+  passQueueSchema,
   type PutToleranceRequest,
   type ReferenceSetDetail,
   type ReferenceSetSummary,
@@ -377,4 +382,22 @@ export async function uploadPhoto(file: File): Promise<UploadResponse> {
   const res = await authFetch(ADMIN_UPLOAD_PATH, { method: "POST", body: form });
   if (!res.ok) throw new ApiRequestError(res.status, await extractMessage(res));
   return uploadResponseSchema.parse(await res.json());
+}
+
+// --- Staff pass queue (real order items) -----------------------------------
+
+export function listPassQueue(): Promise<PassQueueItem[]> {
+  return requestJson("/staff/pass-queue", { method: "GET" }, (p) => passQueueSchema.parse(p));
+}
+
+export function captureOrderItem(body: CaptureRequest): Promise<CaptureResponse> {
+  return requestJson("/staff/captures", jsonInit("POST", body), (p) =>
+    captureResponseSchema.parse(p),
+  );
+}
+
+export function getCapture(id: string): Promise<AiEvaluation> {
+  return requestJson(`/staff/captures/${id}`, { method: "GET" }, (p) =>
+    aiEvaluationSchema.parse(p),
+  );
 }

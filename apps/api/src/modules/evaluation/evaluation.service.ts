@@ -1,11 +1,14 @@
 import { EVAL_DEFAULTS, PREPROCESSING_VERSION } from "@boca/config";
 import {
   type AiEvaluation,
+  type CaptureRequest,
   type CreateEvaluationRequest,
   criterionScoresSchema,
+  type PassQueueItem,
 } from "@boca/contracts";
 import {
   createQueuedEvaluation,
+  createQueuedEvaluationForOrderItem,
   DEMO_CAPTURE_PROFILE_VERSION,
   ensureDemoFixtures,
   getActiveReferenceSetForDishVersion,
@@ -18,6 +21,7 @@ import {
 import { Injectable, Logger } from "@nestjs/common";
 import { z } from "zod";
 import type { Principal } from "../../common/principal";
+import { parseBilingual } from "../admin/admin.helpers";
 import { isOwnDemoPhotoKey } from "../storage/keys";
 import { StorageService } from "../storage/storage.service";
 import { EvalQueueService } from "./eval-queue.service";
@@ -205,5 +209,134 @@ export class EvaluationService {
         },
       };
     });
+  }
+
+  // --- Staff pass queue (real order items) ---------------------------------
+
+  /** Plates on active orders waiting to be shot at the pass, oldest first. */
+  async listPassQueue(principal: Principal): Promise<PassQueueItem[]> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const rows = await trx
+        .selectFrom("order_item as oi")
+        .innerJoin("guest_order as go", (join) =>
+          join.onRef("go.id", "=", "oi.order_id").onRef("go.tenant_id", "=", "oi.tenant_id"),
+        )
+        .innerJoin("table_session as ts", (join) =>
+          join
+            .onRef("ts.id", "=", "go.table_session_id")
+            .onRef("ts.tenant_id", "=", "go.tenant_id"),
+        )
+        .innerJoin("dining_table as dt", (join) =>
+          join.onRef("dt.id", "=", "ts.dining_table_id").onRef("dt.tenant_id", "=", "ts.tenant_id"),
+        )
+        .innerJoin("dish_version as dv", (join) =>
+          join.onRef("dv.id", "=", "oi.dish_version_id").onRef("dv.tenant_id", "=", "oi.tenant_id"),
+        )
+        .select([
+          "oi.id as order_item_id",
+          "oi.dish_id",
+          "oi.quantity",
+          "dv.name",
+          "dv.hero_photo_key",
+          "dt.label as table_label",
+          "oi.created_at",
+        ])
+        .where("oi.tenant_id", "=", principal.tenantId)
+        .where("go.status", "in", ["submitted", "accepted"])
+        .where("oi.status", "in", ["submitted", "accepted", "fired"])
+        .orderBy("oi.created_at")
+        .execute();
+      return Promise.all(
+        rows.map(async (r) => ({
+          orderItemId: r.order_item_id,
+          dishId: r.dish_id,
+          name: parseBilingual(r.name),
+          quantity: r.quantity,
+          tableLabel: r.table_label,
+          heroPhotoUrl: r.hero_photo_key ? await this.storage.getSignedUrl(r.hero_photo_key) : null,
+        })),
+      );
+    });
+  }
+
+  /** Capture + evaluate a REAL plated order item (binds the pass_photo to it). */
+  async createEvaluationForOrderItem(
+    principal: Principal,
+    request: CaptureRequest,
+  ): Promise<ServiceResult<{ evaluationId: string }>> {
+    if (!isOwnDemoPhotoKey(principal.tenantId, request.candidatePhotoKey)) {
+      return { ok: false, status: 400, message: "candidatePhotoKey is not an upload key" };
+    }
+    if (!(await this.storage.exists(request.candidatePhotoKey))) {
+      return { ok: false, status: 400, message: "candidatePhotoKey does not exist in storage" };
+    }
+    const outcome = await withTenant(principal.tenantId, async (trx) => {
+      const item = await trx
+        .selectFrom("order_item as oi")
+        .innerJoin("guest_order as go", (join) =>
+          join.onRef("go.id", "=", "oi.order_id").onRef("go.tenant_id", "=", "oi.tenant_id"),
+        )
+        .innerJoin("dish_version as dv", (join) =>
+          join.onRef("dv.id", "=", "oi.dish_version_id").onRef("dv.tenant_id", "=", "oi.tenant_id"),
+        )
+        .select(["oi.id", "oi.dish_id", "oi.dish_version_id", "go.location_id", "dv.non_scoreable"])
+        .where("oi.tenant_id", "=", principal.tenantId)
+        .where("oi.id", "=", request.orderItemId)
+        .where("go.status", "in", ["submitted", "accepted", "served"])
+        .executeTakeFirst();
+      if (!item) {
+        return { ok: false, status: 404, message: "order item not found or not active" } as const;
+      }
+      const queued = await createQueuedEvaluationForOrderItem(trx, {
+        tenantId: principal.tenantId,
+        locationId: item.location_id,
+        orderItemId: item.id,
+        dishId: item.dish_id,
+        dishVersionId: item.dish_version_id,
+        nonScoreable: item.non_scoreable,
+        photo: {
+          storageKey: request.candidatePhotoKey,
+          capturedBy: principal.userId,
+          captureProfileVersion: DEMO_CAPTURE_PROFILE_VERSION,
+          captureMode: "manual",
+        },
+        mode: "shadow",
+        config: {
+          modelId: this.evaluator.pinnedModelId,
+          promptVersion: this.evaluator.promptVersion,
+          promptHash: this.evaluator.promptHash,
+          preprocessingVersion: PREPROCESSING_VERSION,
+        },
+        ensembleSize: EVAL_DEFAULTS.ensembleSize,
+      });
+      return { ok: true, evaluation: queued.evaluation } as const;
+    });
+    if (!outcome.ok) {
+      return outcome;
+    }
+    await this.enqueueEvaluation(principal, outcome.evaluation);
+    return { ok: true, value: { evaluationId: outcome.evaluation.id } };
+  }
+
+  /** Shared post-commit enqueue (mirrors createEvaluation's tail). */
+  private async enqueueEvaluation(
+    principal: Principal,
+    evaluation: { id: string; status: string },
+  ): Promise<void> {
+    if (evaluation.status !== "queued") {
+      return;
+    }
+    try {
+      await this.queue.enqueue({ evaluationId: evaluation.id, tenantId: principal.tenantId });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      this.logger.error(`enqueue failed for evaluation ${evaluation.id}: ${detail}`);
+      await withTenant(principal.tenantId, (trx) =>
+        updateEvaluationFailed(trx, {
+          evaluationId: evaluation.id,
+          failureDetail: `enqueue failed: ${detail.slice(0, 500)}`,
+        }),
+      );
+    }
   }
 }
