@@ -8,12 +8,15 @@ imaginile din GitHub, iar Traefik (integrat în Dokploy) termină TLS-ul automat
 
 | Subdomeniu | Serviciu | Public |
 |---|---|---|
-| `admin.desaga.ro` | Panoul de administrare (Next) | da |
+| `admin.desaga.ro` | Panoul de administrare + comenzi (Next) | da |
 | `demo.desaga.ro` | Showcase-ul / prezentarea (Next) | da |
+| `app.desaga.ro` | Oaspeți — meniu + comandă la masă (Next) | da |
+| `staff.desaga.ro` | Personal — captură plating AI la pass (Next) | da |
 | `media.desaga.ro` | MinIO — pozele (URL-uri semnate) | da |
 | — | API + worker | intern (Next-urile le apelează prin rețeaua internă) |
-| `app.desaga.ro` | oaspeți (PWA) | rezervat — se adaugă când e construit |
-| `staff.desaga.ro` | personal | rezervat |
+
+Fiecare host public are un override de env (`ADMIN_HOST` / `DEMO_HOST` / `GUEST_HOST`
+/ `STAFF_HOST` / `MEDIA_HOST`) pentru provideri fără subdomenii imbricate.
 
 Bazele de date (Postgres, Redis, MinIO) rulează pe o rețea privată, fără acces din
 exterior. API + worker au ieșire la internet doar pentru API-ul Anthropic.
