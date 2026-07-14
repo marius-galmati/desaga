@@ -14,6 +14,8 @@ export * from "./repositories/tenancy";
 export {
   asSystem,
   destroyDbPools,
+  resolveQrSlug,
+  resolveSessionToken,
   resolveTenantIdBySlug,
   type TenantTransaction,
   withTenant,

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { bilingualTextSchema, moneyMinorSchema, uuidSchema } from "./common";
+import { serviceRequestKindSchema } from "./enums";
 
 // Public, guest-facing menu shapes. NO internal fields (reference-set status,
 // refs_stale, station, cost) ever cross into the guest surface — only what a
@@ -27,3 +28,68 @@ export const guestMenuSchema = z.object({
   categories: z.array(guestMenuCategorySchema),
 });
 export type GuestMenu = z.infer<typeof guestMenuSchema>;
+
+// --- Ordering (Phase 2) ----------------------------------------------------
+
+// A table session opened (or joined) from a QR scan. `token` is the raw device
+// token — returned ONCE; the client stores it and sends it as X-Guest-Token.
+export const guestSessionSchema = z.object({
+  token: z.string(),
+  sessionId: uuidSchema,
+  tableLabel: z.string(),
+  guest: z.object({ displayName: z.string(), emoji: z.string() }),
+});
+export type GuestSession = z.infer<typeof guestSessionSchema>;
+
+export const startSessionRequestSchema = z.object({
+  qrSlug: z.string().min(1),
+});
+export type StartSessionRequest = z.infer<typeof startSessionRequestSchema>;
+
+export const placeOrderItemSchema = z.object({
+  dishId: uuidSchema,
+  quantity: z.number().int().min(1).max(99),
+  note: z.string().max(280).optional(),
+});
+export const placeOrderRequestSchema = z.object({
+  items: z.array(placeOrderItemSchema).min(1).max(50),
+});
+export type PlaceOrderRequest = z.infer<typeof placeOrderRequestSchema>;
+
+// order/item statuses mirror the order_status enum (guest-visible subset).
+export const guestOrderStatusSchema = z.enum([
+  "submitted",
+  "accepted",
+  "fired",
+  "ready",
+  "served",
+  "voided",
+]);
+
+export const guestOrderLineSchema = z.object({
+  id: uuidSchema,
+  dishId: uuidSchema,
+  name: bilingualTextSchema,
+  quantity: z.number().int(),
+  unitPriceMinor: moneyMinorSchema,
+  lineTotalMinor: moneyMinorSchema,
+  status: guestOrderStatusSchema,
+  note: z.string().nullable(),
+});
+
+export const guestOrderSchema = z.object({
+  id: uuidSchema,
+  status: guestOrderStatusSchema,
+  subtotalMinor: moneyMinorSchema,
+  totalMinor: moneyMinorSchema,
+  createdAt: z.string(),
+  items: z.array(guestOrderLineSchema),
+});
+export type GuestOrder = z.infer<typeof guestOrderSchema>;
+
+export const guestOrderListSchema = z.array(guestOrderSchema);
+
+// serviceRequestKindSchema / ServiceRequestKind come from ./enums (single source).
+export const serviceRequestBodySchema = z.object({ kind: serviceRequestKindSchema });
+
+export const okResultSchema = z.object({ ok: z.literal(true) });

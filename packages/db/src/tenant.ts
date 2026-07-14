@@ -92,6 +92,48 @@ export async function resolveTenantIdBySlug(slug: string): Promise<string | null
   return result.rows[0]?.tenant_id ?? null;
 }
 
+/**
+ * Sanctioned pre-tenant path for a guest QR scan: resolves a table QR slug to
+ * its tenant/location/table via resolve_qr_slug (SECURITY DEFINER). Returns null
+ * for an unknown/revoked slug or an archived table.
+ */
+export async function resolveQrSlug(
+  slug: string,
+): Promise<{ tenantId: string; locationId: string; diningTableId: string } | null> {
+  const result = await sql<{
+    tenant_id: string;
+    location_id: string;
+    dining_table_id: string;
+  }>`select * from resolve_qr_slug(${slug})`.execute(getAppDb());
+  const row = result.rows[0];
+  return row
+    ? { tenantId: row.tenant_id, locationId: row.location_id, diningTableId: row.dining_table_id }
+    : null;
+}
+
+/**
+ * Sanctioned pre-tenant path for every ongoing guest request: resolves a device
+ * token hash to its tenant/session/guest via resolve_session_token (SECURITY
+ * DEFINER — only non-revoked, non-expired tokens). Returns null otherwise.
+ */
+export async function resolveSessionToken(
+  tokenHash: string,
+): Promise<{ tenantId: string; tableSessionId: string; sessionGuestId: string } | null> {
+  const result = await sql<{
+    tenant_id: string;
+    table_session_id: string;
+    session_guest_id: string;
+  }>`select * from resolve_session_token(${tokenHash})`.execute(getAppDb());
+  const row = result.rows[0];
+  return row
+    ? {
+        tenantId: row.tenant_id,
+        tableSessionId: row.table_session_id,
+        sessionGuestId: row.session_guest_id,
+      }
+    : null;
+}
+
 /** Closes both pools; call from the app's shutdown hook. */
 export async function destroyDbPools(): Promise<void> {
   await appDb?.destroy();

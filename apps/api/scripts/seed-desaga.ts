@@ -30,15 +30,30 @@ const config = {
   adminFullName: "Administrator Desaga",
 };
 
-type SeedDish = { ro: string; desc: string; lei: number; signature?: boolean; nonScoreable?: boolean };
+type SeedDish = {
+  ro: string;
+  desc: string;
+  lei: number;
+  signature?: boolean;
+  nonScoreable?: boolean;
+};
 type SeedCategory = { ro: string; dishes: SeedDish[] };
 
 const MENU: SeedCategory[] = [
   {
     ro: "Aperitive",
     dishes: [
-      { ro: "Mici Euphoria", desc: "Din vită și porc, la grătar, cu muștar de casă.", lei: 8, signature: true },
-      { ro: "Cârnați picanți Euphoria", desc: "Afumați în casă, cu ardei iute și usturoi.", lei: 28 },
+      {
+        ro: "Mici Euphoria",
+        desc: "Din vită și porc, la grătar, cu muștar de casă.",
+        lei: 8,
+        signature: true,
+      },
+      {
+        ro: "Cârnați picanți Euphoria",
+        desc: "Afumați în casă, cu ardei iute și usturoi.",
+        lei: 28,
+      },
       { ro: "File de șalău", desc: "Prăjit crocant, cu felie de lămâie.", lei: 42 },
       { ro: "File de păstrăv", desc: "De munte, rumenit la tigaie.", lei: 38 },
     ],
@@ -46,8 +61,17 @@ const MENU: SeedCategory[] = [
   {
     ro: "Ciorbe & Supe",
     dishes: [
-      { ro: "Ciorbă de burtă", desc: "Cu os de vită, smântână și ardei iute, ca la carte.", lei: 26, signature: true },
-      { ro: "Ciorbă de fasole cu ciolan afumat", desc: "Legată, cu ceapă călită și tarhon.", lei: 24 },
+      {
+        ro: "Ciorbă de burtă",
+        desc: "Cu os de vită, smântână și ardei iute, ca la carte.",
+        lei: 26,
+        signature: true,
+      },
+      {
+        ro: "Ciorbă de fasole cu ciolan afumat",
+        desc: "Legată, cu ceapă călită și tarhon.",
+        lei: 24,
+      },
       { ro: "Supă de pui cu tăieței", desc: "Cu tăieței de casă, întinși cu mâna.", lei: 22 },
       { ro: "Ciorbă de perișoare", desc: "Acrită cu borș, cu leuștean proaspăt.", lei: 24 },
       { ro: "Supă țărănească de vită", desc: "Cu multe legume, gospodărească.", lei: 24 },
@@ -56,11 +80,30 @@ const MENU: SeedCategory[] = [
   {
     ro: "Feluri principale",
     dishes: [
-      { ro: "Sarmale durdulii cu ciolan", desc: "În foaie de varză murată, cu mămăligă și smântână.", lei: 44, signature: true },
-      { ro: "Taci și-nghite", desc: "Mămăligă cu brânză, jumări și ou ochi — vorbește singură.", lei: 38, signature: true },
+      {
+        ro: "Sarmale durdulii cu ciolan",
+        desc: "În foaie de varză murată, cu mămăligă și smântână.",
+        lei: 44,
+        signature: true,
+      },
+      {
+        ro: "Taci și-nghite",
+        desc: "Mămăligă cu brânză, jumări și ou ochi — vorbește singură.",
+        lei: 38,
+        signature: true,
+      },
       { ro: "Ciolan de-ți lasă gura apă", desc: "Copt încet la cuptor, cu varză călită.", lei: 58 },
-      { ro: "Șalău „Nu mă uita”", desc: "File cu cartofi noi și fasole verde, cu unt de lămâie.", lei: 62, signature: true },
-      { ro: "Papricaș de pui zglobiu", desc: "Cu pulpe de pui și găluște, în sos de boia dulce.", lei: 42 },
+      {
+        ro: "Șalău „Nu mă uita”",
+        desc: "File cu cartofi noi și fasole verde, cu unt de lămâie.",
+        lei: 62,
+        signature: true,
+      },
+      {
+        ro: "Papricaș de pui zglobiu",
+        desc: "Cu pulpe de pui și găluște, în sos de boia dulce.",
+        lei: 42,
+      },
       { ro: "Tocăniță ungurească", desc: "De vită, în sos de vin roșu, cu gnocchi.", lei: 54 },
       { ro: "Antricot de vită Limousin", desc: "La grătar, cu unt aromat și legume.", lei: 96 },
       { ro: "Biftec tartar", desc: "Cu măduvă la grătar și pită prăjită.", lei: 68 },
@@ -73,7 +116,11 @@ const MENU: SeedCategory[] = [
   {
     ro: "Brânzeturi & Garnituri",
     dishes: [
-      { ro: "Palaneț cu brânză", desc: "Plăcintă cu brânză și ceapă verde, coaptă pe vatră.", lei: 22 },
+      {
+        ro: "Palaneț cu brânză",
+        desc: "Plăcintă cu brânză și ceapă verde, coaptă pe vatră.",
+        lei: 22,
+      },
       { ro: "Pită picurată", desc: "Cu jumări și brânză, direct din cuptor.", lei: 18 },
       { ro: "Mămăligă la grătar", desc: "Feliată și rumenită pe plită.", lei: 12 },
       { ro: "Hribi trași la tigaie", desc: "Cu usturoi și pătrunjel.", lei: 26 },
@@ -91,9 +138,19 @@ const MENU: SeedCategory[] = [
   {
     ro: "Deserturi",
     dishes: [
-      { ro: "Papanași ropogoși", desc: "Cu smântână și dulceață de afine, calzi.", lei: 26, signature: true },
+      {
+        ro: "Papanași ropogoși",
+        desc: "Cu smântână și dulceață de afine, calzi.",
+        lei: 26,
+        signature: true,
+      },
       { ro: "Somlói galuska", desc: "Pandișpan însiropat, cu nucă și sos de ciocolată.", lei: 24 },
-      { ro: "Arsă și delicioasă", desc: "Crème brûlée cu crustă de zahăr caramelizat.", lei: 22, nonScoreable: true },
+      {
+        ro: "Arsă și delicioasă",
+        desc: "Crème brûlée cu crustă de zahăr caramelizat.",
+        lei: 22,
+        nonScoreable: true,
+      },
       { ro: "Tartă cu mere și nuci", desc: "Cu aluat fraged și scorțișoară.", lei: 22 },
     ],
   },
@@ -176,6 +233,37 @@ async function main(): Promise<void> {
       );
     }
 
+    // Dining tables + QR slugs for the guest ordering app. Idempotent: only
+    // seeded when the tenant has no tables yet. Slugs are readable on purpose
+    // (demo convenience) — real deployments mint unguessable ones.
+    const tableCount = await client.query<{ n: string }>(
+      `select count(*)::text as n from dining_table where tenant_id = $1`,
+      [tenantId],
+    );
+    if (Number(tableCount.rows[0]!.n) === 0) {
+      const sectionId = (
+        await client.query<{ id: string }>(
+          `insert into floor_section (tenant_id, location_id, name) values ($1, $2, $3) returning id`,
+          [tenantId, locationId, "Sală principală"],
+        )
+      ).rows[0]!.id;
+      for (let i = 1; i <= 8; i++) {
+        const label = `Masa ${i}`;
+        const diningTableId = (
+          await client.query<{ id: string }>(
+            `insert into dining_table (tenant_id, location_id, floor_section_id, label, seats)
+             values ($1, $2, $3, $4, $5) returning id`,
+            [tenantId, locationId, sectionId, label, i <= 4 ? 2 : 4],
+          )
+        ).rows[0]!.id;
+        await client.query(
+          `insert into table_qr_slug (tenant_id, dining_table_id, slug) values ($1, $2, $3)`,
+          [tenantId, diningTableId, `desaga-masa-${i}`],
+        );
+      }
+      console.log("seeded 8 dining tables + QR slugs (desaga-masa-1 .. desaga-masa-8)");
+    }
+
     const dishCount = await client.query<{ n: string }>(
       `select count(*)::text as n from dish where tenant_id = $1`,
       [tenantId],
@@ -223,13 +311,18 @@ async function main(): Promise<void> {
             ],
           )
         ).rows[0]!.id;
-        await client.query(`update dish set current_version_id = $1 where id = $2`, [versionId, dishId]);
+        await client.query(`update dish set current_version_id = $1 where id = $2`, [
+          versionId,
+          dishId,
+        ]);
         dishTotal++;
       }
     }
 
     await client.query("commit");
-    console.log(`seed-desaga complete: tenant ${tenantId}, ${MENU.length} categorii, ${dishTotal} preparate`);
+    console.log(
+      `seed-desaga complete: tenant ${tenantId}, ${MENU.length} categorii, ${dishTotal} preparate`,
+    );
     printLogin();
   } catch (error) {
     await client.query("rollback").catch(() => {});
@@ -242,7 +335,11 @@ async function main(): Promise<void> {
 function printLogin(): void {
   console.log("login:");
   console.log(
-    JSON.stringify({ tenantSlug: config.tenantSlug, email: config.adminEmail, password: config.adminPassword }),
+    JSON.stringify({
+      tenantSlug: config.tenantSlug,
+      email: config.adminEmail,
+      password: config.adminPassword,
+    }),
   );
 }
 
