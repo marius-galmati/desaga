@@ -41,6 +41,12 @@ RUN test -n "$APP" || (echo "ERROR: --build-arg APP=admin|showcase is required" 
 COPY . .
 # NEXT_TELEMETRY_DISABLED so the build never phones home from CI/Dokploy.
 ENV NEXT_TELEMETRY_DISABLED=1
+# Next.js bakes rewrite destinations into routes-manifest.json at BUILD time, so
+# API_ORIGIN must be present now (a runtime env is ignored for rewrites). The
+# internal Nest service is always reachable at http://api:3000 inside the compose
+# network, so that is the correct, stable default.
+ARG API_ORIGIN=http://api:3000
+ENV API_ORIGIN=${API_ORIGIN}
 RUN pnpm --filter @boca/${APP} build
 # Neither app ships a public/ dir today; create it so the runtime COPY is
 # unconditional (and future assets just work).
