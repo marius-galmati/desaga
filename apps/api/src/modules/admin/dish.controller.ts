@@ -11,6 +11,9 @@ import { DishService } from "./dish.service";
 export class AdminDishController {
   constructor(private readonly dishes: DishService) {}
 
+  // Method-level override: the staff plating app (kitchen_pass) reads the dish
+  // list to pick what to capture — but must NOT reach dish mutations below.
+  @Roles("tenant_admin", "manager", "kitchen_pass")
   @TsRestHandler(apiContract.admin.listDishes)
   listDishes(@Req() request: RequestWithPrincipal) {
     return tsRestHandler(apiContract.admin.listDishes, async ({ query }) => {

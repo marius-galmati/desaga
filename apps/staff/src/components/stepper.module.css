@@ -1,0 +1,66 @@
+.steps {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 0 0 36px;
+  padding: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 1 auto;
+}
+
+.step:not(:last-child) {
+  flex: 1 1 auto;
+}
+
+.numeral {
+  font-family: var(--font-display);
+  font-size: 15px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-faint);
+  background: var(--card);
+}
+
+.label {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rule {
+  flex: 1 1 24px;
+  height: 1px;
+  background: var(--line);
+  margin-left: 8px;
+}
+
+.step[data-state="active"] .numeral {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fdf9f1;
+}
+
+.step[data-state="active"] .label {
+  color: var(--ink);
+}
+
+.step[data-state="done"] .numeral {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.step[data-state="done"] .label {
+  color: var(--ink-soft);
+}

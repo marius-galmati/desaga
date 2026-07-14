@@ -211,6 +211,20 @@ async function main(): Promise<void> {
       )
     ).rows[0]!.id;
 
+    // A kitchen_pass user for the staff plating-capture app. Same non-clobber
+    // policy; password defaults to the admin password unless SEED_STAFF_PASSWORD
+    // is set.
+    const staffPasswordHash = await argon2.hash(
+      process.env.SEED_STAFF_PASSWORD ?? config.adminPassword,
+    );
+    await client.query(
+      `insert into app_user (tenant_id, location_id, role, email, password_hash, full_name)
+       values ($1, $2, 'kitchen_pass', $3, $4, $5)
+       on conflict (tenant_id, email) do update
+         set role = excluded.role, full_name = excluded.full_name, is_active = true`,
+      [tenantId, locationId, "pass@desaga.ro", staffPasswordHash, "Bucătar la pass"],
+    );
+
     // A single kitchen station (dish_version.station_id is NOT NULL).
     const stationId = (
       await client.query<{ id: string }>(

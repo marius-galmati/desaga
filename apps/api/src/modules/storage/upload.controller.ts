@@ -46,7 +46,7 @@ export class UploadController {
   constructor(private readonly storage: StorageService) {}
 
   @Post(ADMIN_UPLOAD_PATH)
-  @Roles("tenant_admin", "manager")
+  @Roles("tenant_admin", "manager", "kitchen_pass")
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor(UPLOAD_FILE_FIELD, { limits: { fileSize: UPLOAD_MAX_BYTES } }))
   async upload(

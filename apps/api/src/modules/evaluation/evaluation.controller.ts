@@ -7,7 +7,9 @@ import { requirePrincipal } from "../../common/tenant-context";
 import { EvaluationService } from "./evaluation.service";
 
 @Controller()
-@Roles("tenant_admin", "manager")
+// kitchen_pass drives the plating-capture flow from the staff app; admin/manager
+// use it from the owner demo.
+@Roles("tenant_admin", "manager", "kitchen_pass")
 export class EvaluationController {
   constructor(private readonly evaluations: EvaluationService) {}
 
