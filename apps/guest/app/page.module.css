@@ -1,0 +1,213 @@
+.page {
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  padding-bottom: 64px;
+}
+
+/* --- sticky top bar --- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px clamp(16px, 5vw, 40px);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.langToggle {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.langToggle button {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.langToggle button + button {
+  border-left: 1px solid var(--line-strong);
+}
+.langToggle button.langOn {
+  background: var(--ochre);
+  color: var(--ink-surface);
+}
+
+/* --- hero --- */
+.hero {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: clamp(32px, 7vw, 68px) clamp(16px, 5vw, 40px) clamp(20px, 4vw, 36px);
+  text-align: center;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.04;
+  margin: 12px 0 10px;
+}
+.hero p {
+  max-width: 56ch;
+  margin: 0 auto;
+  color: var(--ink-soft);
+  font-size: clamp(0.96rem, 2.4vw, 1.08rem);
+}
+
+/* --- category quick-nav --- */
+.catNav {
+  position: sticky;
+  top: 57px;
+  z-index: 9;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px clamp(16px, 5vw, 40px);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+.catNav::-webkit-scrollbar {
+  display: none;
+}
+.catChip {
+  flex: 0 0 auto;
+  padding: 7px 15px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.catChip:hover {
+  border-color: var(--ochre);
+  color: var(--ink);
+}
+
+/* --- menu body --- */
+.menu {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 8px clamp(16px, 5vw, 40px) 0;
+}
+.category {
+  padding-top: clamp(28px, 5vw, 44px);
+  scroll-margin-top: 116px;
+}
+.catTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 600;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ochre-soft, var(--ochre));
+  margin-bottom: 8px;
+}
+
+.dishes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dish {
+  display: flex;
+  gap: clamp(12px, 3vw, 22px);
+  align-items: flex-start;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.thumb {
+  flex: 0 0 auto;
+  width: clamp(72px, 20vw, 108px);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--r);
+  background: var(--paper-2, var(--card));
+}
+.thumbEmpty {
+  border: 1px dashed var(--line-strong);
+}
+.dishBody {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.dishHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+.dishHead h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 3vw, 1.24rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.price {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--vin, #7a2231);
+  white-space: nowrap;
+}
+.desc {
+  margin-top: 5px;
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+.allergens {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+.allergensLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* --- states + footer --- */
+.state {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 60px clamp(16px, 5vw, 40px);
+  text-align: center;
+  color: var(--ink-soft);
+}
+.footer {
+  max-width: var(--container);
+  margin: 40px auto 0;
+  padding: 28px clamp(16px, 5vw, 40px) 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  justify-content: space-between;
+  color: var(--ink-faint);
+  font-size: 0.84rem;
+}
+.footNote {
+  font-style: italic;
+}

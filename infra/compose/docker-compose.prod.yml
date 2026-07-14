@@ -288,36 +288,55 @@ services:
       - traefik.http.routers.boca-demo.tls.certresolver=letsencrypt
       - traefik.http.services.boca-demo.loadbalancer.server.port=3000
 
+  # ---- guest (Next, public: app.${ROOT_DOMAIN}) — diner-facing menu ---------
+  guest:
+    build:
+      context: ../..
+      dockerfile: infra/docker/next.Dockerfile
+      args:
+        APP: guest
+        # Which tenant's public menu this deployment serves (baked at build).
+        NEXT_PUBLIC_TENANT_SLUG: ${GUEST_TENANT_SLUG:-desaga}
+    image: boca-guest:latest
+    <<: *restart
+    environment:
+      API_ORIGIN: http://boca-api:3000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - boca-internal
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.boca-guest.rule=Host(`${GUEST_HOST:-app.${ROOT_DOMAIN}}`)
+      - traefik.http.routers.boca-guest.entrypoints=websecure
+      - traefik.http.routers.boca-guest.tls.certresolver=letsencrypt
+      - traefik.http.services.boca-guest.loadbalancer.server.port=3000
+
   # ===========================================================================
-  # PLACEHOLDERS — future apps, do NOT exist yet. Uncomment + add Dockerfiles
-  # when they land. They slot in exactly like admin/showcase above.
+  # PLACEHOLDER — future app, does NOT exist yet. Uncomment + add apps/staff
+  # when it lands. Slots in exactly like admin/showcase/guest above.
   # ---------------------------------------------------------------------------
-  # guest PWA -> app.${ROOT_DOMAIN} (public; the diner-facing table app)
-  # app:
+  # staff app -> staff.${ROOT_DOMAIN} (all-PWA on Android per 2026-07-13 decision)
+  # staff:
   #   build:
   #     context: ../..
-  #     dockerfile: infra/docker/next.Dockerfile   # or its own Dockerfile
-  #     args:
-  #       APP: guest            # apps/guest (does not exist yet)
-  #   image: boca-guest:latest
+  #     dockerfile: infra/docker/next.Dockerfile
+  #     args: { APP: staff }
+  #   image: boca-staff:latest
   #   restart: unless-stopped
-  #   environment:
-  #     API_ORIGIN: http://api:3000
-  #   depends_on:
-  #     api:
-  #       condition: service_healthy
+  #   environment: { API_ORIGIN: http://boca-api:3000 }
+  #   depends_on: { api: { condition: service_healthy } }
   #   networks: [boca-internal, dokploy-network]
   #   labels:
   #     - traefik.enable=true
   #     - traefik.docker.network=dokploy-network
-  #     - traefik.http.routers.boca-guest.rule=Host(`app.${ROOT_DOMAIN}`)
-  #     - traefik.http.routers.boca-guest.entrypoints=websecure
-  #     - traefik.http.routers.boca-guest.tls.certresolver=letsencrypt
-  #     - traefik.http.services.boca-guest.loadbalancer.server.port=3000
-  #
-  # staff app -> staff.${ROOT_DOMAIN} (all-PWA on Android per 2026-07-13 decision)
-  # staff:
-  #   ...same shape as `app` above, APP=staff, Host(`staff.${ROOT_DOMAIN}`)...
+  #     - traefik.http.routers.boca-staff.rule=Host(`${STAFF_HOST:-staff.${ROOT_DOMAIN}}`)
+  #     - traefik.http.routers.boca-staff.entrypoints=websecure
+  #     - traefik.http.routers.boca-staff.tls.certresolver=letsencrypt
+  #     - traefik.http.services.boca-staff.loadbalancer.server.port=3000
   # ===========================================================================
 
 volumes:

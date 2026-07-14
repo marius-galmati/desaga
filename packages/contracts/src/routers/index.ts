@@ -14,6 +14,7 @@ import {
   UPLOAD_FILE_FIELD,
   UPLOAD_MAX_BYTES,
 } from "./evaluation";
+import { guestContract } from "./guest";
 import { healthContract } from "./health";
 import { tenancyContract } from "./tenancy";
 
@@ -29,6 +30,7 @@ export const apiContract = c.router({
   health: healthContract,
   auth: authContract,
   tenancy: tenancyContract,
+  guest: guestContract,
   evaluation: evaluationContract,
   admin: adminContract,
 });
@@ -45,6 +47,7 @@ export {
   adminContract,
   authContract,
   evaluationContract,
+  guestContract,
   healthContract,
   tenancyContract,
 };

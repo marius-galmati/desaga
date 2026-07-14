@@ -58,6 +58,9 @@ ARG NEXT_PUBLIC_DEMO_PASSWORD=
 ENV NEXT_PUBLIC_DEMO_TENANT=${NEXT_PUBLIC_DEMO_TENANT}
 ENV NEXT_PUBLIC_DEMO_EMAIL=${NEXT_PUBLIC_DEMO_EMAIL}
 ENV NEXT_PUBLIC_DEMO_PASSWORD=${NEXT_PUBLIC_DEMO_PASSWORD}
+# Guest-only: which tenant's public menu this deployment serves (baked in).
+ARG NEXT_PUBLIC_TENANT_SLUG=desaga
+ENV NEXT_PUBLIC_TENANT_SLUG=${NEXT_PUBLIC_TENANT_SLUG}
 RUN pnpm --filter @boca/${APP} build
 # Neither app ships a public/ dir today; create it so the runtime COPY is
 # unconditional (and future assets just work).
