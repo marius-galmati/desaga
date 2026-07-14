@@ -1,0 +1,31 @@
+# Build-context ignore. Keeps the repo-root context lean so `docker build .`
+# doesn't ship node_modules / build outputs / secrets to the daemon.
+# BuildKit auto-uses this file for `-f infra/docker/<name>.Dockerfile .`
+# (it looks up "<dockerfile-path>.dockerignore" before the root .dockerignore).
+
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/.swc
+**/coverage
+**/*.tsbuildinfo
+
+.git
+.github
+.vscode
+.idea
+
+# secrets / local env (templates in infra/env are NOT ignored)
+.env
+.env.*
+!infra/env/.env.prod.example
+!infra/env/.env.example
+
+# docs / assets not needed by any build
+docs
+*.md
+*.log
+hostero_logo.png
+**/.DS_Store
+Thumbs.db

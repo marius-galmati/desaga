@@ -14,10 +14,11 @@ out/
 coverage/
 *.tsbuildinfo
 
-# env files — templates live in infra/env/.env.example
+# env files — real secrets never committed; only the *.example templates are.
 .env
 .env.*
 !.env.example
+!.env.prod.example
 
 # NOTE: packages/db/src/generated IS committed on purpose (kysely-codegen
 # output, regenerated in CI to detect drift). Do not add it here.

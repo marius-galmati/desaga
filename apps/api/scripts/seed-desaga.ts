@@ -105,8 +105,13 @@ function bilingual(ro: string): string {
 }
 
 async function main(): Promise<void> {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("seed-desaga.ts is a dev fixture; refusing to run with NODE_ENV=production");
+  // This seeds the REAL Desaga tenant, so it IS the intended production bootstrap
+  // — but require an explicit opt-in so it can't run by accident. The prod
+  // `seed` compose service sets ALLOW_PROD_SEED=true.
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_PROD_SEED !== "true") {
+    throw new Error(
+      "refusing to seed with NODE_ENV=production; set ALLOW_PROD_SEED=true to bootstrap prod",
+    );
   }
   const client = new pg.Client({ connectionString: config.connectionString });
   await client.connect();

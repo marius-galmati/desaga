@@ -7,6 +7,8 @@ import type { NextConfig } from "next";
 const API_ORIGIN = process.env.API_ORIGIN ?? "http://localhost:3000";
 
 const nextConfig: NextConfig = {
+  // Slim, self-contained server bundle for the production Docker image.
+  output: "standalone",
   // Workspace packages export raw TypeScript (exports -> ./src/index.ts).
   transpilePackages: ["@boca/contracts", "@boca/config"],
   async rewrites() {

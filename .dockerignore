@@ -1,0 +1,32 @@
+# Build-context ignore for the repo-root context used by every prod image
+# (docker-compose.prod.yml builds with context: . and -f infra/docker/<name>.Dockerfile).
+# Docker/BuildKit reads .dockerignore from the CONTEXT ROOT, so it must live here —
+# an infra/.dockerignore would never be applied. Keeps node_modules / build outputs /
+# secrets out of the context sent to the daemon.
+
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/.swc
+**/coverage
+**/*.tsbuildinfo
+
+.git
+.github
+.vscode
+.idea
+
+# secrets / local env (templates in infra/env are NOT ignored)
+.env
+.env.*
+!infra/env/.env.prod.example
+!infra/env/.env.example
+
+# docs / assets not needed by any build
+docs
+*.md
+*.log
+hostero_logo.png
+**/.DS_Store
+Thumbs.db

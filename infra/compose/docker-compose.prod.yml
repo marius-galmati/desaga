@@ -1,0 +1,329 @@
+# =============================================================================
+# Boca — production stack for Dokploy (Compose deployment type).
+#
+# Dokploy runs a Traefik reverse proxy on an EXTERNAL docker network named
+# `dokploy-network` and terminates TLS (Let's Encrypt). Public services expose
+# themselves by (a) joining `dokploy-network` and (b) carrying Traefik labels.
+# Everything else stays on the private, internal-only `boca-internal` network.
+#
+# Deploy path in Dokploy:
+#   - Deployment type       : Compose
+#   - Compose file path     : infra/compose/docker-compose.prod.yml
+#   - Environment           : paste infra/env/.env.prod.example, fill real values
+#
+# Build context for every built image is the REPO ROOT (../..), so Dokploy must
+# build from the repository root with this compose file.
+#
+# CONFIRM AGAINST YOUR DOKPLOY INSTALL (may differ by version/config):
+#   - external network name : dokploy-network   (see `docker network ls`)
+#   - TLS cert resolver name : letsencrypt       (Traefik's certificatesResolvers)
+#     If your resolver is named differently, change every `tls.certresolver=...`.
+# =============================================================================
+
+name: boca
+
+# ---- shared fragments -------------------------------------------------------
+
+# App + worker share one image and one env block. All three DB URLs point at
+# NON-superuser LOGIN roles so the runtime never bypasses RLS; the superuser
+# DATABASE_URL is used ONLY by the one-shot `migrate` job below.
+x-api-env: &api-env
+  NODE_ENV: production
+  PORT: "3000"
+  # getAppDb() prefers APP_DATABASE_URL; getWorkerDb() prefers WORKER_DATABASE_URL;
+  # both fall back to DATABASE_URL. We set DATABASE_URL to the app login so even
+  # the fallback stays RLS-enforced (never the superuser here).
+  DATABASE_URL: postgres://boca_app_login:${APP_DB_PASSWORD}@postgres:5432/boca
+  APP_DATABASE_URL: postgres://boca_app_login:${APP_DB_PASSWORD}@postgres:5432/boca
+  WORKER_DATABASE_URL: postgres://boca_worker_login:${WORKER_DB_PASSWORD}@postgres:5432/boca
+  REDIS_URL: redis://redis:6379
+  # Internal endpoint for uploads; public endpoint used ONLY to sign GET URLs the
+  # browser fetches (the SigV4 signature binds the Host, so it must be signed
+  # against the host the browser reaches: media.${ROOT_DOMAIN}).
+  S3_ENDPOINT: http://minio:9000
+  S3_PUBLIC_ENDPOINT: https://media.${ROOT_DOMAIN}
+  S3_REGION: us-east-1
+  S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+  S3_SECRET_KEY: ${S3_SECRET_KEY}
+  S3_BUCKET: ${S3_BUCKET}
+  JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+  EVAL_MODEL: ${EVAL_MODEL}
+  EVAL_MOCK: "false"
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  # ---- data stores (internal only) -----------------------------------------
+  postgres:
+    image: postgres:16.9
+    <<: *restart
+    environment:
+      POSTGRES_USER: boca
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: boca
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - boca-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U boca -d boca"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4.2-alpine
+    <<: *restart
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - boca-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    <<: *restart
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+      # NOTE: intentionally NOT setting MINIO_SERVER_URL. The API signs presigned
+      # GET URLs against S3_PUBLIC_ENDPOINT (media.${ROOT_DOMAIN}) and uploads
+      # against the internal minio:9000; MinIO validates SigV4 using whatever
+      # Host arrives, so both work. Pinning MINIO_SERVER_URL to the public host
+      # would break the internal minio:9000 upload path. The console (9001) is
+      # NOT published — admin it via `docker exec` / an SSH tunnel if needed.
+    volumes:
+      - minio_data:/data
+    networks:
+      - boca-internal
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      # Public S3 API on media.${ROOT_DOMAIN} -> container port 9000 (NOT the
+      # 9001 console). Needed so the browser can GET presigned image URLs.
+      - traefik.http.routers.boca-media.rule=Host(`media.${ROOT_DOMAIN}`)
+      - traefik.http.routers.boca-media.entrypoints=websecure
+      - traefik.http.routers.boca-media.tls.certresolver=letsencrypt
+      - traefik.http.services.boca-media.loadbalancer.server.port=9000
+
+  # ---- one-shot: bucket provisioning ---------------------------------------
+  minio-init:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    restart: "no"
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 ${S3_ACCESS_KEY} ${S3_SECRET_KEY} &&
+      mc mb --ignore-existing local/${S3_BUCKET} &&
+      echo 'bucket ${S3_BUCKET} ready'
+      "
+    networks:
+      - boca-internal
+
+  # ---- one-shot: migrations + RLS login roles ------------------------------
+  migrate:
+    build:
+      context: ../..
+      dockerfile: infra/docker/migrate.Dockerfile
+    image: boca-migrate:latest
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # SUPERUSER connection — required to run DDL migrations and CREATE ROLE.
+      # This is the ONLY service that gets the superuser credentials.
+      DATABASE_URL: postgres://boca:${POSTGRES_PASSWORD}@postgres:5432/boca
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD}
+      WORKER_DB_PASSWORD: ${WORKER_DB_PASSWORD}
+    networks:
+      - boca-internal
+
+  # ---- one-shot (MANUAL): bootstrap the first tenant + admin ----------------
+  # NOT run on normal deploys (profile: seed). After the FIRST deploy, run once
+  # to create the Desaga tenant, its menu and your admin login:
+  #   docker compose -f infra/compose/docker-compose.prod.yml --profile seed run --rm seed
+  # (or trigger the `seed` service from the Dokploy UI). Idempotent: re-running
+  # only resets the admin password and skips the menu if dishes already exist.
+  seed:
+    image: boca-migrate:latest
+    profiles: ["seed"]
+    restart: "no"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    entrypoint: ["pnpm", "--filter", "@boca/api", "exec", "tsx", "scripts/seed-desaga.ts"]
+    environment:
+      NODE_ENV: production
+      ALLOW_PROD_SEED: "true" # explicit opt-in; the seed refuses prod otherwise
+      # Superuser: seeding the first tenant must bypass RLS.
+      DATABASE_URL: postgres://boca:${POSTGRES_PASSWORD}@postgres:5432/boca
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
+    networks:
+      - boca-internal
+
+  # ---- API (internal only) --------------------------------------------------
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/api.Dockerfile
+    image: boca-api:latest
+    <<: *restart
+    command: ["node", "dist/main.js"]
+    environment: *api-env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - boca-internal
+      - boca-egress # outbound to the Anthropic API
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ---- BullMQ worker (same image, worker entrypoint; internal only) ---------
+  worker:
+    image: boca-api:latest
+    <<: *restart
+    command: ["node", "dist/main.worker.js"]
+    environment: *api-env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      # api builds the shared image; declaring it here guarantees the image
+      # exists before the worker starts (worker sets no `build:` of its own).
+      api:
+        condition: service_started
+    networks:
+      - boca-internal
+      - boca-egress # the worker calls the Anthropic API for evaluations
+
+  # ---- admin (Next, public: admin.${ROOT_DOMAIN}) ---------------------------
+  admin:
+    build:
+      context: ../..
+      dockerfile: infra/docker/next.Dockerfile
+      args:
+        APP: admin
+    image: boca-admin:latest
+    <<: *restart
+    environment:
+      # Same-origin API proxy: the browser hits admin.${ROOT_DOMAIN}/api, Next
+      # rewrites to the internal api service.
+      API_ORIGIN: http://api:3000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - boca-internal
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.boca-admin.rule=Host(`admin.${ROOT_DOMAIN}`)
+      - traefik.http.routers.boca-admin.entrypoints=websecure
+      - traefik.http.routers.boca-admin.tls.certresolver=letsencrypt
+      - traefik.http.services.boca-admin.loadbalancer.server.port=3000
+
+  # ---- showcase (Next, public: demo.${ROOT_DOMAIN}) -------------------------
+  showcase:
+    build:
+      context: ../..
+      dockerfile: infra/docker/next.Dockerfile
+      args:
+        APP: showcase
+    image: boca-showcase:latest
+    <<: *restart
+    environment:
+      API_ORIGIN: http://api:3000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - boca-internal
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.boca-demo.rule=Host(`demo.${ROOT_DOMAIN}`)
+      - traefik.http.routers.boca-demo.entrypoints=websecure
+      - traefik.http.routers.boca-demo.tls.certresolver=letsencrypt
+      - traefik.http.services.boca-demo.loadbalancer.server.port=3000
+
+  # ===========================================================================
+  # PLACEHOLDERS — future apps, do NOT exist yet. Uncomment + add Dockerfiles
+  # when they land. They slot in exactly like admin/showcase above.
+  # ---------------------------------------------------------------------------
+  # guest PWA -> app.${ROOT_DOMAIN} (public; the diner-facing table app)
+  # app:
+  #   build:
+  #     context: ../..
+  #     dockerfile: infra/docker/next.Dockerfile   # or its own Dockerfile
+  #     args:
+  #       APP: guest            # apps/guest (does not exist yet)
+  #   image: boca-guest:latest
+  #   restart: unless-stopped
+  #   environment:
+  #     API_ORIGIN: http://api:3000
+  #   depends_on:
+  #     api:
+  #       condition: service_healthy
+  #   networks: [boca-internal, dokploy-network]
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.docker.network=dokploy-network
+  #     - traefik.http.routers.boca-guest.rule=Host(`app.${ROOT_DOMAIN}`)
+  #     - traefik.http.routers.boca-guest.entrypoints=websecure
+  #     - traefik.http.routers.boca-guest.tls.certresolver=letsencrypt
+  #     - traefik.http.services.boca-guest.loadbalancer.server.port=3000
+  #
+  # staff app -> staff.${ROOT_DOMAIN} (all-PWA on Android per 2026-07-13 decision)
+  # staff:
+  #   ...same shape as `app` above, APP=staff, Host(`staff.${ROOT_DOMAIN}`)...
+  # ===========================================================================
+
+volumes:
+  pg_data:
+  redis_data:
+  minio_data:
+
+networks:
+  # Dokploy's Traefik lives here; created by Dokploy, so we only attach to it.
+  dokploy-network:
+    external: true
+  # Private backplane: no route to the public internet. Data stores live here
+  # only, so postgres/redis/minio can never call out.
+  boca-internal:
+    internal: true
+  # Outbound-only egress for api + worker: they need to reach the Anthropic API
+  # (api.anthropic.com) for evaluations. A normal bridge = outbound internet,
+  # but with no published ports / Traefik labels these services stay unreachable
+  # from the outside.
+  boca-egress:
+    driver: bridge
