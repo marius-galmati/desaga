@@ -197,8 +197,14 @@ services:
       minio:
         condition: service_healthy
     networks:
-      - boca-internal
-      - boca-egress # outbound to the Anthropic API
+      # Unique alias: the bare name `api` collides on the SHARED dokploy-network
+      # (other Dokploy apps register an `api` too), so a container attached to
+      # dokploy-network — like our Next apps — can resolve `api` to the wrong one.
+      # The Next proxy targets `boca-api`, which only resolves on our private net.
+      boca-internal:
+        aliases:
+          - boca-api
+      boca-egress: # outbound to the Anthropic API
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/api/health"]
       interval: 15s
@@ -237,7 +243,7 @@ services:
     environment:
       # Same-origin API proxy: the browser hits admin.${ROOT_DOMAIN}/api, Next
       # rewrites to the internal api service.
-      API_ORIGIN: http://api:3000
+      API_ORIGIN: http://boca-api:3000
     depends_on:
       api:
         condition: service_healthy
@@ -262,7 +268,7 @@ services:
     image: boca-showcase:latest
     <<: *restart
     environment:
-      API_ORIGIN: http://api:3000
+      API_ORIGIN: http://boca-api:3000
     depends_on:
       api:
         condition: service_healthy

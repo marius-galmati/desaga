@@ -43,9 +43,10 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 # Next.js bakes rewrite destinations into routes-manifest.json at BUILD time, so
 # API_ORIGIN must be present now (a runtime env is ignored for rewrites). The
-# internal Nest service is always reachable at http://api:3000 inside the compose
-# network, so that is the correct, stable default.
-ARG API_ORIGIN=http://api:3000
+# internal Nest service is reachable at http://boca-api:3000 on our private
+# network. We use the project-specific alias `boca-api` (not the generic `api`,
+# which collides on the shared dokploy-network) so it always resolves to OUR api.
+ARG API_ORIGIN=http://boca-api:3000
 ENV API_ORIGIN=${API_ORIGIN}
 RUN pnpm --filter @boca/${APP} build
 # Neither app ships a public/ dir today; create it so the runtime COPY is
