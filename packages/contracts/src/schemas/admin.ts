@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { bilingualTextSchema, moneyMinorSchema, uuidSchema, vatRateBpSchema } from "./common";
-import { referencePhotoRoleSchema, referenceSetStatusSchema, userRoleSchema } from "./enums";
+import {
+  orderStatusSchema,
+  referencePhotoRoleSchema,
+  referenceSetStatusSchema,
+  userRoleSchema,
+} from "./enums";
 
 // Tenant-admin backend contract (real, non-demo). Every route lives under
 // apiContract.admin and is guarded by tenant_admin/manager (user-create is
@@ -178,6 +183,29 @@ export type SetAvailabilityRequest = z.infer<typeof setAvailabilityRequestSchema
 
 export const okResponseSchema = z.object({ ok: z.literal(true) });
 export type OkResponse = z.infer<typeof okResponseSchema>;
+
+// --- Staff order receiving (guest orders seen by the floor) ----------------
+export const adminOrderItemSchema = z.object({
+  id: uuidSchema,
+  dishName: bilingualTextSchema,
+  quantity: z.number().int(),
+  lineTotalMinor: moneyMinorSchema,
+  status: orderStatusSchema,
+  note: z.string().nullable(),
+});
+export const adminOrderSchema = z.object({
+  id: uuidSchema,
+  tableLabel: z.string(),
+  status: orderStatusSchema,
+  isFirstOfSession: z.boolean(),
+  guest: z.object({ displayName: z.string(), emoji: z.string() }).nullable(),
+  subtotalMinor: moneyMinorSchema,
+  totalMinor: moneyMinorSchema,
+  createdAt: z.string(),
+  items: z.array(adminOrderItemSchema),
+});
+export type AdminOrder = z.infer<typeof adminOrderSchema>;
+export const adminOrderListSchema = z.array(adminOrderSchema);
 
 // ---------------------------------------------------------------------------
 // Media library

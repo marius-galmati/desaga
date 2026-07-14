@@ -16,12 +16,14 @@ import {
   type AdminDishDetail,
   type AdminDishListItem,
   type AdminMediaAsset,
+  type AdminOrder,
   type AdminSettings,
   type AdminStation,
   type AdminUser,
   type AiEvaluation,
   type AttachReferencesRequest,
   adminAllergenListSchema,
+  adminOrderListSchema,
   adminCategoryListSchema,
   adminCategorySchema,
   adminDishDetailSchema,
@@ -287,6 +289,20 @@ export async function uploadMedia(file: File): Promise<UploadMediaResponse> {
 
 export function deleteMedia(id: string): Promise<void> {
   return requestJson(`/admin/media/${id}`, jsonInit("DELETE", {}), () => undefined);
+}
+
+// --- Orders (staff floor view) ---------------------------------------------
+
+export function listOrders(): Promise<AdminOrder[]> {
+  return requestJson("/admin/orders", { method: "GET" }, (p) => adminOrderListSchema.parse(p));
+}
+
+export function acceptOrder(id: string): Promise<void> {
+  return requestJson(`/admin/orders/${id}/accept`, jsonInit("POST", {}), () => undefined);
+}
+
+export function serveOrder(id: string): Promise<void> {
+  return requestJson(`/admin/orders/${id}/serve`, jsonInit("POST", {}), () => undefined);
 }
 
 // --- Users -----------------------------------------------------------------

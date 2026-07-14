@@ -7,6 +7,7 @@ import {
   adminDishDetailSchema,
   adminDishListSchema,
   adminMediaListSchema,
+  adminOrderListSchema,
   adminSettingsSchema,
   adminStationListSchema,
   adminStationSchema,
@@ -247,6 +248,38 @@ export const adminContract = c.router({
       401: apiErrorSchema,
       404: apiErrorSchema,
       409: apiErrorSchema, // still referenced by a dish hero or reference photo
+    },
+  },
+
+  // --- Orders (staff floor view) -------------------------------------------
+  listOrders: {
+    method: "GET",
+    path: "/admin/orders",
+    summary: "Open guest orders for the floor (newest first)",
+    responses: { 200: adminOrderListSchema, 401: apiErrorSchema },
+  },
+  acceptOrder: {
+    method: "POST",
+    path: "/admin/orders/:id/accept",
+    pathParams: idParams,
+    body: z.object({}),
+    responses: {
+      200: okResponseSchema,
+      401: apiErrorSchema,
+      404: apiErrorSchema,
+      409: apiErrorSchema, // not in an acceptable state
+    },
+  },
+  serveOrder: {
+    method: "POST",
+    path: "/admin/orders/:id/serve",
+    pathParams: idParams,
+    body: z.object({}),
+    responses: {
+      200: okResponseSchema,
+      401: apiErrorSchema,
+      404: apiErrorSchema,
+      409: apiErrorSchema,
     },
   },
 

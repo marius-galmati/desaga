@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MenuPanel } from "@/components/panels/menu-panel";
+import { OrdersPanel } from "@/components/panels/orders-panel";
 import { PhotosPanel } from "@/components/panels/photos-panel";
 import { ReferencesPanel } from "@/components/panels/references-panel";
 import { SettingsPanel } from "@/components/panels/settings-panel";
@@ -13,9 +14,17 @@ import { Wordmark } from "@/design/emblem";
 import { ensureSession, getCurrentUser, logout } from "@/lib/auth";
 import styles from "./admin.module.css";
 
-type NavKey = "meniu" | "fotografii" | "referinte" | "tolerante" | "utilizatori" | "setari";
+type NavKey =
+  | "comenzi"
+  | "meniu"
+  | "fotografii"
+  | "referinte"
+  | "tolerante"
+  | "utilizatori"
+  | "setari";
 
 const NAV: { key: NavKey; label: string }[] = [
+  { key: "comenzi", label: "Comenzi" },
   { key: "meniu", label: "Meniu" },
   { key: "fotografii", label: "Fotografii" },
   { key: "referinte", label: "Seturi de referință" },
@@ -106,6 +115,7 @@ export default function AdminHome() {
       </aside>
 
       <main className={styles.content}>
+        {nav === "comenzi" && <OrdersPanel />}
         {nav === "meniu" && <MenuPanel />}
         {nav === "fotografii" && <PhotosPanel />}
         {nav === "referinte" && <ReferencesPanel />}

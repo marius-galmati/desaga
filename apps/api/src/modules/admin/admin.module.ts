@@ -6,13 +6,20 @@ import { AdminDishController } from "./dish.controller";
 import { DishService } from "./dish.service";
 import { AdminMediaController } from "./media.controller";
 import { MediaService } from "./media.service";
+import { AdminOrderController } from "./order.controller";
+import { OrderService } from "./order.service";
 
 // Real (non-demo) tenant-admin backend: menu, photos, reference sets,
 // tolerances, users, settings. All DB writes go through withTenant() so RLS
 // fences every query to the caller's tenant.
 @Module({
   imports: [StorageModule],
-  controllers: [AdminCatalogController, AdminDishController, AdminMediaController],
-  providers: [CatalogService, DishService, MediaService],
+  controllers: [
+    AdminCatalogController,
+    AdminDishController,
+    AdminMediaController,
+    AdminOrderController,
+  ],
+  providers: [CatalogService, DishService, MediaService, OrderService],
 })
 export class AdminModule {}
