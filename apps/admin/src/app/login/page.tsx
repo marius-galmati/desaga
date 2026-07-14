@@ -2,12 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import { Emblem } from "@/design/emblem";
 import { login } from "@/lib/auth";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [tenantSlug, setTenantSlug] = useState("demo");
+  const [tenantSlug, setTenantSlug] = useState("desaga");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +20,7 @@ export default function LoginPage() {
     setBusy(true);
     try {
       await login({ tenantSlug, email, password });
-      router.replace("/demo");
+      router.replace("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Autentificarea a eșuat.");
       setBusy(false);
@@ -29,10 +30,17 @@ export default function LoginPage() {
   return (
     <div className={styles.wrap}>
       <section className={`card ${styles.panel}`}>
-        <p className="eyebrow">Acces restaurant</p>
-        <h1 className={styles.title}>Bun venit</h1>
+        <div className={styles.brand}>
+          <Emblem size={40} tone="var(--ochre)" />
+          <span className={styles.brandName}>Desaga</span>
+        </div>
+        <p className="eyebrow" style={{ marginTop: 22 }}>
+          Panou de administrare
+        </p>
+        <h1 className={styles.title}>No, zîua bună!</h1>
         <p className={styles.lede}>
-          Autentifică-te pentru a deschide sandbox-ul de evaluare a montajului.
+          Autentifică-te pentru a administra meniul, fotografiile și standardele AI ale
+          restaurantului.
         </p>
 
         <form className={styles.form} onSubmit={onSubmit}>
@@ -60,7 +68,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
-              placeholder="admin@demo.local"
+              placeholder="admin@desaga.ro"
               required
             />
           </div>
@@ -81,7 +89,7 @@ export default function LoginPage() {
 
           {error ? <p className="form-error">{error}</p> : null}
 
-          <button className="btn btn-primary" type="submit" disabled={busy}>
+          <button className="btn btn--block" type="submit" disabled={busy}>
             {busy ? "Se autentifică…" : "Intră în cont"}
           </button>
         </form>

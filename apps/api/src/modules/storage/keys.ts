@@ -19,6 +19,13 @@ export function mintDemoPhotoKeys(tenantId: string): DemoPhotoKeys {
   return { photoKey: `${base}${ORIGINAL_SUFFIX}`, aiInputKey: `${base}${AI_INPUT_SUFFIX}` };
 }
 
+// Real (non-demo) media-library key: tenant/{tenantId}/library/{uuid}.jpg.
+// Recorded in media_asset.storage_key and referenced by dish_version.hero_photo_key
+// and reference_photo.storage_key.
+export function mintLibraryKey(tenantId: string): string {
+  return `tenant/${tenantId}/library/${randomUUID()}.jpg`;
+}
+
 export function aiInputKeyFor(photoKey: string): string {
   if (photoKey.endsWith(ORIGINAL_SUFFIX)) {
     return `${photoKey.slice(0, -ORIGINAL_SUFFIX.length)}${AI_INPUT_SUFFIX}`;

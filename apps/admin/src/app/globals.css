@@ -1,79 +1,132 @@
-/* ---------------------------------------------------------------------------
-   Boca admin — design tokens & base styles.
-   Warm parchment neutrals, a single bordeaux accent, system serif display
-   stack (Palatino ships on Windows/macOS — no font CDN, no webfont payload).
---------------------------------------------------------------------------- */
+/* ============================================================================
+   DESAGA — design system foundation
+   Heritage Transylvanian craft, presented with restraint. Palette drawn from
+   the restaurant's folk-art emblem (wine red, ochre gold, pine green) on warm
+   paper. One signature: the hexagonal "Gust Autentic" seal.
+   (Copied from apps/showcase — the admin shares the exact token system.)
+   ============================================================================ */
 
 :root {
-  /* surfaces */
-  --paper: #f4efe5;
-  --card: #fdfbf4;
-  --card-soft: #ede6d6;
-  --line: #ded3bf;
-  --line-strong: #c8bba1;
+  /* --- Surfaces (warm paper, layered) --- */
+  --paper: #f5efe3;
+  --paper-2: #efe6d4;
+  --paper-3: #e7dbc4;
+  --card: #fbf7ee;
+  --ink-surface: #211a13; /* deep roast — hero panels, pass/kitchen mode */
+  --ink-surface-2: #2c2318;
 
-  /* ink */
-  --ink: #26211a;
-  --ink-soft: #6d6252;
-  --ink-faint: #9a8f7c;
+  /* --- Ink --- */
+  --ink: #241c15;
+  --ink-soft: #5c4c3a;
+  --ink-faint: #8a795f;
+  --on-dark: #f3ead9;
+  --on-dark-soft: #c3b299;
 
-  /* the one accent */
-  --accent: #7c2f38;
-  --accent-deep: #5f2129;
-  --accent-wash: #f2e3e0;
+  /* --- Accents (from the emblem) --- */
+  --vin: #7a2231; /* wine red — primary accent */
+  --vin-deep: #5e1824;
+  --vin-wash: #f0dcd8;
+  --ochre: #b8791e; /* ochre gold — authenticity, the seal */
+  --ochre-soft: #d9a441;
+  --ochre-wash: #f4e6c9;
+  --pine: #33502f; /* pine green — "conform", positive */
+  --pine-soft: #4d6f45;
+  --pine-wash: #dde5d3;
+  --indigo: #274156; /* emblem blue — used very sparingly */
 
-  /* score tones (verdicts only, never decoration) */
-  --good: #40603f;
-  --good-wash: #e7ecdf;
-  --mixed: #8f6c2c;
-  --mixed-wash: #f1e9d2;
-  --bad: #8f3629;
-  --bad-wash: #f3e2da;
+  /* --- Semantic tone (verdicts) --- */
+  --good: var(--pine);
+  --good-wash: var(--pine-wash);
+  --mixed: var(--ochre);
+  --mixed-wash: var(--ochre-wash);
+  --bad: var(--vin);
+  --bad-wash: var(--vin-wash);
 
-  /* type */
-  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
-  --font-body: "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
+  /* --- Lines --- */
+  --line: #dccdb2;
+  --line-soft: #e8ddc8;
+  --line-strong: #c8b48f;
 
-  /* rhythm */
-  --radius: 6px;
-  --radius-lg: 10px;
-  --shadow: 0 1px 2px rgb(38 33 26 / 0.06), 0 8px 28px rgb(38 33 26 / 0.07);
+  /* --- Type --- */
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: system-ui, sans-serif;
+
+  /* --- Radii & shadow (soft, crafted, never techy) --- */
+  --r-sm: 6px;
+  --r: 12px;
+  --r-lg: 20px;
+  --r-pill: 999px;
+  --shadow-card: 0 1px 2px rgba(48, 34, 18, 0.05), 0 8px 24px -12px rgba(48, 34, 18, 0.18);
+  --shadow-lift: 0 2px 6px rgba(48, 34, 18, 0.08), 0 24px 48px -20px rgba(48, 34, 18, 0.3);
+
+  /* --- Layout --- */
+  --container: 1180px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 * {
   box-sizing: border-box;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 body {
-  background: var(--paper);
+  margin: 0;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(1200px 600px at 85% -10%, rgba(184, 121, 30, 0.06), transparent 60%),
+    radial-gradient(900px 500px at -5% 105%, rgba(51, 80, 47, 0.05), transparent 55%);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: var(--font-display);
   font-weight: 500;
+  line-height: 1.08;
   letter-spacing: -0.01em;
   margin: 0;
+  font-optical-sizing: auto;
 }
 
-p {
-  margin: 0;
+/* Fluid display scale */
+.display-xl {
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-weight: 500;
+  line-height: 1.02;
+}
+.display-lg {
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+}
+.display-md {
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
 }
 
-button {
-  font: inherit;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 img {
@@ -81,110 +134,264 @@ img {
   display: block;
 }
 
-/* --- shared primitives ---------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--vin);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
 
+/* --- Eyebrow: uppercase letterspaced label, encodes section/kind --- */
 .eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-family: var(--font-body);
   text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ochre);
+}
+.eyebrow--ink {
   color: var(--ink-faint);
 }
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+.eyebrow--dark {
+  color: var(--ochre-soft);
 }
 
+/* --- Rule with a diamond node (desagă weave motif) --- */
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--line-strong);
+}
+.rule::before,
+.rule::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: currentColor;
+  opacity: 0.6;
+}
+.rule__node {
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  background: var(--ochre);
+  flex: none;
+}
+
+/* --- Layout helpers --- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 48px);
+}
+
+/* --- Buttons --- */
 .btn {
+  --btn-bg: var(--vin);
+  --btn-fg: var(--on-dark);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: var(--radius);
-  border: 1px solid var(--line-strong);
-  background: var(--card);
-  color: var(--ink);
-  font-size: 14px;
+  gap: 0.5em;
+  font-family: var(--font-body);
   font-weight: 600;
-  letter-spacing: 0.01em;
+  font-size: 0.92rem;
+  line-height: 1;
+  padding: 0.85em 1.5em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
   cursor: pointer;
   transition:
-    background 140ms ease,
-    border-color 140ms ease,
-    color 140ms ease;
+    transform 0.15s var(--ease),
+    background 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
 }
-
-.btn:hover:not(:disabled) {
-  border-color: var(--ink-soft);
+.btn:hover {
+  background: var(--vin-deep);
+  transform: translateY(-1px);
 }
-
+.btn:active {
+  transform: translateY(0);
+}
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: default;
+  transform: none;
+}
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn--ghost:hover {
+  --btn-bg: var(--paper-2);
+  background: var(--paper-2);
+  border-color: var(--ink-faint);
+}
+.btn--gold {
+  --btn-bg: var(--ochre);
+}
+.btn--gold:hover {
+  background: #a06716;
+}
+.btn--outline-gold {
+  --btn-bg: transparent;
+  --btn-fg: var(--ochre);
+  border-color: var(--ochre);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+}
+.btn--outline-gold:hover {
+  --btn-bg: var(--ochre);
+  --btn-fg: var(--ink-surface);
+  background: var(--ochre);
+}
+.btn--sm {
+  padding: 0.6em 1.1em;
+  font-size: 0.82rem;
+}
+.btn--block {
+  width: 100%;
 }
 
-.btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fdf9f1;
+/* --- Cards --- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: var(--accent-deep);
-  border-color: var(--accent-deep);
-}
-
-.btn-ghost {
-  background: transparent;
-  border-color: transparent;
+/* --- Chips / tags --- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 0.32em 0.75em;
+  border-radius: var(--r-pill);
+  background: var(--paper-2);
   color: var(--ink-soft);
-  padding: 10px 12px;
+  border: 1px solid var(--line-soft);
 }
-
-.btn-ghost:hover:not(:disabled) {
-  color: var(--accent);
+.chip--gold {
+  background: var(--ochre-wash);
+  color: #8a5a12;
   border-color: transparent;
 }
+.chip--pine {
+  background: var(--pine-wash);
+  color: var(--pine);
+  border-color: transparent;
+}
+.chip--vin {
+  background: var(--vin-wash);
+  color: var(--vin-deep);
+  border-color: transparent;
+}
+
+/* --- Score bar (5 segments) — shared by AI report & dashboards --- */
+.scorebar {
+  display: flex;
+  gap: 4px;
+}
+.scorebar__seg {
+  height: 7px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--line-soft);
+}
+.scorebar__seg--on {
+  background: var(--tone, var(--pine));
+}
+
+/* --- Utility --- */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+.muted {
+  color: var(--ink-soft);
+}
+.faint {
+  color: var(--ink-faint);
+}
+.center {
+  text-align: center;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================================================
+   Admin form primitives — small addition on top of the showcase system so the
+   management panels share one input/label/select vocabulary.
+   ============================================================================ */
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
 .field-label {
-  font-size: 12px;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
-
-.input {
-  padding: 10px 12px;
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.62em 0.8em;
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius);
-  background: #fffef9;
+  border-radius: var(--r-sm);
+  background: #fffdf7;
   color: var(--ink);
-  font: inherit;
-  font-size: 15px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.4;
   outline: none;
-  transition: border-color 140ms ease;
+  transition: border-color 0.15s var(--ease);
 }
-
-.input:focus {
-  border-color: var(--accent);
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--vin);
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--ink-faint);
 }
 
 .form-error {
-  font-size: 13px;
-  color: var(--bad);
-  background: var(--bad-wash);
-  border: 1px solid color-mix(in srgb, var(--bad) 30%, transparent);
-  border-radius: var(--radius);
-  padding: 9px 12px;
+  font-size: 0.86rem;
+  color: var(--vin-deep);
+  background: var(--vin-wash);
+  border: 1px solid color-mix(in srgb, var(--vin) 26%, transparent);
+  border-radius: var(--r-sm);
+  padding: 0.6em 0.8em;
+}
+.form-ok {
+  font-size: 0.86rem;
+  color: var(--pine);
+  background: var(--pine-wash);
+  border: 1px solid color-mix(in srgb, var(--pine) 26%, transparent);
+  border-radius: var(--r-sm);
+  padding: 0.6em 0.8em;
 }

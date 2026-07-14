@@ -1,26 +1,37 @@
 import type { Metadata } from "next";
+import { Fraunces, Instrument_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
-import styles from "./layout.module.css";
+
+// Display: Fraunces — warm old-style serif with character (opsz + soft), carries
+// the heritage-craft personality. Body: Instrument Sans — quiet humanist
+// grotesque for UI and running text. Both cover Romanian diacritics. Same setup
+// as apps/showcase so the admin matches the guest/staff surfaces exactly.
+const fraunces = Fraunces({
+  subsets: ["latin-ext"],
+  axes: ["opsz", "SOFT", "WONK"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const instrument = Instrument_Sans({
+  subsets: ["latin-ext"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Boca — Control montaj",
-  description: "Evaluare AI a conformității montajului pe farfurie",
+  title: "Desaga — Panou de administrare",
+  description:
+    "Administrarea meniului, fotografiilor și standardelor AI pentru Restaurantele Desaga.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ro">
-      <body>
-        <header className={styles.header}>
-          <div className={styles.headerInner}>
-            <span className={styles.wordmark}>BOCA</span>
-            <span className={styles.headerRule} aria-hidden />
-            <span className={styles.headerSub}>Control calitate montaj</span>
-          </div>
-        </header>
-        <main className={styles.main}>{children}</main>
-      </body>
+    <html lang="ro" className={`${fraunces.variable} ${instrument.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

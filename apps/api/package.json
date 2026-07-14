@@ -9,6 +9,7 @@
     "start": "node --env-file-if-exists=../../.env dist/main.js",
     "start:worker": "node --env-file-if-exists=../../.env dist/main.worker.js",
     "seed:dev": "tsx --env-file-if-exists=../../.env scripts/seed-dev.ts",
+    "seed:desaga": "tsx --env-file-if-exists=../../.env scripts/seed-desaga.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "lint": "biome check ."
@@ -16,6 +17,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.111.0",
     "@aws-sdk/client-s3": "^3.1086.0",
+    "@aws-sdk/s3-request-presigner": "^3.1086.0",
     "@boca/config": "workspace:*",
     "@boca/contracts": "workspace:*",
     "@boca/db": "workspace:*",

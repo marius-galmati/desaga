@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { CoreModule } from "./core.module";
+import { AdminModule } from "./modules/admin/admin.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { EvaluationModule } from "./modules/evaluation/evaluation.module";
 import { HealthModule } from "./modules/health/health.module";
@@ -19,6 +20,7 @@ import { TenancyModule } from "./modules/tenancy/tenancy.module";
     StorageModule,
     ReferencesModule,
     EvaluationModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

@@ -1,0 +1,609 @@
+/* Shared styling for every admin panel. Imported by each panel component; the
+   hashed class names are stable across imports of the same module file. */
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.head h1 {
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  margin-top: 6px;
+}
+
+.intro {
+  margin-top: 10px;
+  max-width: 60ch;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+.headActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* --- generic states --- */
+.state {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.stateError {
+  color: var(--vin-deep);
+}
+
+/* --- category section --- */
+.category {
+  margin-bottom: 34px;
+}
+.categoryHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.categoryHead h2 {
+  font-size: 1.4rem;
+}
+.categoryCount {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+.categoryActions {
+  margin-left: auto;
+}
+
+/* --- dish cards --- */
+.dishGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.dishCard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    transform 0.15s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+.dishCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+.dishCardOff {
+  opacity: 0.72;
+}
+
+.dishOpen {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.thumb {
+  aspect-ratio: 4 / 3;
+  background: var(--paper-3);
+  position: relative;
+  overflow: hidden;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.thumbEmpty {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--paper-2),
+    var(--paper-2) 10px,
+    var(--paper-3) 10px,
+    var(--paper-3) 20px
+  );
+  color: var(--ink-faint);
+}
+
+.dishBody {
+  padding: 14px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.dishName {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.dishNameEn {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+.dishChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dishFoot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px 14px;
+}
+.price {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* availability toggle */
+.avail {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.availOn {
+  background: var(--pine-wash);
+  border-color: transparent;
+  color: var(--pine);
+}
+.availOff {
+  background: var(--vin-wash);
+  border-color: transparent;
+  color: var(--vin-deep);
+}
+.availDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* --- photo library grid --- */
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.photoTile {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.photoTile img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.photoCap {
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* --- dropzone --- */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  min-height: 200px;
+  padding: 24px;
+  border: 1.5px dashed var(--line-strong);
+  border-radius: var(--r);
+  background: var(--paper);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.15s var(--ease),
+    background 0.15s var(--ease);
+}
+.dropzone:hover,
+.dropzoneActive {
+  border-color: var(--ochre);
+  background: var(--ochre-wash);
+}
+.dropzone h4 {
+  font-size: 1.05rem;
+}
+.dropzoneSub {
+  font-size: 0.82rem;
+  max-width: 32ch;
+}
+
+/* --- picker row (dish selector for refs/tolerances) --- */
+.pickerRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.pick {
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s var(--ease);
+}
+.pick:hover {
+  border-color: var(--ink-faint);
+}
+.pickActive {
+  background: var(--ink-surface);
+  border-color: var(--ink-surface);
+  color: var(--on-dark);
+}
+
+/* --- generic card block --- */
+.block {
+  padding: 24px 26px;
+  margin-bottom: 18px;
+}
+.blockHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.blockHead h3 {
+  font-size: 1.3rem;
+}
+
+/* --- reference thumbnails --- */
+.refGroup {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr;
+}
+.refThumbRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.refThumb {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  position: relative;
+}
+.refThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.refThumbHold {
+  opacity: 0.85;
+  outline: 2px dashed var(--ochre);
+  outline-offset: -2px;
+}
+.roleTag {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  font-size: 0.64rem;
+  padding: 1px 6px;
+  border-radius: var(--r-pill);
+  background: rgba(33, 26, 19, 0.78);
+  color: var(--on-dark);
+}
+.noteBox {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  background: var(--ochre-wash);
+  color: #7a5011;
+  font-size: 0.86rem;
+}
+.staleBox {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  background: var(--vin-wash);
+  color: var(--vin-deep);
+  font-size: 0.86rem;
+}
+
+/* --- staging grid (reference upload candidates) --- */
+.stageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.stageItem {
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--card);
+}
+.stageItem img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+.stageCtrls {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: space-between;
+}
+.roleToggle {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.roleToggle button {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.roleToggleOn {
+  background: var(--ink-surface);
+  color: var(--on-dark);
+}
+.removeBtn {
+  border: none;
+  background: transparent;
+  color: var(--vin);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* --- tolerance rows --- */
+.tolRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.tolRow:first-child {
+  border-top: none;
+}
+.tolName {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+.tolDesc {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  margin-top: 3px;
+  max-width: 60ch;
+}
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  width: fit-content;
+}
+.segmented button {
+  border: none;
+  background: transparent;
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.15s var(--ease);
+}
+.segmented button + button {
+  border-left: 1px solid var(--line-strong);
+}
+.segOn {
+  background: var(--ochre);
+  color: var(--ink-surface);
+}
+
+/* --- table (users) --- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.table th {
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.table tr:last-child td {
+  border-bottom: none;
+}
+.inactiveRow {
+  opacity: 0.55;
+}
+
+/* --- form grid --- */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.formGridFull {
+  grid-column: 1 / -1;
+}
+.formActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* --- allergen chips (multi-select) --- */
+.allergenGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.allergen {
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.allergenOn {
+  background: var(--pine-wash);
+  border-color: transparent;
+  color: var(--pine);
+  font-weight: 600;
+}
+
+/* --- checkbox row --- */
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+/* --- hero uploader --- */
+.heroUploader {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.heroPreview {
+  width: 200px;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--paper-3);
+  flex: none;
+}
+.heroPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.heroPreviewEmpty {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+}
+
+/* --- modal / drawer for the dish editor --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 50;
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: rgba(33, 26, 19, 0.42);
+  cursor: pointer;
+}
+.drawer {
+  position: relative;
+  width: min(620px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--paper);
+  border-left: 1px solid var(--line);
+  box-shadow: var(--shadow-lift);
+  padding: 28px clamp(20px, 4vw, 36px) 40px;
+}
+.drawerHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.drawerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.closeBtn {
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink-soft);
+  padding: 4px;
+}
+
+.spinner {
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+}

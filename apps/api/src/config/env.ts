@@ -23,6 +23,12 @@ const envSchema = z.object({
   // MinIO (S3-compatible). Defaults match infra/compose/docker-compose.dev.yml;
   // prod compose must set all four explicitly.
   S3_ENDPOINT: z.string().min(1).default("http://127.0.0.1:9000"),
+  // Browser-facing MinIO host used ONLY to sign GET URLs (the signature binds
+  // the host, so presigned URLs must be signed against a host the browser can
+  // reach). Defaults to S3_ENDPOINT when the internal and public hosts match;
+  // set it in dev/prod when the API talks to MinIO over an internal hostname
+  // (e.g. S3_ENDPOINT=http://minio:9000, S3_PUBLIC_ENDPOINT=http://localhost:9000).
+  S3_PUBLIC_ENDPOINT: optionalNonEmpty,
   S3_REGION: z.string().min(1).default("us-east-1"),
   S3_ACCESS_KEY: z.string().min(1).default("boca"),
   S3_SECRET_KEY: z.string().min(1).default("boca-dev-password"),

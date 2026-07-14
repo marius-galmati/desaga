@@ -1,4 +1,11 @@
 import { initContract } from "@ts-rest/core";
+import {
+  ADMIN_MEDIA_UPLOAD_PATH,
+  adminContract,
+  MEDIA_UPLOAD_ALLOWED_CONTENT_TYPES,
+  MEDIA_UPLOAD_FILE_FIELD,
+  MEDIA_UPLOAD_MAX_BYTES,
+} from "./admin";
 import { authContract } from "./auth";
 import {
   ADMIN_UPLOAD_PATH,
@@ -23,13 +30,19 @@ export const apiContract = c.router({
   auth: authContract,
   tenancy: tenancyContract,
   evaluation: evaluationContract,
+  admin: adminContract,
 });
 
 export {
+  ADMIN_MEDIA_UPLOAD_PATH,
   ADMIN_UPLOAD_PATH,
+  MEDIA_UPLOAD_ALLOWED_CONTENT_TYPES,
+  MEDIA_UPLOAD_FILE_FIELD,
+  MEDIA_UPLOAD_MAX_BYTES,
   UPLOAD_ALLOWED_CONTENT_TYPES,
   UPLOAD_FILE_FIELD,
   UPLOAD_MAX_BYTES,
+  adminContract,
   authContract,
   evaluationContract,
   healthContract,

@@ -82,7 +82,6 @@ export function PhotoDrop({
         <ul className={styles.thumbs}>
           {previews.map((p, i) => (
             <li key={p.url} className={styles.thumb}>
-              {/* biome-ignore lint/performance/noImgElement: blob: object URLs — next/image cannot optimize them */}
               <img src={p.url} alt={p.name} />
               {!disabled ? (
                 <button

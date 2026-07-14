@@ -3,6 +3,7 @@
 // cleanly into Next, Expo and Nest alike.
 
 export * from "./routers";
+export * from "./schemas/admin";
 export * from "./schemas/auth";
 export * from "./schemas/common";
 export * from "./schemas/enums";

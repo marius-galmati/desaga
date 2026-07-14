@@ -126,7 +126,6 @@ function CompletedReport({
       <section className={styles.photos}>
         <figure className={styles.candidateFig}>
           {candidateUrl ? (
-            // biome-ignore lint/performance/noImgElement: blob: object URL — next/image cannot optimize it
             <img className={styles.candidateImg} src={candidateUrl} alt="Farfuria evaluată" />
           ) : (
             <div className={styles.photoMissing}>Fotografia evaluată</div>
@@ -137,7 +136,6 @@ function CompletedReport({
           <div className={styles.refGrid}>
             {referenceUrls.length > 0
               ? referenceUrls.map((url, i) => (
-                  // biome-ignore lint/performance/noImgElement: blob: object URL — next/image cannot optimize it
                   <img key={url} className={styles.refImg} src={url} alt={`Referința ${i + 1}`} />
                 ))
               : [0, 1, 2].map((i) => (
