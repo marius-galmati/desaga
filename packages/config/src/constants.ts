@@ -43,8 +43,11 @@ export interface ScoringCriterionDef {
   key: ScoringCriterionKey;
   labelRo: string;
   labelEn: string;
-  /** What the model judges; source material for the versioned rubric prompt. */
+  /** What the model judges; source material for the versioned rubric prompt.
+   *  Kept in English on purpose — it feeds the model prompt, not the UI. */
   description: string;
+  /** Plain-Romanian gloss shown to admins in the panel (not sent to the model). */
+  descriptionRo: string;
 }
 
 // Same order as SCORING_CRITERION_KEYS (asserted by the contracts anti-drift
@@ -57,6 +60,8 @@ export const SCORING_CRITERIA: readonly ScoringCriterionDef[] = [
     description:
       "All spec elements present, nothing foreign. 5 = everything exactly as specified; " +
       "3 = minor element missing or substituted; 1 = major element missing or foreign object.",
+    descriptionRo:
+      "Toate componentele prevăzute sunt prezente, fără elemente străine pe farfurie.",
   },
   {
     key: "arrangement",
@@ -65,6 +70,8 @@ export const SCORING_CRITERIA: readonly ScoringCriterionDef[] = [
     description:
       "Positioning and structure vs the reference: placement, stacking, orientation, " +
       "compositional intent.",
+    descriptionRo:
+      "Poziționarea și structura față de etalon: așezare, stratificare, orientare, intenția compoziției.",
   },
   {
     key: "sauce",
@@ -72,6 +79,8 @@ export const SCORING_CRITERIA: readonly ScoringCriterionDef[] = [
     labelEn: "Sauce execution",
     description:
       "Position, shape (dots/swoosh/mirror), quantity, clean edges, no accidental smears.",
+    descriptionRo:
+      "Poziția, forma (puncte/dâră/oglindă), cantitatea și marginile curate ale sosului, fără pete accidentale.",
   },
   {
     key: "cleanliness",
@@ -80,6 +89,8 @@ export const SCORING_CRITERIA: readonly ScoringCriterionDef[] = [
     description:
       "Rim immaculate, no fingerprints, splatter or drips outside intended zones. " +
       "Most objective criterion, near-binary.",
+    descriptionRo:
+      "Bordura farfuriei impecabilă, fără amprente, stropi sau scurgeri în afara zonelor intenționate.",
   },
   {
     key: "color",
@@ -88,6 +99,8 @@ export const SCORING_CRITERIA: readonly ScoringCriterionDef[] = [
     description:
       "Visible doneness cues — sear/browning, vibrant greens, glaze sheen, nothing burnt " +
       "or pale. Light-sensitive: tolerance starts wide.",
+    descriptionRo:
+      "Indiciile de gătire — rumenire, verde viu, luciul glazurii; nimic ars sau palid.",
   },
   {
     key: "portion",
@@ -95,6 +108,8 @@ export const SCORING_CRITERIA: readonly ScoringCriterionDef[] = [
     labelEn: "Portion and visual proportions",
     description:
       "Apparent quantity and component ratios vs the reference (visual estimate, not grams).",
+    descriptionRo:
+      "Cantitatea aparentă și proporțiile componentelor față de etalon (estimare vizuală, nu grame).",
   },
 ];
 

@@ -125,18 +125,20 @@ export function TolerancesPanel() {
         <div className={styles.state}>Adaugă întâi preparate în meniu.</div>
       ) : (
         <>
-          <div className={styles.pickerRow}>
-            {dishes.map((d) => (
-              <button
-                key={d.id}
-                type="button"
-                className={`${styles.pick} ${selectedId === d.id ? styles.pickActive : ""}`}
-                onClick={() => setSelectedId(d.id)}
-              >
-                {d.name.ro}
-              </button>
-            ))}
-          </div>
+          <label className="field" style={{ maxWidth: 420, marginBottom: 22 }}>
+            <span className="field-label">Preparat</span>
+            <select
+              className="input"
+              value={selectedId ?? ""}
+              onChange={(e) => setSelectedId(e.target.value || null)}
+            >
+              {dishes.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name.ro}
+                </option>
+              ))}
+            </select>
+          </label>
 
           <div className={`card ${styles.block}`}>
             <div className={styles.blockHead}>
@@ -162,7 +164,7 @@ export function TolerancesPanel() {
                       <div key={key} className={styles.tolRow}>
                         <div>
                           <div className={styles.tolName}>{crit.labelRo}</div>
-                          <p className={styles.tolDesc}>{crit.description}</p>
+                          <p className={styles.tolDesc}>{crit.descriptionRo}</p>
                         </div>
                         <div className={styles.segmented}>
                           {VARIANTS.map((v) => (
