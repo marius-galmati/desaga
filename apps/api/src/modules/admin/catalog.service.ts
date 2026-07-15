@@ -1,11 +1,14 @@
+import { randomBytes } from "node:crypto";
 import type {
   AdminAllergen,
   AdminCategory,
   AdminSettings,
   AdminStation,
+  AdminTable,
   AdminUser,
   CreateCategoryRequest,
   CreateStationRequest,
+  CreateTableRequest,
   CreateUserRequest,
   UpdateCategoryRequest,
   UpdateLocationRequest,
@@ -520,5 +523,130 @@ export class CatalogService {
       }
       throw error;
     }
+  }
+
+  // --- Tables + QR ---------------------------------------------------------
+
+  async listTables(principal: Principal): Promise<AdminTable[]> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const rows = await trx
+        .selectFrom("dining_table as dt")
+        .leftJoin("table_qr_slug as q", (join) =>
+          join
+            .onRef("q.dining_table_id", "=", "dt.id")
+            .onRef("q.tenant_id", "=", "dt.tenant_id")
+            .on("q.revoked_at", "is", null),
+        )
+        .select(["dt.id", "dt.label", "dt.seats", "q.slug"])
+        .where("dt.tenant_id", "=", principal.tenantId)
+        .where("dt.archived_at", "is", null)
+        .orderBy("dt.label")
+        .execute();
+      return rows.map((r) => ({ id: r.id, label: r.label, seats: r.seats, qrSlug: r.slug }));
+    });
+  }
+
+  async createTable(
+    principal: Principal,
+    body: CreateTableRequest,
+  ): Promise<ServiceResult<AdminTable>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const location = await trx
+        .selectFrom("location")
+        .select(["id"])
+        .where("tenant_id", "=", principal.tenantId)
+        .where("archived_at", "is", null)
+        .orderBy("created_at")
+        .executeTakeFirst();
+      if (!location) {
+        return { ok: false as const, status: 400 as const, message: "no active location" };
+      }
+      // Reject duplicate label up front (UNIQUE(tenant,location,label) covers
+      // archived rows too, so check without the archived filter).
+      const dupe = await trx
+        .selectFrom("dining_table")
+        .select("id")
+        .where("tenant_id", "=", principal.tenantId)
+        .where("location_id", "=", location.id)
+        .where("label", "=", body.label)
+        .executeTakeFirst();
+      if (dupe) {
+        return {
+          ok: false as const,
+          status: 409 as const,
+          message: "O masă cu acest nume există deja.",
+        };
+      }
+      // Ensure a default floor section for the location.
+      const existingSection = await trx
+        .selectFrom("floor_section")
+        .select(["id"])
+        .where("tenant_id", "=", principal.tenantId)
+        .where("location_id", "=", location.id)
+        .where("archived_at", "is", null)
+        .orderBy("sort_order")
+        .executeTakeFirst();
+      const sectionId =
+        existingSection?.id ??
+        (
+          await trx
+            .insertInto("floor_section")
+            .values({
+              tenant_id: principal.tenantId,
+              location_id: location.id,
+              name: "Sală principală",
+            })
+            .returning("id")
+            .executeTakeFirstOrThrow()
+        ).id;
+
+      const table = await trx
+        .insertInto("dining_table")
+        .values({
+          tenant_id: principal.tenantId,
+          location_id: location.id,
+          floor_section_id: sectionId,
+          label: body.label,
+          seats: body.seats ?? null,
+        })
+        .returning("id")
+        .executeTakeFirstOrThrow();
+
+      // Unguessable QR slug (embedded in the printed QR, never typed).
+      const slug = randomBytes(16).toString("base64url");
+      await trx
+        .insertInto("table_qr_slug")
+        .values({ tenant_id: principal.tenantId, dining_table_id: table.id, slug })
+        .execute();
+
+      return {
+        ok: true as const,
+        value: { id: table.id, label: body.label, seats: body.seats ?? null, qrSlug: slug },
+      };
+    });
+  }
+
+  async deleteTable(principal: Principal, id: string): Promise<ServiceResult<{ ok: true }>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const updated = await trx
+        .updateTable("dining_table")
+        .set({ archived_at: new Date() })
+        .where("tenant_id", "=", principal.tenantId)
+        .where("id", "=", id)
+        .where("archived_at", "is", null)
+        .executeTakeFirst();
+      if (updated.numUpdatedRows === 0n) {
+        return { ok: false as const, status: 404 as const, message: "table not found" };
+      }
+      // Revoke the active QR slug so the printed code stops working.
+      await trx
+        .updateTable("table_qr_slug")
+        .set({ revoked_at: new Date(), revoked_by: principal.userId })
+        .where("tenant_id", "=", principal.tenantId)
+        .where("dining_table_id", "=", id)
+        .where("revoked_at", "is", null)
+        .execute();
+      return { ok: true as const, value: { ok: true as const } };
+    });
   }
 }

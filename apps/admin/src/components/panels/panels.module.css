@@ -571,6 +571,13 @@
   gap: 8px;
 }
 
+.tableLink {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  word-break: break-all;
+}
+
 /* --- table (users) --- */
 .table {
   width: 100%;

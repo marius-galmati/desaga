@@ -9,6 +9,9 @@ import {
   adminMediaListSchema,
   adminOrderListSchema,
   adminSettingsSchema,
+  adminTableListSchema,
+  adminTableSchema,
+  createTableRequestSchema,
   adminStationListSchema,
   adminStationSchema,
   adminUserListSchema,
@@ -281,6 +284,34 @@ export const adminContract = c.router({
       404: apiErrorSchema,
       409: apiErrorSchema,
     },
+  },
+
+  // --- Tables + QR ---------------------------------------------------------
+  listTables: {
+    method: "GET",
+    path: "/admin/tables",
+    summary: "Dining tables + their active QR slug",
+    responses: { 200: adminTableListSchema, 401: apiErrorSchema },
+  },
+  createTable: {
+    method: "POST",
+    path: "/admin/tables",
+    body: createTableRequestSchema,
+    summary: "Create a table + mint its QR slug",
+    responses: {
+      201: adminTableSchema,
+      400: apiErrorSchema,
+      401: apiErrorSchema,
+      409: apiErrorSchema, // duplicate label
+    },
+  },
+  deleteTable: {
+    method: "DELETE",
+    path: "/admin/tables/:id",
+    pathParams: idParams,
+    body: z.object({}),
+    summary: "Archive a table + revoke its QR slug",
+    responses: { 200: okResponseSchema, 401: apiErrorSchema, 404: apiErrorSchema },
   },
 
   // --- Users ---------------------------------------------------------------

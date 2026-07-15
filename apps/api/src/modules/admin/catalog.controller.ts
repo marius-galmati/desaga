@@ -183,4 +183,37 @@ export class AdminCatalogController {
       return { status: 200 as const, body: result.value };
     });
   }
+
+  // --- Tables + QR ---------------------------------------------------------
+  @TsRestHandler(apiContract.admin.listTables)
+  listTables(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.listTables, async () => {
+      const principal = requirePrincipal(request);
+      return { status: 200 as const, body: await this.catalog.listTables(principal) };
+    });
+  }
+
+  @TsRestHandler(apiContract.admin.createTable)
+  createTable(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.createTable, async ({ body }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.catalog.createTable(principal, body);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 201 as const, body: result.value };
+    });
+  }
+
+  @TsRestHandler(apiContract.admin.deleteTable)
+  deleteTable(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.deleteTable, async ({ params }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.catalog.deleteTable(principal, params.id);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 200 as const, body: result.value };
+    });
+  }
 }

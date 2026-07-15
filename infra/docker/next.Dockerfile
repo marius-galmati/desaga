@@ -63,6 +63,9 @@ ENV NEXT_PUBLIC_DEMO_PASSWORD=${NEXT_PUBLIC_DEMO_PASSWORD}
 # Guest-only: which tenant's public menu this deployment serves (baked in).
 ARG NEXT_PUBLIC_TENANT_SLUG=desaga
 ENV NEXT_PUBLIC_TENANT_SLUG=${NEXT_PUBLIC_TENANT_SLUG}
+# Admin-only: the guest app origin, so the Tables panel can print full QR links.
+ARG NEXT_PUBLIC_GUEST_ORIGIN=
+ENV NEXT_PUBLIC_GUEST_ORIGIN=${NEXT_PUBLIC_GUEST_ORIGIN}
 RUN pnpm --filter @boca/${APP} build
 # Neither app ships a public/ dir today; create it so the runtime COPY is
 # unconditional (and future assets just work).

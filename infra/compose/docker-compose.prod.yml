@@ -238,6 +238,8 @@ services:
       dockerfile: infra/docker/next.Dockerfile
       args:
         APP: admin
+        # So the Tables panel can print full guest QR links.
+        NEXT_PUBLIC_GUEST_ORIGIN: https://${GUEST_HOST:-app.${ROOT_DOMAIN}}
     image: boca-admin:latest
     <<: *restart
     environment:

@@ -207,6 +207,22 @@ export const adminOrderSchema = z.object({
 export type AdminOrder = z.infer<typeof adminOrderSchema>;
 export const adminOrderListSchema = z.array(adminOrderSchema);
 
+// --- Tables + QR ------------------------------------------------------------
+export const adminTableSchema = z.object({
+  id: uuidSchema,
+  label: z.string(),
+  seats: z.number().int().nullable(),
+  qrSlug: z.string().nullable(),
+});
+export type AdminTable = z.infer<typeof adminTableSchema>;
+export const adminTableListSchema = z.array(adminTableSchema);
+
+export const createTableRequestSchema = z.object({
+  label: z.string().min(1).max(40),
+  seats: z.number().int().min(1).max(50).optional(),
+});
+export type CreateTableRequest = z.infer<typeof createTableRequestSchema>;
+
 // ---------------------------------------------------------------------------
 // Media library
 // ---------------------------------------------------------------------------

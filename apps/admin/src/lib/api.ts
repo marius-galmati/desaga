@@ -19,11 +19,14 @@ import {
   type AdminOrder,
   type AdminSettings,
   type AdminStation,
+  type AdminTable,
   type AdminUser,
   type AiEvaluation,
   type AttachReferencesRequest,
   adminAllergenListSchema,
   adminOrderListSchema,
+  adminTableListSchema,
+  adminTableSchema,
   adminCategoryListSchema,
   adminCategorySchema,
   adminDishDetailSchema,
@@ -43,6 +46,7 @@ import {
   type CreateEvaluationResponse,
   type CreateReferenceSetRequest,
   type CreateStationRequest,
+  type CreateTableRequest,
   type CreateUserRequest,
   createDemoDishResponseSchema,
   createEvaluationResponseSchema,
@@ -325,6 +329,20 @@ export function deactivateUser(id: string): Promise<void> {
 
 export function deleteUser(id: string): Promise<void> {
   return requestJson(`/admin/users/${id}`, jsonInit("DELETE", {}), () => undefined);
+}
+
+// --- Tables + QR -----------------------------------------------------------
+
+export function listTables(): Promise<AdminTable[]> {
+  return requestJson("/admin/tables", { method: "GET" }, (p) => adminTableListSchema.parse(p));
+}
+
+export function createTable(body: CreateTableRequest): Promise<AdminTable> {
+  return requestJson("/admin/tables", jsonInit("POST", body), (p) => adminTableSchema.parse(p));
+}
+
+export function deleteTable(id: string): Promise<void> {
+  return requestJson(`/admin/tables/${id}`, jsonInit("DELETE", {}), () => undefined);
 }
 
 // --- Settings --------------------------------------------------------------
