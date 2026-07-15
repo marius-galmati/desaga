@@ -76,19 +76,21 @@ export default function AdminHome() {
     router.replace("/login");
   }
 
-  // Role-based access: admin/manager get everything, waiter only Comenzi,
-  // kitchen_pass/management_viewer have no admin surface (kitchen_pass uses the
-  // staff pass app). Prevents the confusing "no permissions" broken panels.
+  // Role-based access to the ADMIN app (back-office):
+  //  - tenant_admin / manager -> everything
+  //  - management_viewer       -> read-only, sees Comenzi (live floor)
+  //  - waiter / kitchen_pass   -> no admin surface; they use the STAFF app
   const role = user?.role;
   const allowedNav =
     role === "tenant_admin" || role === "manager"
       ? NAV
-      : role === "waiter"
+      : role === "management_viewer"
         ? NAV.filter((n) => n.key === "comenzi")
         : [];
   const activeNav = allowedNav.some((n) => n.key === nav) ? nav : (allowedNav[0]?.key ?? "comenzi");
 
   if (allowedNav.length === 0) {
+    const isStaff = role === "waiter" || role === "kitchen_pass";
     return (
       <div className={styles.boot}>
         <div style={{ maxWidth: 440, textAlign: "center", padding: 24 }}>
@@ -98,7 +100,7 @@ export default function AdminHome() {
           </h2>
           <p className="faint" style={{ marginBottom: 18 }}>
             Rolul „{ROLE_LABEL[role ?? ""] ?? role}” nu poate folosi panoul de administrare.
-            {role === "kitchen_pass" ? " Folosește aplicația de personal (pass)." : ""}
+            {isStaff ? " Folosește aplicația de personal." : ""}
           </p>
           <button type="button" className="btn btn--ghost btn--sm" onClick={onLogout}>
             Deconectare

@@ -19,11 +19,13 @@ import {
   type AdminOrder,
   type AdminSettings,
   type AdminStation,
+  type AdminTable,
   type AdminUser,
   type AiEvaluation,
   type AttachReferencesRequest,
   adminAllergenListSchema,
   adminOrderListSchema,
+  adminTableListSchema,
   adminCategoryListSchema,
   adminCategorySchema,
   adminDishDetailSchema,
@@ -308,6 +310,16 @@ export function acceptOrder(id: string): Promise<void> {
 
 export function serveOrder(id: string): Promise<void> {
   return requestJson(`/admin/orders/${id}/serve`, jsonInit("POST", {}), () => undefined);
+}
+
+// --- Tables (staff floor) --------------------------------------------------
+
+export function listTables(): Promise<AdminTable[]> {
+  return requestJson("/admin/tables", { method: "GET" }, (p) => adminTableListSchema.parse(p));
+}
+
+export function closeTable(id: string): Promise<void> {
+  return requestJson(`/admin/tables/${id}/close`, jsonInit("POST", {}), () => undefined);
 }
 
 // --- Users -----------------------------------------------------------------

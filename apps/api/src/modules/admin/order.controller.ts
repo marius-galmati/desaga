@@ -11,6 +11,8 @@ import { OrderService } from "./order.service";
 export class AdminOrderController {
   constructor(private readonly orders: OrderService) {}
 
+  // management_viewer may READ the floor (accept/serve stay staff-only below).
+  @Roles("tenant_admin", "manager", "waiter", "management_viewer")
   @TsRestHandler(apiContract.admin.listOrders)
   listOrders(@Req() request: RequestWithPrincipal) {
     return tsRestHandler(apiContract.admin.listOrders, async () => {

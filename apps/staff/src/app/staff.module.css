@@ -60,6 +60,30 @@
   color: var(--vin-deep, #7a2231);
 }
 
+.sectionNav {
+  display: flex;
+  gap: 6px;
+  max-width: 820px;
+  margin: 14px auto 0;
+  padding: 0 clamp(14px, 4vw, 28px);
+}
+.sectionNav button {
+  flex: 1 1 0;
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.sectionNav button.sectionOn {
+  background: var(--ink, #2a201c);
+  color: var(--on-dark, #f5efe3);
+  border-color: transparent;
+}
+
 .modeToggle {
   display: inline-flex;
   border: 1px solid var(--line-strong);

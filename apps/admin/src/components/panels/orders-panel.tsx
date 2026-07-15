@@ -3,6 +3,7 @@
 import type { AdminOrder } from "@boca/contracts";
 import { useCallback, useEffect, useState } from "react";
 import { acceptOrder, listOrders, serveOrder } from "@/lib/api";
+import { getCurrentUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
 import styles from "./panels.module.css";
 
@@ -27,6 +28,8 @@ export function OrdersPanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  // management_viewer sees the floor read-only (no accept/serve).
+  const readOnly = getCurrentUser()?.role === "management_viewer";
 
   const refresh = useCallback(async () => {
     try {
@@ -115,26 +118,28 @@ export function OrdersPanel() {
 
               <div className={styles.orderFoot}>
                 <span className={styles.orderTotal}>{formatPrice(o.totalMinor)}</span>
-                <div className={styles.orderActions}>
-                  {o.status === "submitted" ? (
+                {readOnly ? null : (
+                  <div className={styles.orderActions}>
+                    {o.status === "submitted" ? (
+                      <button
+                        type="button"
+                        className="btn btn--sm"
+                        disabled={busyId === o.id}
+                        onClick={() => void act(o.id, acceptOrder)}
+                      >
+                        Acceptă
+                      </button>
+                    ) : null}
                     <button
                       type="button"
-                      className="btn btn--sm"
+                      className="btn btn--gold btn--sm"
                       disabled={busyId === o.id}
-                      onClick={() => void act(o.id, acceptOrder)}
+                      onClick={() => void act(o.id, serveOrder)}
                     >
-                      Acceptă
+                      Marchează servită
                     </button>
-                  ) : null}
-                  <button
-                    type="button"
-                    className="btn btn--gold btn--sm"
-                    disabled={busyId === o.id}
-                    onClick={() => void act(o.id, serveOrder)}
-                  >
-                    Marchează servită
-                  </button>
-                </div>
+                  </div>
+                )}
               </div>
             </article>
           ))}

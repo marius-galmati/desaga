@@ -185,6 +185,8 @@ export class AdminCatalogController {
   }
 
   // --- Tables + QR ---------------------------------------------------------
+  // Waiters read tables + clear them from the staff app; create/delete stay admin.
+  @Roles("tenant_admin", "manager", "waiter")
   @TsRestHandler(apiContract.admin.listTables)
   listTables(@Req() request: RequestWithPrincipal) {
     return tsRestHandler(apiContract.admin.listTables, async () => {
@@ -217,6 +219,7 @@ export class AdminCatalogController {
     });
   }
 
+  @Roles("tenant_admin", "manager", "waiter")
   @TsRestHandler(apiContract.admin.closeTable)
   closeTable(@Req() request: RequestWithPrincipal) {
     return tsRestHandler(apiContract.admin.closeTable, async ({ params }) => {
