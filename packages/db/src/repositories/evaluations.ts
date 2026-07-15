@@ -348,6 +348,9 @@ export async function getEvaluationById(trx: TenantTransaction, evaluationId: st
     .innerJoin("dish_version as dv", (join) =>
       join.onRef("dv.id", "=", "oi.dish_version_id").onRef("dv.tenant_id", "=", "oi.tenant_id"),
     )
+    .leftJoin("app_user as cu", (join) =>
+      join.onRef("cu.id", "=", "p.captured_by").onRef("cu.tenant_id", "=", "p.tenant_id"),
+    )
     .selectAll("e")
     .select([
       "p.storage_key as pass_photo_storage_key",
@@ -356,9 +359,26 @@ export async function getEvaluationById(trx: TenantTransaction, evaluationId: st
       "oi.dish_id",
       "oi.dish_version_id",
       "dv.name as dish_name",
+      "cu.full_name as captured_by_name",
     ])
     .where("e.id", "=", evaluationId)
     .executeTakeFirst();
+}
+
+/** Reference photos of a pinned reference set (as compared against), ordered. */
+export async function getReferencePhotosForSet(
+  trx: TenantTransaction,
+  tenantId: string,
+  referenceSetId: string,
+) {
+  return trx
+    .selectFrom("reference_photo")
+    .select(["storage_key", "sort_order"])
+    .where("tenant_id", "=", tenantId)
+    .where("reference_set_id", "=", referenceSetId)
+    .orderBy("sort_order")
+    .orderBy("id")
+    .execute();
 }
 
 // ---------------------------------------------------------------------------
@@ -401,6 +421,7 @@ export async function getCompletedEvaluationsForMetrics(
     ])
     .where("e.tenant_id", "=", tenantId)
     .where("e.status", "=", "completed")
+    .where("e.deleted_at", "is", null)
     .orderBy("e.created_at", "asc");
   if (since) {
     query = query.where("e.created_at", ">=", since);
@@ -418,10 +439,69 @@ export async function countNotScoreableEvaluations(
     .selectFrom("ai_evaluation as e")
     .select((eb) => eb.fn.count("e.id").as("n"))
     .where("e.tenant_id", "=", tenantId)
-    .where("e.status", "=", "not_scoreable");
+    .where("e.status", "=", "not_scoreable")
+    .where("e.deleted_at", "is", null);
   if (since) {
     query = query.where("e.created_at", ">=", since);
   }
   const row = await query.executeTakeFirst();
   return row ? Number(row.n) : 0;
+}
+
+/**
+ * Individual evaluations for one dish, newest first — the dashboard drill-down.
+ * Lightweight summary rows (no report projection); the full 6-criteria report is
+ * fetched per-evaluation on demand. Soft-deleted rows are excluded.
+ */
+export async function listEvaluationsForDish(
+  trx: TenantTransaction,
+  tenantId: string,
+  dishId: string,
+  limit = 100,
+) {
+  return trx
+    .selectFrom("ai_evaluation as e")
+    .innerJoin("pass_photo as p", (join) =>
+      join.onRef("p.id", "=", "e.pass_photo_id").onRef("p.tenant_id", "=", "e.tenant_id"),
+    )
+    .innerJoin("order_item as oi", (join) =>
+      join.onRef("oi.id", "=", "p.order_item_id").onRef("oi.tenant_id", "=", "p.tenant_id"),
+    )
+    .leftJoin("app_user as u", (join) =>
+      join.onRef("u.id", "=", "p.captured_by").onRef("u.tenant_id", "=", "p.tenant_id"),
+    )
+    .select([
+      "e.id as id",
+      "e.status as status",
+      "e.not_scoreable_reason as notScoreableReason",
+      "e.overall_score as overallScore",
+      "e.created_at as createdAt",
+      "u.full_name as capturedByName",
+    ])
+    .where("e.tenant_id", "=", tenantId)
+    .where("oi.dish_id", "=", dishId)
+    .where("e.deleted_at", "is", null)
+    .orderBy("e.created_at", "desc")
+    .limit(limit)
+    .execute();
+}
+
+/**
+ * Soft-delete one evaluation (dashboard). boca_app cannot hard-DELETE
+ * ai_evaluation (retention grant), so this stamps deleted_at via UPDATE; the row
+ * is kept but drops out of every reporting read. Returns false if already gone.
+ */
+export async function softDeleteEvaluation(
+  trx: TenantTransaction,
+  tenantId: string,
+  evaluationId: string,
+): Promise<boolean> {
+  const result = await trx
+    .updateTable("ai_evaluation")
+    .set({ deleted_at: new Date() })
+    .where("tenant_id", "=", tenantId)
+    .where("id", "=", evaluationId)
+    .where("deleted_at", "is", null)
+    .executeTakeFirst();
+  return result.numUpdatedRows > 0n;
 }

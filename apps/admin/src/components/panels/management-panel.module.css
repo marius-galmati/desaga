@@ -259,6 +259,151 @@
   display: block;
 }
 
+/* --- Expandable dish row (drill-down into individual evaluations) --- */
+.dishBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.caret {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 6px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+  transition: transform 0.16s var(--ease);
+}
+.caretOpen {
+  transform: rotate(90deg);
+}
+.dishBtn:hover .dishName {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.expandCell {
+  padding: 0 !important;
+  background: color-mix(in srgb, var(--paper-2) 45%, transparent);
+}
+.evalList {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 18px 12px;
+}
+.evalHint {
+  padding: 14px 4px;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+}
+.evalRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 6px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.evalRow:last-child {
+  border-bottom: none;
+}
+.evalWhen {
+  font-size: 0.9rem;
+  color: var(--ink);
+  min-width: 168px;
+}
+.evalWho {
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+  flex: 1;
+  min-width: 90px;
+}
+.evalScore {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+.evalActions {
+  display: inline-flex;
+  gap: 8px;
+  flex: none;
+}
+
+/* --- Evaluation report modal --- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: start center;
+  padding: clamp(16px, 4vw, 48px) 16px;
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--ink-surface) 62%, transparent);
+}
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  border: none;
+  background: transparent;
+  cursor: default;
+}
+.modal {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 760px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+}
+.modalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.modalTitle {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+}
+.modalMeta {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+.modalActions {
+  display: inline-flex;
+  gap: 8px;
+  flex: none;
+}
+.modalBody {
+  padding: 18px 20px 24px;
+}
+.modalLoading {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.btnDanger {
+  background: var(--vin);
+  color: var(--on-dark);
+}
+.btnDanger:hover {
+  background: var(--vin-deep);
+}
+
 /* --- 4 · Team coaching cards --- */
 .chefGrid {
   display: grid;

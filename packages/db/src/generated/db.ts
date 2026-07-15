@@ -79,6 +79,7 @@ export interface AiEvaluation {
   completed_at: Timestamp | null;
   created_at: Generated<Timestamp>;
   criterion_scores: Json | null;
+  deleted_at: Timestamp | null;
   ensemble_size: Generated<number>;
   failure_detail: string | null;
   id: Generated<string>;

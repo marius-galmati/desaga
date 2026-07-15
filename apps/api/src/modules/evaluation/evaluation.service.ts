@@ -49,6 +49,69 @@ export async function resolveLocationId(
   return locations[0]?.id;
 }
 
+/** Row from getEvaluationById (guaranteed non-null at the call site). */
+export type EvaluationRow = NonNullable<Awaited<ReturnType<typeof getEvaluationById>>>;
+
+/**
+ * DB row (from getEvaluationById) -> aiEvaluationSchema projection. The single
+ * source of truth for the AI-evaluation shape, reused by the staff/demo polling
+ * read and the admin dashboard drill-down so both stay in lockstep.
+ */
+export async function projectEvaluation(
+  trx: TenantTransaction,
+  row: EvaluationRow,
+): Promise<AiEvaluation> {
+  const referenceSetVersion = row.reference_set_id
+    ? ((
+        await trx
+          .selectFrom("reference_set")
+          .select(["version_no"])
+          .where("id", "=", row.reference_set_id)
+          .executeTakeFirst()
+      )?.version_no ?? null)
+    : null;
+  const toleranceVersion = row.tolerance_profile_id
+    ? ((
+        await trx
+          .selectFrom("tolerance_profile")
+          .select(["version_no"])
+          .where("id", "=", row.tolerance_profile_id)
+          .executeTakeFirst()
+      )?.version_no ?? null)
+    : null;
+
+  let report: AiEvaluation["report"] = null;
+  if (row.status === "completed") {
+    const criteria = criterionScoresSchema.parse(row.criterion_scores);
+    const rawEnsemble = rawEnsembleSchema.parse(row.raw_ensemble);
+    report = {
+      criteria,
+      overall: {
+        median: Number(row.overall_score),
+        lowAgreement: rawEnsemble.lowAgreement,
+      },
+      dishMismatch: rawEnsemble.dishMismatch,
+    };
+  }
+
+  return {
+    id: row.id,
+    status: row.status,
+    notScoreableReason: row.not_scoreable_reason,
+    report,
+    evalConfig: {
+      model: row.model_id,
+      promptVersion: row.prompt_version,
+      referenceSetVersion,
+      toleranceVersion,
+      preprocessingVersion: row.preprocessing_version,
+      ensembleSize: row.ensemble_size,
+    },
+    createdAt: row.created_at.toISOString(),
+    completedAt: row.completed_at ? row.completed_at.toISOString() : null,
+  };
+}
+
 @Injectable()
 export class EvaluationService {
   private readonly logger = new Logger(EvaluationService.name);
@@ -155,59 +218,7 @@ export class EvaluationService {
       if (!row) {
         return { ok: false as const, status: 404 as const, message: "evaluation not found" };
       }
-
-      const referenceSetVersion = row.reference_set_id
-        ? ((
-            await trx
-              .selectFrom("reference_set")
-              .select(["version_no"])
-              .where("id", "=", row.reference_set_id)
-              .executeTakeFirst()
-          )?.version_no ?? null)
-        : null;
-      const toleranceVersion = row.tolerance_profile_id
-        ? ((
-            await trx
-              .selectFrom("tolerance_profile")
-              .select(["version_no"])
-              .where("id", "=", row.tolerance_profile_id)
-              .executeTakeFirst()
-          )?.version_no ?? null)
-        : null;
-
-      let report: AiEvaluation["report"] = null;
-      if (row.status === "completed") {
-        const criteria = criterionScoresSchema.parse(row.criterion_scores);
-        const rawEnsemble = rawEnsembleSchema.parse(row.raw_ensemble);
-        report = {
-          criteria,
-          overall: {
-            median: Number(row.overall_score),
-            lowAgreement: rawEnsemble.lowAgreement,
-          },
-          dishMismatch: rawEnsemble.dishMismatch,
-        };
-      }
-
-      return {
-        ok: true as const,
-        value: {
-          id: row.id,
-          status: row.status,
-          notScoreableReason: row.not_scoreable_reason,
-          report,
-          evalConfig: {
-            model: row.model_id,
-            promptVersion: row.prompt_version,
-            referenceSetVersion,
-            toleranceVersion,
-            preprocessingVersion: row.preprocessing_version,
-            ensembleSize: row.ensemble_size,
-          },
-          createdAt: row.created_at.toISOString(),
-          completedAt: row.completed_at ? row.completed_at.toISOString() : null,
-        },
-      };
+      return { ok: true as const, value: await projectEvaluation(trx, row) };
     });
   }
 

@@ -804,6 +804,7 @@ CREATE TABLE ai_evaluation (
   created_at            timestamptz NOT NULL DEFAULT now(),
   completed_at          timestamptz,
   purge_after           timestamptz,                  -- retention hook: scores are LONG class
+  deleted_at            timestamptz,                  -- soft delete (dashboard); row kept for retention
   UNIQUE (tenant_id, id),
   CHECK ((status = 'not_scoreable') = (not_scoreable_reason IS NOT NULL)),
   -- Completed rows must be fully pinned and scored; failures must say why.
@@ -818,6 +819,7 @@ CREATE TABLE ai_evaluation (
 CREATE INDEX ix_ai_eval_tenant_photo ON ai_evaluation (tenant_id, pass_photo_id);
 CREATE INDEX ix_ai_eval_tenant_created ON ai_evaluation (tenant_id, created_at DESC);
 CREATE INDEX ix_ai_eval_queue ON ai_evaluation (status, created_at) WHERE status IN ('queued','running');
+CREATE INDEX ix_ai_eval_tenant_live ON ai_evaluation (tenant_id, created_at DESC) WHERE deleted_at IS NULL;
 
 -- ----------------------------------------------------------------------------
 -- 9. CHEF ATTRIBUTION

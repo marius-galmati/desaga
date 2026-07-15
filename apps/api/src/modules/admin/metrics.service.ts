@@ -1,11 +1,22 @@
-import type { ManagementMetrics, MetricsPeriod } from "@boca/contracts";
+import type {
+  DishEvaluationSummary,
+  EvaluationDetail,
+  ManagementMetrics,
+  MetricsPeriod,
+} from "@boca/contracts";
 import {
   countNotScoreableEvaluations,
   getCompletedEvaluationsForMetrics,
+  getEvaluationById,
+  getReferencePhotosForSet,
+  listEvaluationsForDish,
+  softDeleteEvaluation,
   withTenant,
 } from "@boca/db";
 import { Injectable } from "@nestjs/common";
 import type { Principal } from "../../common/principal";
+import { projectEvaluation, type ServiceResult } from "../evaluation/evaluation.service";
+import { StorageService } from "../storage/storage.service";
 import { parseBilingual } from "./admin.helpers";
 
 // A dish scoring below this median is flagged "sub prag" — mirrors the report
@@ -49,6 +60,8 @@ function stdDev(values: number[]): number {
 
 @Injectable()
 export class MetricsService {
+  constructor(private readonly storage: StorageService) {}
+
   async getMetrics(principal: Principal, period: MetricsPeriod): Promise<ManagementMetrics> {
     const since = period === "all" ? undefined : new Date(Date.now() - PERIOD_MS[period]);
 
@@ -127,6 +140,72 @@ export class MetricsService {
         dishes,
         staff,
       };
+    });
+  }
+
+  /** Drill-down: the individual evaluations of one dish, newest first. */
+  async listDishEvaluations(
+    principal: Principal,
+    dishId: string,
+  ): Promise<DishEvaluationSummary[]> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const rows = await listEvaluationsForDish(trx, principal.tenantId, dishId);
+      return rows.map((r) => ({
+        id: r.id,
+        status: r.status,
+        notScoreableReason: r.notScoreableReason,
+        overallMedian:
+          r.status === "completed" && r.overallScore !== null ? Number(r.overallScore) : null,
+        capturedByName: r.capturedByName,
+        createdAt: r.createdAt.toISOString(),
+      }));
+    });
+  }
+
+  /** Full 6-criteria report for one evaluation, exactly as scored, with photos. */
+  async getEvaluationDetail(
+    principal: Principal,
+    evaluationId: string,
+  ): Promise<ServiceResult<EvaluationDetail>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const row = await getEvaluationById(trx, evaluationId);
+      if (!row || row.deleted_at) {
+        return { ok: false as const, status: 404 as const, message: "evaluation not found" };
+      }
+      const evaluation = await projectEvaluation(trx, row);
+      const candidateUrl = row.pass_photo_storage_key
+        ? await this.storage.getSignedUrl(row.pass_photo_storage_key)
+        : null;
+      const refPhotos = row.reference_set_id
+        ? await getReferencePhotosForSet(trx, principal.tenantId, row.reference_set_id)
+        : [];
+      const referenceUrls = await Promise.all(
+        refPhotos.map((p) => this.storage.getSignedUrl(p.storage_key)),
+      );
+      return {
+        ok: true as const,
+        value: {
+          evaluation,
+          dishName: parseBilingual(row.dish_name),
+          capturedByName: row.captured_by_name,
+          candidateUrl,
+          referenceUrls,
+        },
+      };
+    });
+  }
+
+  /** Soft-delete an evaluation (kept for retention, dropped from reports). */
+  async deleteEvaluation(
+    principal: Principal,
+    evaluationId: string,
+  ): Promise<ServiceResult<{ ok: true }>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const deleted = await softDeleteEvaluation(trx, principal.tenantId, evaluationId);
+      if (!deleted) {
+        return { ok: false as const, status: 404 as const, message: "evaluation not found" };
+      }
+      return { ok: true as const, value: { ok: true as const } };
     });
   }
 }

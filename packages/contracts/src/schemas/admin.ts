@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { bilingualTextSchema, moneyMinorSchema, uuidSchema, vatRateBpSchema } from "./common";
 import {
+  evalStatusSchema,
+  notScoreableReasonSchema,
   orderStatusSchema,
   referencePhotoRoleSchema,
   referenceSetStatusSchema,
   serviceRequestKindSchema,
   userRoleSchema,
 } from "./enums";
+import { aiEvaluationSchema } from "./evaluation";
 
 // Tenant-admin backend contract (real, non-demo). Every route lives under
 // apiContract.admin and is guarded by tenant_admin/manager (user-create is
@@ -438,3 +441,27 @@ export const managementMetricsSchema = z.object({
   staff: z.array(managementStaffStatSchema),
 });
 export type ManagementMetrics = z.infer<typeof managementMetricsSchema>;
+
+// Drill-down: one evaluation of a dish (summary row in the dashboard list).
+export const dishEvaluationSummarySchema = z.object({
+  id: uuidSchema,
+  status: evalStatusSchema,
+  notScoreableReason: notScoreableReasonSchema.nullable(),
+  overallMedian: z.number().nullable(), // null unless completed
+  capturedByName: z.string().nullable(),
+  createdAt: isoDateTimeSchema,
+});
+export type DishEvaluationSummary = z.infer<typeof dishEvaluationSummarySchema>;
+
+export const dishEvaluationListSchema = z.array(dishEvaluationSummarySchema);
+
+// Full evaluation detail: the exact 6-criteria report as scored, plus the
+// candidate photo and the reference set it was compared against.
+export const evaluationDetailSchema = z.object({
+  evaluation: aiEvaluationSchema,
+  dishName: bilingualTextSchema,
+  capturedByName: z.string().nullable(),
+  candidateUrl: signedUrlSchema.nullable(),
+  referenceUrls: z.array(signedUrlSchema),
+});
+export type EvaluationDetail = z.infer<typeof evaluationDetailSchema>;

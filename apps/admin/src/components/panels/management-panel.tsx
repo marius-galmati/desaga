@@ -1,11 +1,44 @@
 "use client";
 
-import type { ManagementDishStat, ManagementMetrics, MetricsPeriod } from "@boca/contracts";
-import { useCallback, useEffect, useState } from "react";
+import type {
+  DishEvaluationSummary,
+  EvaluationDetail,
+  ManagementDishStat,
+  ManagementMetrics,
+  MetricsPeriod,
+} from "@boca/contracts";
+import { Fragment, useCallback, useEffect, useState } from "react";
+import { ReportView } from "@/components/report-view";
 import { Seal } from "@/design/emblem";
-import { getMetrics } from "@/lib/api";
+import { deleteEvaluation, getEvaluationDetail, getMetrics, listDishEvaluations } from "@/lib/api";
 import { formatMedian, type Tone, verdictForMedian } from "@/lib/report";
 import styles from "./management-panel.module.css";
+
+/** ISO datetime -> "15 iul. 2026, 14:32" (Cluj locale, best-effort). */
+function formatDateTime(iso: string): string {
+  try {
+    return new Date(iso).toLocaleString("ro-RO", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return iso;
+  }
+}
+
+/** Score / status chip for one evaluation summary row. */
+function evalStatusView(e: DishEvaluationSummary): { text: string; color: string } {
+  if (e.status === "completed" && e.overallMedian !== null) {
+    const v = verdictForMedian(e.overallMedian);
+    return { text: `${formatMedian(e.overallMedian)} / 5`, color: TONE_VAR[v.tone] };
+  }
+  if (e.status === "not_scoreable") return { text: "neevaluabil", color: "var(--ochre)" };
+  if (e.status === "eval_failed") return { text: "eșuat", color: "var(--vin)" };
+  return { text: "în lucru", color: "var(--ink-faint)" };
+}
 
 const PERIODS: { key: MetricsPeriod; label: string }[] = [
   { key: "day", label: "Zi" },
@@ -125,6 +158,14 @@ export function ManagementPanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Drill-down state: the expanded dish, its evaluations, and the open report.
+  const [expandedDishId, setExpandedDishId] = useState<string | null>(null);
+  const [evals, setEvals] = useState<DishEvaluationSummary[] | null>(null);
+  const [evalsLoading, setEvalsLoading] = useState(false);
+  const [detail, setDetail] = useState<EvaluationDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
   const load = useCallback(async (p: MetricsPeriod) => {
     setLoading(true);
     try {
@@ -138,8 +179,63 @@ export function ManagementPanel() {
   }, []);
 
   useEffect(() => {
+    // Switching period reloads the aggregates and invalidates any open drill-down.
+    setExpandedDishId(null);
+    setEvals(null);
     void load(period);
   }, [load, period]);
+
+  const loadEvals = useCallback(async (dishId: string) => {
+    setEvalsLoading(true);
+    try {
+      setEvals(await listDishEvaluations(dishId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nu am putut încărca evaluările.");
+      setEvals([]);
+    } finally {
+      setEvalsLoading(false);
+    }
+  }, []);
+
+  async function toggleDish(dishId: string) {
+    if (expandedDishId === dishId) {
+      setExpandedDishId(null);
+      setEvals(null);
+      return;
+    }
+    setExpandedDishId(dishId);
+    setEvals(null);
+    await loadEvals(dishId);
+  }
+
+  async function openDetail(id: string) {
+    setDetailLoading(true);
+    try {
+      setDetail(await getEvaluationDetail(id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nu am putut deschide evaluarea.");
+    } finally {
+      setDetailLoading(false);
+    }
+  }
+
+  async function removeEvaluation(id: string) {
+    if (!window.confirm("Ștergi această evaluare? Nu va mai fi luată în calcul în raport.")) {
+      return;
+    }
+    setBusyId(id);
+    setError(null);
+    try {
+      await deleteEvaluation(id);
+      setDetail(null);
+      if (expandedDishId) await loadEvals(expandedDishId);
+      await load(period);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nu am putut șterge evaluarea.");
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   const dishes: ManagementDishStat[] = metrics?.dishes ?? [];
   const alerts = metrics ? deriveAlerts(metrics) : [];
@@ -298,7 +394,8 @@ export function ManagementPanel() {
                 <h2>Conformitatea montajului pe preparate</h2>
               </div>
               <p className={styles.sectionNote}>
-                Mediana scorurilor AI pe fiecare preparat, cu dispersia și mărimea eșantionului.
+                Mediana scorurilor AI pe fiecare preparat. Deschide un preparat pentru evaluările
+                individuale și raportul pe cele 6 criterii.
               </p>
             </div>
             {dishes.length === 0 ? (
@@ -326,42 +423,109 @@ export function ManagementPanel() {
                         const trendCls =
                           d.trend > 0.05 ? styles.up : d.trend < -0.05 ? styles.down : styles.flat;
                         const trendArrow = d.trend > 0.05 ? "▲" : d.trend < -0.05 ? "▼" : "—";
+                        const open = expandedDishId === d.dishId;
                         return (
-                          <tr key={d.dishId} className={under ? styles.rowFlag : undefined}>
-                            <td>
-                              <span className={styles.dishName}>{d.name.ro}</span>
-                              {under ? (
-                                <span className={`chip chip--vin ${styles.dishFlag}`}>
-                                  sub prag
+                          <Fragment key={d.dishId}>
+                            <tr className={under ? styles.rowFlag : undefined}>
+                              <td>
+                                <button
+                                  type="button"
+                                  className={styles.dishBtn}
+                                  aria-expanded={open}
+                                  onClick={() => void toggleDish(d.dishId)}
+                                >
+                                  <span
+                                    className={`${styles.caret} ${open ? styles.caretOpen : ""}`}
+                                  >
+                                    ▶
+                                  </span>
+                                  <span className={styles.dishName}>{d.name.ro}</span>
+                                </button>
+                                {under ? (
+                                  <span className={`chip chip--vin ${styles.dishFlag}`}>
+                                    sub prag
+                                  </span>
+                                ) : null}
+                              </td>
+                              <td className={styles.tdNum}>
+                                <span className={styles.medianCell}>
+                                  <span
+                                    className={styles.dot}
+                                    style={{ "--tone": tone } as React.CSSProperties}
+                                  />
+                                  <span className={`${styles.medianVal} tabular`}>
+                                    {formatMedian(d.median)}
+                                  </span>
                                 </span>
-                              ) : null}
-                            </td>
-                            <td className={styles.tdNum}>
-                              <span className={styles.medianCell}>
-                                <span
-                                  className={styles.dot}
-                                  style={{ "--tone": tone } as React.CSSProperties}
-                                />
-                                <span className={`${styles.medianVal} tabular`}>
-                                  {formatMedian(d.median)}
+                              </td>
+                              <td className={`${styles.tdNum} tabular muted`}>
+                                ±{formatMedian(d.dispersion)}
+                              </td>
+                              <td className={styles.tdNum}>
+                                <span className={styles.sample}>{d.sample} farfurii</span>
+                              </td>
+                              <td className={styles.tdNum}>
+                                <span className={styles.trendCell}>
+                                  <span className={`${trendCls} ${styles.trendArrow} tabular`}>
+                                    {trendArrow}
+                                  </span>
+                                  <Sparkline points={d.spark} tone={tone} width={110} height={30} />
                                 </span>
-                              </span>
-                            </td>
-                            <td className={`${styles.tdNum} tabular muted`}>
-                              ±{formatMedian(d.dispersion)}
-                            </td>
-                            <td className={styles.tdNum}>
-                              <span className={styles.sample}>{d.sample} farfurii</span>
-                            </td>
-                            <td className={styles.tdNum}>
-                              <span className={styles.trendCell}>
-                                <span className={`${trendCls} ${styles.trendArrow} tabular`}>
-                                  {trendArrow}
-                                </span>
-                                <Sparkline points={d.spark} tone={tone} width={110} height={30} />
-                              </span>
-                            </td>
-                          </tr>
+                              </td>
+                            </tr>
+                            {open ? (
+                              <tr>
+                                <td className={styles.expandCell} colSpan={5}>
+                                  <div className={styles.evalList}>
+                                    {evalsLoading ? (
+                                      <p className={styles.evalHint}>Se încarcă evaluările…</p>
+                                    ) : !evals || evals.length === 0 ? (
+                                      <p className={styles.evalHint}>
+                                        Nicio evaluare pentru acest preparat în interval.
+                                      </p>
+                                    ) : (
+                                      evals.map((ev) => {
+                                        const sv = evalStatusView(ev);
+                                        return (
+                                          <div key={ev.id} className={styles.evalRow}>
+                                            <span className={styles.evalWhen}>
+                                              {formatDateTime(ev.createdAt)}
+                                            </span>
+                                            <span className={styles.evalWho}>
+                                              {ev.capturedByName ?? "—"}
+                                            </span>
+                                            <span
+                                              className={`${styles.evalScore} tabular`}
+                                              style={{ color: sv.color }}
+                                            >
+                                              {sv.text}
+                                            </span>
+                                            <span className={styles.evalActions}>
+                                              <button
+                                                type="button"
+                                                className="btn btn--ghost btn--sm"
+                                                onClick={() => void openDetail(ev.id)}
+                                              >
+                                                Vezi raportul
+                                              </button>
+                                              <button
+                                                type="button"
+                                                className="btn btn--ghost btn--sm"
+                                                disabled={busyId === ev.id}
+                                                onClick={() => void removeEvaluation(ev.id)}
+                                              >
+                                                Șterge
+                                              </button>
+                                            </span>
+                                          </div>
+                                        );
+                                      })
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : null}
+                          </Fragment>
                         );
                       })}
                     </tbody>
@@ -421,6 +585,65 @@ export function ManagementPanel() {
             </section>
           ) : null}
         </>
+      ) : null}
+
+      {/* Evaluation report modal (drill-down detail) */}
+      {detail || detailLoading ? (
+        <div className={styles.modalOverlay} role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Închide raportul"
+            className={styles.modalBackdrop}
+            onClick={() => setDetail(null)}
+          />
+          <div className={styles.modal}>
+            <div className={styles.modalHead}>
+              <div>
+                <div className={styles.modalTitle}>{detail ? detail.dishName.ro : "Raport"}</div>
+                {detail ? (
+                  <div className={styles.modalMeta}>
+                    {formatDateTime(detail.evaluation.createdAt)}
+                    {detail.capturedByName ? ` · ${detail.capturedByName}` : ""}
+                  </div>
+                ) : null}
+              </div>
+              <div className={styles.modalActions}>
+                {detail ? (
+                  <button
+                    type="button"
+                    className={`btn btn--sm ${styles.btnDanger}`}
+                    disabled={busyId === detail.evaluation.id}
+                    onClick={() => void removeEvaluation(detail.evaluation.id)}
+                  >
+                    Șterge evaluarea
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--sm"
+                  onClick={() => setDetail(null)}
+                >
+                  Închide
+                </button>
+              </div>
+            </div>
+            <div className={styles.modalBody}>
+              {detailLoading || !detail ? (
+                <div className={styles.modalLoading}>Se încarcă raportul…</div>
+              ) : (
+                <ReportView
+                  evaluation={detail.evaluation}
+                  dishName={detail.dishName.ro}
+                  candidateUrl={detail.candidateUrl}
+                  referenceUrls={detail.referenceUrls}
+                  onRetry={() => setDetail(null)}
+                  onNewCandidate={() => setDetail(null)}
+                  readOnly
+                />
+              )}
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );

@@ -24,17 +24,17 @@ import {
   type AiEvaluation,
   type AttachReferencesRequest,
   adminAllergenListSchema,
-  adminOrderListSchema,
-  adminTableListSchema,
-  adminTableSchema,
   adminCategoryListSchema,
   adminCategorySchema,
   adminDishDetailSchema,
   adminDishListSchema,
   adminMediaListSchema,
+  adminOrderListSchema,
   adminSettingsSchema,
   adminStationListSchema,
   adminStationSchema,
+  adminTableListSchema,
+  adminTableSchema,
   adminUserListSchema,
   adminUserSchema,
   aiEvaluationSchema,
@@ -52,12 +52,16 @@ import {
   createEvaluationResponseSchema,
   type DemoDish,
   type DishAvailabilityEntry,
+  type DishEvaluationSummary,
   demoDishListSchema,
   dishAvailabilityEntrySchema,
+  dishEvaluationListSchema,
+  type EvaluationDetail,
+  evaluationDetailSchema,
   type ManagementMetrics,
+  MEDIA_UPLOAD_FILE_FIELD,
   type MetricsPeriod,
   managementMetricsSchema,
-  MEDIA_UPLOAD_FILE_FIELD,
   type PutToleranceRequest,
   type ReferenceSetDetail,
   type ReferenceSetSummary,
@@ -358,6 +362,22 @@ export function getMetrics(period: MetricsPeriod = "month"): Promise<ManagementM
   return requestJson(`/admin/metrics?period=${period}`, { method: "GET" }, (p) =>
     managementMetricsSchema.parse(p),
   );
+}
+
+export function listDishEvaluations(dishId: string): Promise<DishEvaluationSummary[]> {
+  return requestJson(`/admin/dishes/${dishId}/evaluations`, { method: "GET" }, (p) =>
+    dishEvaluationListSchema.parse(p),
+  );
+}
+
+export function getEvaluationDetail(id: string): Promise<EvaluationDetail> {
+  return requestJson(`/admin/evaluations/${id}`, { method: "GET" }, (p) =>
+    evaluationDetailSchema.parse(p),
+  );
+}
+
+export function deleteEvaluation(id: string): Promise<void> {
+  return requestJson(`/admin/evaluations/${id}`, jsonInit("DELETE", {}), () => undefined);
 }
 
 // --- Settings --------------------------------------------------------------

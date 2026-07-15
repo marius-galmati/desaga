@@ -21,4 +21,37 @@ export class AdminMetricsController {
       return { status: 200 as const, body: data };
     });
   }
+
+  @TsRestHandler(apiContract.admin.listDishEvaluations)
+  listDishEvaluations(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.listDishEvaluations, async ({ params }) => {
+      const principal = requirePrincipal(request);
+      const data = await this.metrics.listDishEvaluations(principal, params.id);
+      return { status: 200 as const, body: data };
+    });
+  }
+
+  @TsRestHandler(apiContract.admin.getEvaluationDetail)
+  getEvaluationDetail(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.getEvaluationDetail, async ({ params }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.metrics.getEvaluationDetail(principal, params.id);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 200 as const, body: result.value };
+    });
+  }
+
+  @TsRestHandler(apiContract.admin.deleteEvaluation)
+  deleteEvaluation(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.deleteEvaluation, async ({ params }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.metrics.deleteEvaluation(principal, params.id);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 200 as const, body: result.value };
+    });
+  }
 }

@@ -19,6 +19,9 @@ interface ReportViewProps {
   referenceUrls: string[];
   onRetry: () => void;
   onNewCandidate: () => void;
+  // Historical view (management dashboard): show the report exactly as scored,
+  // but hide the capture-flow actions (retry / new photo) that don't apply.
+  readOnly?: boolean;
 }
 
 /** The conformity report — the screen the owner judges the product by. */
@@ -29,6 +32,7 @@ export function ReportView({
   referenceUrls,
   onRetry,
   onNewCandidate,
+  readOnly = false,
 }: ReportViewProps) {
   if (evaluation.status === "eval_failed") {
     return (
@@ -36,14 +40,16 @@ export function ReportView({
         <p className="eyebrow">Evaluare nereușită</p>
         <h2 className={styles.stateTitle}>A intervenit o eroare tehnică</h2>
         <p className={styles.stateBody}>{EVAL_FAILED_MESSAGE}</p>
-        <div className={styles.stateActions}>
-          <button type="button" className="btn btn-primary" onClick={onRetry}>
-            Reia evaluarea
-          </button>
-          <button type="button" className="btn" onClick={onNewCandidate}>
-            Altă fotografie
-          </button>
-        </div>
+        {readOnly ? null : (
+          <div className={styles.stateActions}>
+            <button type="button" className="btn btn-primary" onClick={onRetry}>
+              Reia evaluarea
+            </button>
+            <button type="button" className="btn" onClick={onNewCandidate}>
+              Altă fotografie
+            </button>
+          </div>
+        )}
       </section>
     );
   }
@@ -57,11 +63,13 @@ export function ReportView({
         <p className="eyebrow">Neevaluabil</p>
         <h2 className={styles.stateTitle}>Fotografia nu a putut fi evaluată</h2>
         <p className={styles.stateBody}>{reason}</p>
-        <div className={styles.stateActions}>
-          <button type="button" className="btn btn-primary" onClick={onNewCandidate}>
-            Încearcă altă fotografie
-          </button>
-        </div>
+        {readOnly ? null : (
+          <div className={styles.stateActions}>
+            <button type="button" className="btn btn-primary" onClick={onNewCandidate}>
+              Încearcă altă fotografie
+            </button>
+          </div>
+        )}
       </section>
     );
   }
@@ -77,6 +85,7 @@ export function ReportView({
       candidateUrl={candidateUrl}
       referenceUrls={referenceUrls}
       onNewCandidate={onNewCandidate}
+      readOnly={readOnly}
     />
   );
 }
@@ -89,6 +98,7 @@ function CompletedReport({
   candidateUrl,
   referenceUrls,
   onNewCandidate,
+  readOnly,
 }: {
   report: EvaluationReport;
   model: string;
@@ -97,6 +107,7 @@ function CompletedReport({
   candidateUrl: string | null;
   referenceUrls: string[];
   onNewCandidate: () => void;
+  readOnly: boolean;
 }) {
   const verdict = verdictForMedian(report.overall.median);
 
@@ -181,9 +192,11 @@ function CompletedReport({
         <p className={styles.provenance}>
           Scor median din {ensembleSize} rulări independente · model {model}
         </p>
-        <button type="button" className="btn" onClick={onNewCandidate}>
-          Evaluează altă farfurie
-        </button>
+        {readOnly ? null : (
+          <button type="button" className="btn" onClick={onNewCandidate}>
+            Evaluează altă farfurie
+          </button>
+        )}
       </footer>
     </div>
   );
