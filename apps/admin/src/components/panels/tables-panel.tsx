@@ -1,12 +1,20 @@
 "use client";
 
 import type { AdminTable } from "@boca/contracts";
-import { type FormEvent, useEffect, useState } from "react";
+import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { closeTable, createTable, deleteTable, listTables } from "@/lib/api";
 import styles from "./panels.module.css";
 
 // Baked at build (compose passes NEXT_PUBLIC_GUEST_ORIGIN = the guest host).
 const GUEST_ORIGIN = process.env.NEXT_PUBLIC_GUEST_ORIGIN || "";
+
+function escapeHtml(s: string): string {
+  return s.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c,
+  );
+}
 
 export function TablesPanel() {
   const [tables, setTables] = useState<AdminTable[]>([]);
@@ -16,6 +24,9 @@ export function TablesPanel() {
   const [seats, setSeats] = useState("");
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [qrTable, setQrTable] = useState<AdminTable | null>(null);
+  // Hi-res canvas mirror of the shown QR — the source for download + print.
+  const qrCanvasRef = useRef<HTMLCanvasElement>(null);
 
   async function refresh() {
     setTables(await listTables());
@@ -87,6 +98,33 @@ export function TablesPanel() {
     } catch {
       /* clipboard blocked — user can select the text manually */
     }
+  }
+
+  function downloadQr() {
+    const canvas = qrCanvasRef.current;
+    if (!canvas || !qrTable) return;
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = `qr-${qrTable.label.replace(/\s+/g, "-").toLowerCase()}.png`;
+    link.click();
+  }
+
+  function printQr() {
+    const canvas = qrCanvasRef.current;
+    if (!canvas || !qrTable?.qrSlug) return;
+    const dataUrl = canvas.toDataURL("image/png");
+    const win = window.open("", "_blank", "width=420,height=600");
+    if (!win) return; // popup blocked — the on-screen QR + download still work
+    win.document.write(
+      `<!doctype html><html><head><meta charset="utf-8"><title>QR ${escapeHtml(qrTable.label)}</title></head>` +
+        `<body style="margin:0;padding:36px;text-align:center;font-family:system-ui,sans-serif;color:#241c15">` +
+        `<h2 style="font-family:Georgia,serif;font-weight:500;margin:0 0 6px">${escapeHtml(qrTable.label)}</h2>` +
+        `<p style="margin:0 0 22px;color:#8a795f;font-size:13px">Scanează pentru a comanda de la masă</p>` +
+        `<img src="${dataUrl}" alt="" style="width:300px;height:300px"/>` +
+        `<p style="margin:20px 0 0;color:#8a795f;font-size:11px;word-break:break-all">${escapeHtml(tableUrl(qrTable.qrSlug))}</p>` +
+        `<script>window.onload=function(){window.focus();window.print();}</script></body></html>`,
+    );
+    win.document.close();
   }
 
   return (
@@ -186,6 +224,15 @@ export function TablesPanel() {
                       {t.qrSlug ? (
                         <button
                           type="button"
+                          className="btn btn--gold btn--sm"
+                          onClick={() => setQrTable(t)}
+                        >
+                          Cod QR
+                        </button>
+                      ) : null}
+                      {t.qrSlug ? (
+                        <button
+                          type="button"
                           className="btn btn--ghost btn--sm"
                           onClick={() => copy(t.qrSlug ?? "")}
                         >
@@ -206,10 +253,59 @@ export function TablesPanel() {
             </tbody>
           </table>
           <p className="faint" style={{ marginTop: 12, fontSize: "0.84rem" }}>
-            Generează un cod QR din fiecare link (orice generator QR) și tipărește-l pentru masă.
+            Apasă „Cod QR” la orice masă ca să vezi codul, apoi tipărește-l sau descarcă-l pentru
+            masă.
           </p>
         </div>
       )}
+
+      {qrTable?.qrSlug ? (
+        <div className={styles.qrOverlay} role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Închide"
+            className={styles.backdrop}
+            onClick={() => setQrTable(null)}
+          />
+          <div className={styles.qrCard}>
+            <div className={styles.qrHead}>
+              <div>
+                <div className={styles.qrTitle}>{qrTable.label}</div>
+                <div className={styles.qrSub}>Scanează pentru a comanda de la masă</div>
+              </div>
+              <button
+                type="button"
+                className={styles.closeBtn}
+                onClick={() => setQrTable(null)}
+                aria-label="Închide"
+              >
+                ✕
+              </button>
+            </div>
+            <div className={styles.qrFrame}>
+              <QRCodeSVG value={tableUrl(qrTable.qrSlug)} size={220} level="M" marginSize={2} />
+            </div>
+            <p className={styles.qrLink}>{tableUrl(qrTable.qrSlug)}</p>
+            <div className={styles.qrActions}>
+              <button type="button" className="btn btn--gold btn--sm" onClick={printQr}>
+                Printează
+              </button>
+              <button type="button" className="btn btn--ghost btn--sm" onClick={downloadQr}>
+                Descarcă PNG
+              </button>
+            </div>
+            {/* Hi-res off-screen mirror used as the print/download source. */}
+            <QRCodeCanvas
+              ref={qrCanvasRef}
+              value={tableUrl(qrTable.qrSlug)}
+              size={1024}
+              level="M"
+              marginSize={2}
+              style={{ display: "none" }}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

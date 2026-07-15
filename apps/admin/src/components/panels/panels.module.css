@@ -746,3 +746,63 @@
   font-size: 0.86rem;
   color: var(--ink-faint);
 }
+
+/* --- QR code modal (per table) --- */
+.qrOverlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 55;
+}
+.qrCard {
+  position: relative;
+  z-index: 1;
+  width: min(360px, 100%);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lift);
+  padding: 22px 24px 24px;
+  text-align: center;
+}
+.qrHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.qrTitle {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.qrSub {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-top: 3px;
+}
+.qrFrame {
+  display: inline-flex;
+  padding: 16px;
+  background: #fff;
+  border-radius: var(--r);
+  border: 1px solid var(--line-soft);
+}
+.qrLink {
+  margin: 14px 0 18px;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  word-break: break-all;
+  line-height: 1.4;
+}
+.qrActions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
