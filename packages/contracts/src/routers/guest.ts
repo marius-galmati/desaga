@@ -6,6 +6,7 @@ import {
   guestOrderListSchema,
   guestOrderSchema,
   guestSessionSchema,
+  guestTablesSchema,
   okResultSchema,
   placeOrderRequestSchema,
   serviceRequestBodySchema,
@@ -24,6 +25,13 @@ export const guestContract = c.router({
     pathParams: z.object({ tenantSlug: z.string().min(1) }),
     summary: "Public menu for a tenant (no auth): categories + available dishes",
     responses: { 200: guestMenuSchema, 404: apiErrorSchema },
+  },
+  getTables: {
+    method: "GET",
+    path: "/guest/:tenantSlug/tables",
+    pathParams: z.object({ tenantSlug: z.string().min(1) }),
+    summary: "Tables + active QR slug (table picker when no physical QR yet)",
+    responses: { 200: guestTablesSchema, 404: apiErrorSchema },
   },
 
   // Open (or join) a table's shared session from a scanned QR slug. Returns the

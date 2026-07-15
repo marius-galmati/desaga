@@ -29,6 +29,13 @@ export const guestMenuSchema = z.object({
 });
 export type GuestMenu = z.infer<typeof guestMenuSchema>;
 
+// Tables + their active QR slug — lets the guest app offer a table picker when
+// there is no physical QR yet (demo/soft-launch). The order flow lives at
+// /t/{qrSlug}.
+export const guestTableSchema = z.object({ label: z.string(), qrSlug: z.string() });
+export type GuestTable = z.infer<typeof guestTableSchema>;
+export const guestTablesSchema = z.array(guestTableSchema);
+
 // --- Ordering (Phase 2) ----------------------------------------------------
 
 // A table session opened (or joined) from a QR scan. `token` is the raw device

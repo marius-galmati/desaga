@@ -4,6 +4,7 @@ import type {
   GuestMenuDish,
   GuestOrder,
   GuestSession,
+  GuestTable,
   PlaceOrderRequest,
   ServiceRequestKind,
 } from "@boca/contracts";
@@ -133,6 +134,28 @@ export class GuestService {
           // Drop empty categories so the guest never sees a bare heading.
           .filter((cat) => cat.dishes.length > 0),
       };
+    });
+  }
+
+  /** Tables + their active QR slug, for the table picker (no physical QR yet). */
+  async getTables(tenantSlug: string): Promise<GuestTable[] | null> {
+    const tenantId = await resolveTenantIdBySlug(tenantSlug);
+    if (!tenantId) {
+      return null;
+    }
+    return withTenant(tenantId, async (trx) => {
+      const rows = await trx
+        .selectFrom("dining_table as dt")
+        .innerJoin("table_qr_slug as q", (join) =>
+          join.onRef("q.dining_table_id", "=", "dt.id").onRef("q.tenant_id", "=", "dt.tenant_id"),
+        )
+        .select(["dt.label", "q.slug"])
+        .where("dt.tenant_id", "=", tenantId)
+        .where("dt.archived_at", "is", null)
+        .where("q.revoked_at", "is", null)
+        .orderBy("dt.label")
+        .execute();
+      return rows.map((r) => ({ label: r.label, qrSlug: r.slug }));
     });
   }
 

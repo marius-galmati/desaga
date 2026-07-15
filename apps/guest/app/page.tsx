@@ -1,10 +1,10 @@
 "use client";
 
-import type { GuestMenu } from "@boca/contracts";
+import type { GuestMenu, GuestTable } from "@boca/contracts";
 import { useEffect, useMemo, useState } from "react";
 import { BRAND } from "@/lib/brand";
 import { Emblem } from "@/lib/emblem";
-import { fetchMenu, formatLei } from "@/lib/menu";
+import { fetchMenu, fetchTables, formatLei } from "@/lib/menu";
 import styles from "./page.module.css";
 
 type Lang = "ro" | "en";
@@ -35,6 +35,7 @@ const UI = {
 
 export default function GuestMenuPage() {
   const [menu, setMenu] = useState<GuestMenu | null>(null);
+  const [tables, setTables] = useState<GuestTable[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [lang, setLang] = useState<Lang>("ro");
 
@@ -46,6 +47,13 @@ export default function GuestMenuPage() {
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : "Eroare necunoscută.");
+      });
+    fetchTables()
+      .then((tt) => {
+        if (!cancelled) setTables(tt);
+      })
+      .catch(() => {
+        /* table picker is optional */
       });
     return () => {
       cancelled = true;
@@ -85,6 +93,28 @@ export default function GuestMenuPage() {
         <h1>{BRAND.full}</h1>
         <p>{BRAND.promise}</p>
       </section>
+
+      {tables.length > 0 ? (
+        <section className={styles.order}>
+          <div className={styles.orderCard}>
+            <div>
+              <span className="eyebrow eyebrow--ink">Comandă de la masă</span>
+              <h2>Ești la o masă?</h2>
+              <p>
+                Scanează codul QR de pe masă — sau alege masa mai jos — ca să comanzi și să chemi
+                ospătarul direct din telefon.
+              </p>
+            </div>
+            <div className={styles.tableChips}>
+              {tables.map((tb) => (
+                <a key={tb.qrSlug} href={`/t/${tb.qrSlug}`} className={styles.tableChip}>
+                  {tb.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {error ? (
         <p className={styles.state} role="alert">

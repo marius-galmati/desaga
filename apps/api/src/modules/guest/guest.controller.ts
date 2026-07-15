@@ -29,6 +29,18 @@ export class GuestController {
   }
 
   @Public()
+  @TsRestHandler(apiContract.guest.getTables)
+  getTables() {
+    return tsRestHandler(apiContract.guest.getTables, async ({ params }) => {
+      const tables = await this.guest.getTables(params.tenantSlug);
+      if (!tables) {
+        return { status: 404 as const, body: { message: "tenant not found" } };
+      }
+      return { status: 200 as const, body: tables };
+    });
+  }
+
+  @Public()
   @TsRestHandler(apiContract.guest.startSession)
   startSession() {
     return tsRestHandler(apiContract.guest.startSession, async ({ body }) => {
