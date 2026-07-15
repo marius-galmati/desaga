@@ -231,4 +231,27 @@ export class AdminCatalogController {
       return { status: 200 as const, body: result.value };
     });
   }
+
+  // --- Service requests ----------------------------------------------------
+  @Roles("tenant_admin", "manager", "waiter")
+  @TsRestHandler(apiContract.admin.listServiceRequests)
+  listServiceRequests(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.listServiceRequests, async () => {
+      const principal = requirePrincipal(request);
+      return { status: 200 as const, body: await this.catalog.listServiceRequests(principal) };
+    });
+  }
+
+  @Roles("tenant_admin", "manager", "waiter")
+  @TsRestHandler(apiContract.admin.resolveServiceRequest)
+  resolveServiceRequest(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.resolveServiceRequest, async ({ params }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.catalog.resolveServiceRequest(principal, params.id);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 200 as const, body: result.value };
+    });
+  }
 }

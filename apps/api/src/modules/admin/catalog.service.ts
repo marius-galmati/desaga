@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import type {
   AdminAllergen,
   AdminCategory,
+  AdminServiceRequest,
   AdminSettings,
   AdminStation,
   AdminTable,
@@ -544,11 +545,17 @@ export class CatalogService {
             .on("ts.status", "in", ["open", "bill_requested"])
             .on("ts.expires_at", ">", new Date()),
         )
+        .innerJoin("floor_section as fs", (join) =>
+          join
+            .onRef("fs.id", "=", "dt.floor_section_id")
+            .onRef("fs.tenant_id", "=", "dt.tenant_id"),
+        )
         .select((eb) => [
           "dt.id",
           "dt.label",
           "dt.seats",
           "q.slug",
+          "fs.name as section",
           eb("ts.id", "is not", null).as("occupied"),
         ])
         .where("dt.tenant_id", "=", principal.tenantId)
@@ -561,7 +568,50 @@ export class CatalogService {
         seats: r.seats,
         qrSlug: r.slug,
         occupied: Boolean(r.occupied),
+        section: r.section,
       }));
+    });
+  }
+
+  /** Open floor service requests (guest pressed call-waiter / request-bill). */
+  async listServiceRequests(principal: Principal): Promise<AdminServiceRequest[]> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const rows = await trx
+        .selectFrom("service_request as sr")
+        .innerJoin("dining_table as dt", (join) =>
+          join.onRef("dt.id", "=", "sr.dining_table_id").onRef("dt.tenant_id", "=", "sr.tenant_id"),
+        )
+        .select(["sr.id", "sr.kind", "sr.created_at", "dt.label as table_label"])
+        .where("sr.tenant_id", "=", principal.tenantId)
+        .where("sr.status", "in", ["open", "escalated"])
+        .orderBy("sr.created_at")
+        .execute();
+      return rows.map((r) => ({
+        id: r.id,
+        tableLabel: r.table_label,
+        kind: r.kind,
+        createdAt: r.created_at.toISOString(),
+      }));
+    });
+  }
+
+  /** Acknowledge/resolve a service request (waiter took the table). */
+  async resolveServiceRequest(
+    principal: Principal,
+    id: string,
+  ): Promise<ServiceResult<{ ok: true }>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const updated = await trx
+        .updateTable("service_request")
+        .set({ status: "resolved", resolved_at: new Date(), acknowledged_by: principal.userId })
+        .where("tenant_id", "=", principal.tenantId)
+        .where("id", "=", id)
+        .where("status", "in", ["open", "escalated"])
+        .executeTakeFirst();
+      if (updated.numUpdatedRows === 0n) {
+        return { ok: false as const, status: 404 as const, message: "request not found" };
+      }
+      return { ok: true as const, value: { ok: true as const } };
     });
   }
 
@@ -640,12 +690,13 @@ export class CatalogService {
       // Ensure a default floor section for the location.
       const existingSection = await trx
         .selectFrom("floor_section")
-        .select(["id"])
+        .select(["id", "name"])
         .where("tenant_id", "=", principal.tenantId)
         .where("location_id", "=", location.id)
         .where("archived_at", "is", null)
         .orderBy("sort_order")
         .executeTakeFirst();
+      const sectionName = existingSection?.name ?? "Sală principală";
       const sectionId =
         existingSection?.id ??
         (
@@ -654,7 +705,7 @@ export class CatalogService {
             .values({
               tenant_id: principal.tenantId,
               location_id: location.id,
-              name: "Sală principală",
+              name: sectionName,
             })
             .returning("id")
             .executeTakeFirstOrThrow()
@@ -687,6 +738,7 @@ export class CatalogService {
           seats: body.seats ?? null,
           qrSlug: slug,
           occupied: false,
+          section: sectionName,
         },
       };
     });

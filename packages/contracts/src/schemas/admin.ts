@@ -4,6 +4,7 @@ import {
   orderStatusSchema,
   referencePhotoRoleSchema,
   referenceSetStatusSchema,
+  serviceRequestKindSchema,
   userRoleSchema,
 } from "./enums";
 
@@ -214,9 +215,20 @@ export const adminTableSchema = z.object({
   seats: z.number().int().nullable(),
   qrSlug: z.string().nullable(),
   occupied: z.boolean(),
+  section: z.string(),
 });
 export type AdminTable = z.infer<typeof adminTableSchema>;
 export const adminTableListSchema = z.array(adminTableSchema);
+
+// Open floor service requests (guest pressed "call waiter" / "request bill").
+export const adminServiceRequestSchema = z.object({
+  id: uuidSchema,
+  tableLabel: z.string(),
+  kind: serviceRequestKindSchema,
+  createdAt: z.string(),
+});
+export type AdminServiceRequest = z.infer<typeof adminServiceRequestSchema>;
+export const adminServiceRequestListSchema = z.array(adminServiceRequestSchema);
 
 export const createTableRequestSchema = z.object({
   label: z.string().min(1).max(40),

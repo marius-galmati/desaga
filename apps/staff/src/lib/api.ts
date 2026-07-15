@@ -18,6 +18,7 @@ import {
   type AdminMediaAsset,
   type AdminOrder,
   type AdminSettings,
+  type AdminServiceRequest,
   type AdminStation,
   type AdminTable,
   type AdminUser,
@@ -25,6 +26,7 @@ import {
   type AttachReferencesRequest,
   adminAllergenListSchema,
   adminOrderListSchema,
+  adminServiceRequestListSchema,
   adminTableListSchema,
   adminCategoryListSchema,
   adminCategorySchema,
@@ -320,6 +322,20 @@ export function listTables(): Promise<AdminTable[]> {
 
 export function closeTable(id: string): Promise<void> {
   return requestJson(`/admin/tables/${id}/close`, jsonInit("POST", {}), () => undefined);
+}
+
+export function listServiceRequests(): Promise<AdminServiceRequest[]> {
+  return requestJson("/admin/service-requests", { method: "GET" }, (p) =>
+    adminServiceRequestListSchema.parse(p),
+  );
+}
+
+export function resolveServiceRequest(id: string): Promise<void> {
+  return requestJson(
+    `/admin/service-requests/${id}/resolve`,
+    jsonInit("POST", {}),
+    () => undefined,
+  );
 }
 
 // --- Users -----------------------------------------------------------------

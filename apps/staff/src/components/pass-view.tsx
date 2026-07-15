@@ -2,6 +2,7 @@
 
 import type { AdminDishListItem, AiEvaluation, PassQueueItem } from "@boca/contracts";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Emblem } from "@/design/emblem";
 import {
   captureOrderItem,
   createEvaluation,
@@ -12,18 +13,20 @@ import {
   uploadPhoto,
 } from "@/lib/api";
 import { ReportView } from "./report-view";
-import styles from "../app/staff.module.css";
+import s from "./floor.module.css";
 
 type Phase = "list" | "working" | "report";
-type Mode = "queue" | "demo";
 type Target = { kind: "queue"; item: PassQueueItem } | { kind: "demo"; dish: AdminDishListItem };
 
-/** Pass plating capture: photograph a served plate -> live AI conformity report. */
+/** Pass plating capture, in the dark demo design: photograph the next plated
+ *  ticket -> live AI conformity report. Falls back to a demo dish when the
+ *  queue is empty (no guest orders yet). */
 export function PassView() {
   const [phase, setPhase] = useState<Phase>("list");
-  const [mode, setMode] = useState<Mode>("queue");
   const [queue, setQueue] = useState<PassQueueItem[]>([]);
   const [dishes, setDishes] = useState<AdminDishListItem[]>([]);
+  const [nextIndex, setNextIndex] = useState(0);
+  const [demo, setDemo] = useState(false);
   const [target, setTarget] = useState<Target | null>(null);
   const [evaluation, setEvaluation] = useState<AiEvaluation | null>(null);
   const [candidateUrl, setCandidateUrl] = useState<string | null>(null);
@@ -38,30 +41,16 @@ export function PassView() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    loadData().catch((err) => {
-      if (!cancelled) setError(err instanceof Error ? err.message : "Nu am putut încărca datele.");
-    });
-    return () => {
-      cancelled = true;
-    };
+    loadData().catch((err) =>
+      setError(err instanceof Error ? err.message : "Nu am putut încărca coada."),
+    );
   }, [loadData]);
-
-  const scoreableDishes = dishes.filter(
-    (d) => d.referenceSet && d.referenceSet.status === "active",
-  );
 
   const poll = useCallback(
     async (id: string, getter: (id: string) => Promise<AiEvaluation>): Promise<AiEvaluation> => {
       for (let i = 0; i < 40; i++) {
         const ev = await getter(id);
-        if (
-          ev.status === "completed" ||
-          ev.status === "not_scoreable" ||
-          ev.status === "eval_failed"
-        ) {
-          return ev;
-        }
+        if (["completed", "not_scoreable", "eval_failed"].includes(ev.status)) return ev;
         setStatus(ev.status === "queued" ? "În coadă…" : "Se analizează montajul…");
         await new Promise((r) => setTimeout(r, 1500));
       }
@@ -114,10 +103,31 @@ export function PassView() {
     setPhase("list");
   }
 
+  const scoreableDishes = dishes.filter(
+    (d) => d.referenceSet && d.referenceSet.status === "active",
+  );
+  const next = queue[nextIndex];
+  const rest = queue.filter((_, i) => i !== nextIndex);
   const targetName = target?.kind === "queue" ? target.item.name.ro : (target?.dish.name.ro ?? "");
 
+  // Report is self-contained (light card) — show it full-width outside the dark panel.
+  if (phase === "report" && evaluation && target) {
+    return (
+      <div className={s.salaWrap} style={{ padding: "0 12px" }}>
+        <ReportView
+          evaluation={evaluation}
+          dishName={targetName}
+          candidateUrl={candidateUrl}
+          referenceUrls={[]}
+          onRetry={() => (target ? pick(target) : reset())}
+          onNewCandidate={reset}
+        />
+      </div>
+    );
+  }
+
   return (
-    <main className={styles.main}>
+    <div className={s.passWrap}>
       <input
         ref={fileInput}
         type="file"
@@ -131,123 +141,161 @@ export function PassView() {
         }}
       />
 
-      {error ? (
-        <p className={styles.err} role="alert">
-          {error}
-        </p>
-      ) : null}
-
-      {phase === "list" ? (
-        <>
-          <div className={styles.lead}>
-            <span className="eyebrow eyebrow--ink">Pass · control montaj</span>
-            <h1>Fotografiază farfuria</h1>
-            <p>
-              Fotografiază montajul servit și primești pe loc scorul de conformitate față de etalon,
-              pe cele 6 criterii.
-            </p>
+      <div className={s.pass}>
+        <header className={s.pHead}>
+          <div>
+            <span className="eyebrow eyebrow--dark">Pass · montaj</span>
+            <h1 className={s.pTitle}>Coada de montaj</h1>
           </div>
+          <span className={s.pCount}>
+            <span className={s.pCountDot} aria-hidden />
+            <span className="tabular">{queue.length}</span> la rând
+          </span>
+        </header>
 
-          <div className={styles.modeToggle} role="group" aria-label="Sursă">
-            <button
-              type="button"
-              className={mode === "queue" ? styles.modeOn : ""}
-              onClick={() => setMode("queue")}
-            >
-              Comenzi la pass
-            </button>
-            <button
-              type="button"
-              className={mode === "demo" ? styles.modeOn : ""}
-              onClick={() => setMode("demo")}
-            >
-              Demo pe preparat
-            </button>
-          </div>
+        {error ? (
+          <p className={s.hint} style={{ color: "var(--vin-soft, #d98)" }}>
+            {error}
+          </p>
+        ) : null}
 
-          {mode === "queue" ? (
-            queue.length === 0 ? (
-              <p className={styles.state}>
-                Nicio farfurie în așteptare. Comenzile trimise de la mese apar aici.
+        {phase === "working" ? (
+          <section className={s.capture}>
+            <div className={s.vf}>
+              {candidateUrl ? (
+                // biome-ignore lint/performance/noImgElement: local object URL preview
+                <img className={s.vfGhost} src={candidateUrl} alt="" style={{ opacity: 0.5 }} />
+              ) : null}
+              <div className={s.vfGuide} aria-hidden>
+                <Emblem size={46} tone="var(--ochre-soft)" />
+              </div>
+              <span className={s.vfCap}>{status}</span>
+            </div>
+            <p className={s.hint}>{targetName} · se evaluează…</p>
+          </section>
+        ) : demo ? (
+          <section className={s.capture}>
+            <span className="eyebrow eyebrow--dark">Demo pe preparat</span>
+            {scoreableDishes.length === 0 ? (
+              <p className={s.hint}>
+                Niciun preparat cu set de referință activ (vezi Administrare).
               </p>
             ) : (
-              <div className={styles.grid}>
-                {queue.map((it) => (
+              <div className={s.queue}>
+                {scoreableDishes.map((d) => (
                   <button
-                    key={it.orderItemId}
+                    key={d.id}
                     type="button"
-                    className={styles.dishCard}
-                    onClick={() => pick({ kind: "queue", item: it })}
+                    className={s.qrow}
+                    onClick={() => pick({ kind: "demo", dish: d })}
                   >
-                    <div className={styles.thumb}>
-                      {it.heroPhotoUrl ? (
-                        // biome-ignore lint/performance/noImgElement: presigned URL
-                        <img src={it.heroPhotoUrl} alt="" />
-                      ) : (
-                        <span className={styles.thumbEmpty}>Fără foto</span>
-                      )}
-                    </div>
-                    <span className={styles.tableTag}>{it.tableLabel}</span>
-                    <span className={styles.dishName}>
-                      {it.quantity}× {it.name.ro}
+                    <span className={s.qnum}>📷</span>
+                    <span className={s.qbody}>
+                      <span className={s.qdish}>{d.name.ro}</span>
                     </span>
-                    <span className={styles.capture}>📷 Fotografiază</span>
                   </button>
                 ))}
               </div>
-            )
-          ) : scoreableDishes.length === 0 ? (
-            <p className={styles.state}>
-              Niciun preparat cu set de referință activ. Configurează referințele în Administrare.
-            </p>
-          ) : (
-            <div className={styles.grid}>
-              {scoreableDishes.map((d) => (
+            )}
+            <div className={s.ghosts}>
+              <button type="button" className={s.ghostBtn} onClick={() => setDemo(false)}>
+                ← Înapoi la coadă
+              </button>
+            </div>
+          </section>
+        ) : next ? (
+          <section className={s.capture}>
+            <div className={s.capMeta}>
+              <span className={s.capTable}>{next.tableLabel}</span>
+              <span className={s.capCourse}>×{next.quantity}</span>
+            </div>
+            <h2 className={s.capDish}>{next.name.ro}</h2>
+
+            <div className={s.vf}>
+              {next.heroPhotoUrl ? (
+                // biome-ignore lint/performance/noImgElement: presigned URL, ghost reference
+                <img className={s.vfGhost} src={next.heroPhotoUrl} alt="" />
+              ) : null}
+              <span className={`${s.br} ${s.brTL}`} aria-hidden />
+              <span className={`${s.br} ${s.brTR}`} aria-hidden />
+              <span className={`${s.br} ${s.brBL}`} aria-hidden />
+              <span className={`${s.br} ${s.brBR}`} aria-hidden />
+              <div className={s.vfGuide} aria-hidden>
+                <Emblem size={46} tone="var(--ochre-soft)" />
+              </div>
+              <span className={s.vfCap}>Așază farfuria în cadru</span>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn--gold btn--block"
+              onClick={() => pick({ kind: "queue", item: next })}
+            >
+              Fotografiază montajul
+            </button>
+            <p className={s.hint}>Montajul e comparat automat cu standardul preparatului.</p>
+
+            <div className={s.ghosts}>
+              {rest.length > 0 ? (
                 <button
-                  key={d.id}
                   type="button"
-                  className={styles.dishCard}
-                  onClick={() => pick({ kind: "demo", dish: d })}
+                  className={s.ghostBtn}
+                  onClick={() => setNextIndex((i) => (i + 1) % queue.length)}
                 >
-                  <div className={styles.thumb}>
-                    {d.heroPhotoUrl ? (
-                      // biome-ignore lint/performance/noImgElement: presigned URL
-                      <img src={d.heroPhotoUrl} alt="" />
-                    ) : (
-                      <span className={styles.thumbEmpty}>Fără foto</span>
-                    )}
-                  </div>
-                  <span className={styles.dishName}>{d.name.ro}</span>
-                  <span className={styles.capture}>📷 Fotografiază</span>
+                  Sari peste
+                </button>
+              ) : null}
+              <span className={s.ghostSep} aria-hidden>
+                ·
+              </span>
+              <button type="button" className={s.ghostBtn} onClick={() => setDemo(true)}>
+                Demo pe preparat
+              </button>
+            </div>
+          </section>
+        ) : (
+          <section className={s.capture}>
+            <p className={s.hint}>
+              Coada e goală — farfuriile comandate de la mese apar aici pe măsură ce sunt trimise.
+            </p>
+            <div className={s.ghosts}>
+              <button type="button" className={s.ghostBtn} onClick={() => setDemo(true)}>
+                Demo pe preparat
+              </button>
+            </div>
+          </section>
+        )}
+
+        {rest.length > 0 && !demo && phase === "list" ? (
+          <>
+            <div className={s.queueHead}>
+              <span className="eyebrow eyebrow--dark">Următoarele la rând</span>
+              <span className={s.rule} aria-hidden />
+            </div>
+            <div className={s.queue}>
+              {rest.map((t) => (
+                <button
+                  key={t.orderItemId}
+                  type="button"
+                  className={s.qrow}
+                  onClick={() => pick({ kind: "queue", item: t })}
+                >
+                  <span className={s.qnum}>{t.tableLabel.replace(/[^0-9]/g, "") || "•"}</span>
+                  <span className={s.qbody}>
+                    <span className={s.qdish}>{t.name.ro}</span>
+                    <span className={s.qmeta}>
+                      {t.tableLabel} · ×{t.quantity}
+                    </span>
+                  </span>
+                  <span className={s.qside}>
+                    <span className={s.qchip}>📷</span>
+                  </span>
                 </button>
               ))}
             </div>
-          )}
-        </>
-      ) : null}
-
-      {phase === "working" ? (
-        <div className={styles.working}>
-          {candidateUrl ? (
-            // biome-ignore lint/performance/noImgElement: local object URL preview
-            <img className={styles.workingImg} src={candidateUrl} alt="Farfuria evaluată" />
-          ) : null}
-          <div className={styles.spinner} aria-hidden />
-          <p className={styles.state}>{status}</p>
-          <p className={styles.workingDish}>{targetName}</p>
-        </div>
-      ) : null}
-
-      {phase === "report" && evaluation && target ? (
-        <ReportView
-          evaluation={evaluation}
-          dishName={targetName}
-          candidateUrl={candidateUrl}
-          referenceUrls={[]}
-          onRetry={() => pick(target)}
-          onNewCandidate={reset}
-        />
-      ) : null}
-    </main>
+          </>
+        ) : null}
+      </div>
+    </div>
   );
 }

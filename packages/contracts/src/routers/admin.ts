@@ -8,6 +8,7 @@ import {
   adminDishListSchema,
   adminMediaListSchema,
   adminOrderListSchema,
+  adminServiceRequestListSchema,
   adminSettingsSchema,
   adminTableListSchema,
   adminTableSchema,
@@ -319,6 +320,21 @@ export const adminContract = c.router({
     pathParams: idParams,
     body: z.object({}),
     summary: "Close the table's open session so the next guest starts fresh",
+    responses: { 200: okResponseSchema, 401: apiErrorSchema, 404: apiErrorSchema },
+  },
+
+  // --- Service requests (call waiter / request bill) -----------------------
+  listServiceRequests: {
+    method: "GET",
+    path: "/admin/service-requests",
+    summary: "Open floor service requests (call waiter / request bill)",
+    responses: { 200: adminServiceRequestListSchema, 401: apiErrorSchema },
+  },
+  resolveServiceRequest: {
+    method: "POST",
+    path: "/admin/service-requests/:id/resolve",
+    pathParams: idParams,
+    body: z.object({}),
     responses: { 200: okResponseSchema, 401: apiErrorSchema, 404: apiErrorSchema },
   },
 

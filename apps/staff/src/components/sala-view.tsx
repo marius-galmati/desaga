@@ -1,44 +1,50 @@
 "use client";
 
-import type { AdminOrder, AdminTable } from "@boca/contracts";
-import { useCallback, useEffect, useState } from "react";
-import { acceptOrder, closeTable, listOrders, listTables, serveOrder } from "@/lib/api";
+import type { AdminOrder, AdminServiceRequest, AdminTable } from "@boca/contracts";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  acceptOrder,
+  closeTable,
+  listOrders,
+  listServiceRequests,
+  listTables,
+  resolveServiceRequest,
+  serveOrder,
+} from "@/lib/api";
+import { getCurrentUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
-import styles from "./sala-view.module.css";
+import s from "./floor.module.css";
 
-const STATUS_LABEL: Record<string, string> = {
-  submitted: "Nouă",
-  accepted: "Acceptată",
-  fired: "În pregătire",
-  ready: "Gata",
-  served: "Servită",
-  voided: "Anulată",
+type TStatus = "liber" | "ocupat" | "cere_nota" | "cheama";
+const STATUS_META: Record<TStatus, { label: string; card: string; pill: string }> = {
+  liber: { label: "Liber", card: s.stLiber ?? "", pill: s.pillLiber ?? "" },
+  ocupat: { label: "Ocupat", card: s.stOcupat ?? "", pill: s.pillOcupat ?? "" },
+  cere_nota: { label: "Cere nota", card: s.stCereNota ?? "", pill: s.pillCereNota ?? "" },
+  cheama: { label: "Cheamă", card: s.stCheama ?? "", pill: s.pillCheama ?? "" },
 };
 
-function elapsed(iso: string): string {
-  const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
-  if (mins < 1) return "acum";
-  return mins === 1 ? "acum 1 min" : `acum ${mins} min`;
+function minsSince(iso: string): number {
+  return Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
 }
 
-/** Waiter floor view: live orders (accept/serve) + tables (clear a finished tab). */
 export function SalaView() {
-  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [tables, setTables] = useState<AdminTable[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [requests, setRequests] = useState<AdminServiceRequest[]>([]);
+  const [section, setSection] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [busyId, setBusyId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     try {
-      const [o, t] = await Promise.all([listOrders(), listTables()]);
-      setOrders(o);
+      const [t, o, r] = await Promise.all([listTables(), listOrders(), listServiceRequests()]);
       setTables(t);
+      setOrders(o);
+      setRequests(r);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nu am putut încărca sala.");
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -48,123 +54,217 @@ export function SalaView() {
     return () => clearInterval(t);
   }, [refresh]);
 
-  async function act(id: string, fn: (id: string) => Promise<void>) {
-    setBusyId(id);
+  const sections = useMemo(() => [...new Set(tables.map((t) => t.section))], [tables]);
+  const activeSection = section && sections.includes(section) ? section : (sections[0] ?? null);
+
+  const ordersByTable = useMemo(() => {
+    const m = new Map<string, AdminOrder[]>();
+    for (const o of orders) {
+      const arr = m.get(o.tableLabel);
+      if (arr) arr.push(o);
+      else m.set(o.tableLabel, [o]);
+    }
+    return m;
+  }, [orders]);
+
+  const requestByTable = useMemo(() => {
+    const m = new Map<string, AdminServiceRequest>();
+    for (const r of requests) if (!m.has(r.tableLabel)) m.set(r.tableLabel, r);
+    return m;
+  }, [requests]);
+
+  function statusOf(t: AdminTable): TStatus {
+    const req = requestByTable.get(t.label);
+    if (req?.kind === "request_bill") return "cere_nota";
+    if (req?.kind === "call_waiter") return "cheama";
+    return t.occupied ? "ocupat" : "liber";
+  }
+
+  async function run(fn: () => Promise<void>) {
+    setBusy(true);
     setError(null);
     try {
-      await fn(id);
+      await fn();
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Acțiunea a eșuat.");
     } finally {
-      setBusyId(null);
+      setBusy(false);
     }
   }
 
-  async function onClear(t: AdminTable) {
-    if (!window.confirm(`Eliberezi ${t.label}? Următorul client pornește o comandă nouă.`)) return;
-    await act(t.id, closeTable);
-  }
+  const user = getCurrentUser();
+  const firstName = (user?.fullName ?? "").split(" ")[0] || "Ospătar";
+  const tablesInSection = tables.filter((t) => t.section === activeSection);
 
   return (
-    <div className={styles.wrap}>
-      {error ? (
-        <p className={styles.err} role="alert">
-          {error}
-        </p>
-      ) : null}
+    <div className={s.salaWrap}>
+      <div className={s.screen}>
+        <header className={s.wHead}>
+          <div>
+            <span className="eyebrow eyebrow--ink">Sala ta · serviciu</span>
+            <h1 className={s.wTitle}>Bună, {firstName}</h1>
+          </div>
+          <span className={s.avatar} aria-hidden>
+            {firstName.charAt(0)}
+          </span>
+        </header>
 
-      <section>
-        <h2 className={styles.h2}>Comenzi</h2>
-        {loading ? (
-          <p className={styles.state}>Se încarcă…</p>
-        ) : orders.length === 0 ? (
-          <p className={styles.state}>Nicio comandă activă.</p>
-        ) : (
-          <div className={styles.orders}>
-            {orders.map((o) => (
-              <article key={o.id} className={styles.orderCard}>
-                <div className={styles.orderTop}>
-                  <div className={styles.orderTable}>
-                    {o.guest ? <span aria-hidden>{o.guest.emoji} </span> : null}
-                    {o.tableLabel}
-                    <span className={styles.orderMeta}>
-                      {" · "}
-                      {elapsed(o.createdAt)}
-                      {o.isFirstOfSession ? " · prima comandă" : ""}
-                    </span>
-                  </div>
-                  <span
-                    className={`chip ${o.status === "submitted" ? "chip--gold" : "chip--pine"}`}
-                  >
-                    {STATUS_LABEL[o.status] ?? o.status}
-                  </span>
+        {error ? <p className={s.banner + " " + s.bannerVin}>{error}</p> : null}
+
+        {requests.length > 0 ? (
+          <div className={s.banners}>
+            {requests.map((r) =>
+              r.kind === "call_waiter" ? (
+                <div key={r.id} className={`${s.banner} ${s.bannerVin}`}>
+                  <span className={s.bannerDot} aria-hidden />
+                  <span className={s.bannerText}>{r.tableLabel} cheamă ospătarul</span>
+                  <span className={`${s.bannerTime} tabular`}>{minsSince(r.createdAt)}′</span>
                 </div>
-                <ul className={styles.items}>
-                  {o.items.map((it) => (
-                    <li key={it.id}>
-                      <span>
-                        <strong>{it.quantity}×</strong> {it.dishName.ro}
-                        {it.note ? <em className={styles.note}> — {it.note}</em> : null}
+              ) : (
+                <div key={r.id} className={`${s.banner} ${s.bannerOchre}`}>
+                  <span className={s.bannerText}>{r.tableLabel} cere nota</span>
+                  <span className={`${s.bannerTime} tabular`}>{minsSince(r.createdAt)}′</span>
+                </div>
+              ),
+            )}
+          </div>
+        ) : null}
+
+        {sections.length > 1 ? (
+          <div className={s.sections} role="tablist" aria-label="Secțiuni">
+            {sections.map((sec) => (
+              <button
+                key={sec}
+                type="button"
+                role="tab"
+                aria-selected={sec === activeSection}
+                className={`${s.secBtn} ${sec === activeSection ? s.secBtnOn : ""}`}
+                onClick={() => setSection(sec)}
+              >
+                {sec}
+                <span className={s.secCount}>{tables.filter((t) => t.section === sec).length}</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        <div className={s.tables}>
+          {tablesInSection.map((t) => {
+            const st = statusOf(t);
+            const meta = STATUS_META[st];
+            const open = openId === t.id;
+            const tOrders = ordersByTable.get(t.label) ?? [];
+            const lines = tOrders.flatMap((o) => o.items);
+            const total = tOrders.reduce((sum, o) => sum + o.totalMinor, 0);
+            const oldest = tOrders.reduce<string | null>(
+              (acc, o) => (acc && acc < o.createdAt ? acc : o.createdAt),
+              null,
+            );
+            const req = requestByTable.get(t.label);
+            const hasSubmitted = tOrders.some((o) => o.status === "submitted");
+            const num = t.label.replace(/[^0-9]/g, "") || t.label.slice(0, 3);
+            return (
+              <div key={t.id} className={`${s.tcard} ${meta.card} ${open ? s.tcardOn : ""}`}>
+                <button
+                  type="button"
+                  className={s.tcardBtn}
+                  onClick={() => setOpenId(open ? null : t.id)}
+                  aria-expanded={open}
+                >
+                  <span className={s.tnum}>
+                    <span className={s.tnumBig}>{num}</span>
+                    {t.seats != null ? <span className={s.tseats}>{t.seats} loc.</span> : null}
+                  </span>
+                  <span className={s.tbody}>
+                    <span className={`${s.pill} ${meta.pill}`}>{meta.label}</span>
+                    {st !== "liber" ? (
+                      <span className={s.tmeta}>
+                        <span>{tOrders.length} comenzi</span>
+                        {oldest ? (
+                          <>
+                            <span aria-hidden>·</span>
+                            <span className="tabular">acum {minsSince(oldest)}′</span>
+                          </>
+                        ) : null}
                       </span>
-                      <span>{formatPrice(it.lineTotalMinor)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className={styles.orderFoot}>
-                  <span className={styles.total}>{formatPrice(o.totalMinor)}</span>
-                  <div className={styles.actions}>
-                    {o.status === "submitted" ? (
+                    ) : (
+                      <span className={s.tmeta}>Pregătită</span>
+                    )}
+                  </span>
+                  <span className={s.tright}>
+                    {total > 0 ? (
+                      <span className={`${s.ttotal} tabular`}>{formatPrice(total)}</span>
+                    ) : null}
+                  </span>
+                </button>
+
+                {open && st !== "liber" ? (
+                  <div className={s.detail}>
+                    {lines.map((l) => (
+                      <div key={l.id} className={s.oline}>
+                        <span className={`${s.olQty} tabular`}>{l.quantity}×</span>
+                        <span className={s.olName}>
+                          {l.dishName.ro}
+                          <span className={s.olCourse}>{l.status}</span>
+                        </span>
+                        <span className={`${s.olPrice} tabular`}>
+                          {formatPrice(l.lineTotalMinor)}
+                        </span>
+                      </div>
+                    ))}
+                    <div className={s.ototal}>
+                      <span>Total masă</span>
+                      <span className="tabular">{formatPrice(total)}</span>
+                    </div>
+                    <div className={s.detailActions}>
                       <button
                         type="button"
-                        className="btn btn--sm"
-                        disabled={busyId === o.id}
-                        onClick={() => void act(o.id, acceptOrder)}
+                        className="btn btn--ghost btn--sm"
+                        disabled={busy || tOrders.length === 0}
+                        onClick={() =>
+                          void run(async () => {
+                            const targets = hasSubmitted
+                              ? tOrders.filter((o) => o.status === "submitted")
+                              : tOrders.filter(
+                                  (o) => o.status === "submitted" || o.status === "accepted",
+                                );
+                            for (const o of targets) {
+                              await (hasSubmitted ? acceptOrder(o.id) : serveOrder(o.id));
+                            }
+                          })
+                        }
                       >
-                        Acceptă
+                        {hasSubmitted ? "Acceptă" : "Marchează servit"}
                       </button>
-                    ) : null}
-                    <button
-                      type="button"
-                      className="btn btn--gold btn--sm"
-                      disabled={busyId === o.id}
-                      onClick={() => void act(o.id, serveOrder)}
-                    >
-                      Servită
-                    </button>
+                      <button
+                        type="button"
+                        className="btn btn--gold btn--sm"
+                        disabled={busy}
+                        onClick={() =>
+                          void run(async () => {
+                            if (req) await resolveServiceRequest(req.id);
+                            if (!req || req.kind === "request_bill") await closeTable(t.id);
+                          })
+                        }
+                      >
+                        {req?.kind === "call_waiter"
+                          ? "Am preluat masa"
+                          : req?.kind === "request_bill"
+                            ? "Închide masa"
+                            : "Eliberează masa"}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className={styles.tablesSection}>
-        <h2 className={styles.h2}>Mese</h2>
-        {tables.length === 0 ? (
-          <p className={styles.state}>Nicio masă configurată.</p>
-        ) : (
-          <div className={styles.tables}>
-            {tables.map((t) => (
-              <div key={t.id} className={`${styles.tableChip} ${t.occupied ? styles.occ : ""}`}>
-                <span className={styles.tableLabel}>{t.label}</span>
-                <span className={styles.tableState}>{t.occupied ? "Ocupată" : "Liberă"}</span>
-                {t.occupied ? (
-                  <button
-                    type="button"
-                    className="btn btn--ghost btn--sm"
-                    disabled={busyId === t.id}
-                    onClick={() => void onClear(t)}
-                  >
-                    Eliberează
-                  </button>
                 ) : null}
               </div>
-            ))}
-          </div>
-        )}
-      </section>
+            );
+          })}
+          {tablesInSection.length === 0 ? (
+            <p className={s.tmeta}>Nicio masă. Adaugă mese din Administrare.</p>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }
