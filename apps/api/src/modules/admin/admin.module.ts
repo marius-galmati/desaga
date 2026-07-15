@@ -6,6 +6,8 @@ import { AdminDishController } from "./dish.controller";
 import { DishService } from "./dish.service";
 import { AdminMediaController } from "./media.controller";
 import { MediaService } from "./media.service";
+import { AdminMetricsController } from "./metrics.controller";
+import { MetricsService } from "./metrics.service";
 import { AdminOrderController } from "./order.controller";
 import { OrderService } from "./order.service";
 
@@ -18,8 +20,9 @@ import { OrderService } from "./order.service";
     AdminCatalogController,
     AdminDishController,
     AdminMediaController,
+    AdminMetricsController,
     AdminOrderController,
   ],
-  providers: [CatalogService, DishService, MediaService, OrderService],
+  providers: [CatalogService, DishService, MediaService, MetricsService, OrderService],
 })
 export class AdminModule {}

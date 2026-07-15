@@ -393,3 +393,48 @@ export const updateLocationRequestSchema = z.object({
   address: z.string().nullable().optional(),
 });
 export type UpdateLocationRequest = z.infer<typeof updateLocationRequestSchema>;
+
+// ---------------------------------------------------------------------------
+// Management dashboard (real plating-conformity reporting)
+// ---------------------------------------------------------------------------
+
+// Reporting window. Filters completed evaluations by capture time.
+export const metricsPeriodSchema = z.enum(["day", "week", "month", "all"]);
+export type MetricsPeriod = z.infer<typeof metricsPeriodSchema>;
+
+// Per-dish conformity over the window — the dashboard's primary unit.
+export const managementDishStatSchema = z.object({
+  dishId: uuidSchema,
+  name: bilingualTextSchema,
+  median: z.number(), // 1-5, median of the dish's overall scores
+  dispersion: z.number(), // population std-dev — the ± spread
+  sample: z.number().int().nonnegative(),
+  spark: z.array(z.number()), // chronological overall scores (last N), for the trendline
+  trend: z.number(), // last − first across the series
+});
+export type ManagementDishStat = z.infer<typeof managementDishStatSchema>;
+
+// Per pass operator (who photographed the plate) — the coaching drill-down.
+export const managementStaffStatSchema = z.object({
+  userId: uuidSchema.nullable(),
+  name: z.string(),
+  conformity: z.number(), // mean overall score across their plates
+  plates: z.number().int().nonnegative(),
+});
+export type ManagementStaffStat = z.infer<typeof managementStaffStatSchema>;
+
+export const managementMetricsSchema = z.object({
+  period: metricsPeriodSchema,
+  rangeLabel: z.string(), // human window label, e.g. "Ultimele 30 de zile"
+  generatedAt: isoDateTimeSchema,
+  kpis: z.object({
+    avgConformity: z.number().nullable(), // mean overall score, null when no data
+    platesEvaluated: z.number().int().nonnegative(),
+    notScoreable: z.number().int().nonnegative(),
+    dishesUnderThreshold: z.number().int().nonnegative(),
+    dishesTracked: z.number().int().nonnegative(),
+  }),
+  dishes: z.array(managementDishStatSchema),
+  staff: z.array(managementStaffStatSchema),
+});
+export type ManagementMetrics = z.infer<typeof managementMetricsSchema>;

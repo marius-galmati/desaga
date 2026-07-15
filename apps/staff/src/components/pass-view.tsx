@@ -8,12 +8,13 @@ import {
   createEvaluation,
   getCapture,
   getEvaluation,
+  getReferenceSet,
   listDishes,
   listPassQueue,
   uploadPhoto,
 } from "@/lib/api";
-import { ReportView } from "./report-view";
 import s from "./floor.module.css";
+import { ReportView } from "./report-view";
 
 type Phase = "list" | "camera" | "working" | "report";
 type Target = { kind: "queue"; item: PassQueueItem } | { kind: "demo"; dish: AdminDishListItem };
@@ -36,6 +37,7 @@ export function PassView() {
   const [target, setTarget] = useState<Target | null>(null);
   const [evaluation, setEvaluation] = useState<AiEvaluation | null>(null);
   const [candidateUrl, setCandidateUrl] = useState<string | null>(null);
+  const [referenceUrls, setReferenceUrls] = useState<string[]>([]);
   const [status, setStatus] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -70,6 +72,13 @@ export function PassView() {
     setError(null);
     setEvaluation(null);
     setCandidateUrl(URL.createObjectURL(file));
+    // Pull the dish's reference photos in parallel so the report can show the
+    // real standard next to the plate (best-effort — never blocks the capture).
+    const dishId = t.kind === "queue" ? t.item.dishId : t.dish.id;
+    setReferenceUrls([]);
+    void getReferenceSet(dishId)
+      .then((set) => setReferenceUrls(set?.photos.map((p) => p.url) ?? []))
+      .catch(() => setReferenceUrls([]));
     try {
       setStatus("Se încarcă fotografia…");
       const { photoKey } = await uploadPhoto(file);
@@ -109,6 +118,7 @@ export function PassView() {
   function reset() {
     setEvaluation(null);
     setCandidateUrl(null);
+    setReferenceUrls([]);
     setTarget(null);
     setPhase("list");
   }
@@ -128,7 +138,7 @@ export function PassView() {
           evaluation={evaluation}
           dishName={targetName}
           candidateUrl={candidateUrl}
-          referenceUrls={[]}
+          referenceUrls={referenceUrls}
           onRetry={() => (target ? pick(target) : reset())}
           onNewCandidate={reset}
         />

@@ -83,6 +83,9 @@ export class AdminDishController {
     });
   }
 
+  // Method-level override: the staff plating app (kitchen_pass) shows the dish's
+  // reference photos alongside the conformity report — read-only, like listDishes.
+  @Roles("tenant_admin", "manager", "kitchen_pass")
   @TsRestHandler(apiContract.admin.getReferenceSet)
   getReferenceSet(@Req() request: RequestWithPrincipal) {
     return tsRestHandler(apiContract.admin.getReferenceSet, async ({ params }) => {

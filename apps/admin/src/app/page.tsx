@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ManagementPanel } from "@/components/panels/management-panel";
 import { MenuPanel } from "@/components/panels/menu-panel";
 import { OrdersPanel } from "@/components/panels/orders-panel";
 import { PhotosPanel } from "@/components/panels/photos-panel";
@@ -16,6 +17,7 @@ import { ensureSession, getCurrentUser, logout } from "@/lib/auth";
 import styles from "./admin.module.css";
 
 type NavKey =
+  | "tablou"
   | "comenzi"
   | "mese"
   | "meniu"
@@ -26,6 +28,7 @@ type NavKey =
   | "setari";
 
 const NAV: { key: NavKey; label: string }[] = [
+  { key: "tablou", label: "Tablou management" },
   { key: "comenzi", label: "Comenzi" },
   { key: "mese", label: "Mese" },
   { key: "meniu", label: "Meniu" },
@@ -77,15 +80,16 @@ export default function AdminHome() {
   }
 
   // Role-based access to the ADMIN app (back-office):
-  //  - tenant_admin / manager -> everything
-  //  - management_viewer       -> read-only, sees Comenzi (live floor)
+  //  - tenant_admin / manager -> everything (incl. the management dashboard)
+  //  - management_viewer       -> ONLY the management dashboard (plating-
+  //                               conformity report), not the back-office
   //  - waiter / kitchen_pass   -> no admin surface; they use the STAFF app
   const role = user?.role;
   const allowedNav =
     role === "tenant_admin" || role === "manager"
       ? NAV
       : role === "management_viewer"
-        ? NAV.filter((n) => n.key === "comenzi")
+        ? NAV.filter((n) => n.key === "tablou")
         : [];
   const activeNav = allowedNav.some((n) => n.key === nav) ? nav : (allowedNav[0]?.key ?? "comenzi");
 
@@ -152,6 +156,7 @@ export default function AdminHome() {
       </aside>
 
       <main className={styles.content}>
+        {activeNav === "tablou" && <ManagementPanel />}
         {activeNav === "comenzi" && <OrdersPanel />}
         {activeNav === "mese" && <TablesPanel />}
         {activeNav === "meniu" && <MenuPanel />}

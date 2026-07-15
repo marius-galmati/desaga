@@ -23,6 +23,8 @@ import {
   createStationRequestSchema,
   createUserRequestSchema,
   dishAvailabilityEntrySchema,
+  managementMetricsSchema,
+  metricsPeriodSchema,
   okResponseSchema,
   putToleranceRequestSchema,
   referenceSetDetailSchema,
@@ -382,6 +384,15 @@ export const adminContract = c.router({
       404: apiErrorSchema,
       409: apiErrorSchema,
     },
+  },
+
+  // --- Management dashboard (plating-conformity reporting) -----------------
+  getMetrics: {
+    method: "GET",
+    path: "/admin/metrics",
+    summary: "Plating-conformity dashboard aggregates for the selected window",
+    query: z.object({ period: metricsPeriodSchema.optional() }),
+    responses: { 200: managementMetricsSchema, 401: apiErrorSchema },
   },
 
   // --- Settings ------------------------------------------------------------

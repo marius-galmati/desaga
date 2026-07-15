@@ -2,7 +2,7 @@ import type { Selectable } from "kysely";
 import type { AiEvaluation, EvalMode, NotScoreableReason } from "../generated/db";
 import type { TenantTransaction } from "../tenant";
 import { getDishVersionById } from "./menu";
-import { type InsertPassPhotoParams, getNextRefireSequence, insertPassPhoto } from "./passPhotos";
+import { getNextRefireSequence, type InsertPassPhotoParams, insertPassPhoto } from "./passPhotos";
 import {
   getActiveReferenceSetForDishVersion,
   getActiveToleranceProfileForDish,
@@ -359,4 +359,69 @@ export async function getEvaluationById(trx: TenantTransaction, evaluationId: st
     ])
     .where("e.id", "=", evaluationId)
     .executeTakeFirst();
+}
+
+// ---------------------------------------------------------------------------
+// Management dashboard aggregates (real plating-conformity reporting)
+// ---------------------------------------------------------------------------
+
+/**
+ * Completed evaluations joined to their dish and capturing pass user, for the
+ * management conformity dashboard. Median / dispersion / grouping are computed
+ * by the caller — per-restaurant sample sizes are small, so pulling the rows
+ * and folding them in TS is simpler than SQL percentile aggregates. `since`
+ * filters by capture time (created_at, always present).
+ */
+export async function getCompletedEvaluationsForMetrics(
+  trx: TenantTransaction,
+  tenantId: string,
+  since?: Date,
+) {
+  let query = trx
+    .selectFrom("ai_evaluation as e")
+    .innerJoin("pass_photo as p", (join) =>
+      join.onRef("p.id", "=", "e.pass_photo_id").onRef("p.tenant_id", "=", "e.tenant_id"),
+    )
+    .innerJoin("order_item as oi", (join) =>
+      join.onRef("oi.id", "=", "p.order_item_id").onRef("oi.tenant_id", "=", "p.tenant_id"),
+    )
+    .innerJoin("dish_version as dv", (join) =>
+      join.onRef("dv.id", "=", "oi.dish_version_id").onRef("dv.tenant_id", "=", "oi.tenant_id"),
+    )
+    .leftJoin("app_user as u", (join) =>
+      join.onRef("u.id", "=", "p.captured_by").onRef("u.tenant_id", "=", "p.tenant_id"),
+    )
+    .select([
+      "oi.dish_id as dishId",
+      "dv.name as dishName",
+      "p.captured_by as capturedBy",
+      "u.full_name as capturedByName",
+      "e.overall_score as overallScore",
+      "e.created_at as capturedAt",
+    ])
+    .where("e.tenant_id", "=", tenantId)
+    .where("e.status", "=", "completed")
+    .orderBy("e.created_at", "asc");
+  if (since) {
+    query = query.where("e.created_at", ">=", since);
+  }
+  return query.execute();
+}
+
+/** Count of not_scoreable evaluations (quality/refs failures) in the window. */
+export async function countNotScoreableEvaluations(
+  trx: TenantTransaction,
+  tenantId: string,
+  since?: Date,
+): Promise<number> {
+  let query = trx
+    .selectFrom("ai_evaluation as e")
+    .select((eb) => eb.fn.count("e.id").as("n"))
+    .where("e.tenant_id", "=", tenantId)
+    .where("e.status", "=", "not_scoreable");
+  if (since) {
+    query = query.where("e.created_at", ">=", since);
+  }
+  const row = await query.executeTakeFirst();
+  return row ? Number(row.n) : 0;
 }

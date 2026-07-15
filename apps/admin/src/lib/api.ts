@@ -54,6 +54,9 @@ import {
   type DishAvailabilityEntry,
   demoDishListSchema,
   dishAvailabilityEntrySchema,
+  type ManagementMetrics,
+  type MetricsPeriod,
+  managementMetricsSchema,
   MEDIA_UPLOAD_FILE_FIELD,
   type PutToleranceRequest,
   type ReferenceSetDetail,
@@ -347,6 +350,14 @@ export function deleteTable(id: string): Promise<void> {
 
 export function closeTable(id: string): Promise<void> {
   return requestJson(`/admin/tables/${id}/close`, jsonInit("POST", {}), () => undefined);
+}
+
+// --- Management dashboard ---------------------------------------------------
+
+export function getMetrics(period: MetricsPeriod = "month"): Promise<ManagementMetrics> {
+  return requestJson(`/admin/metrics?period=${period}`, { method: "GET" }, (p) =>
+    managementMetricsSchema.parse(p),
+  );
 }
 
 // --- Settings --------------------------------------------------------------
