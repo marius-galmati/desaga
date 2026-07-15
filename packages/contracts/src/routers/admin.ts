@@ -313,6 +313,14 @@ export const adminContract = c.router({
     summary: "Archive a table + revoke its QR slug",
     responses: { 200: okResponseSchema, 401: apiErrorSchema, 404: apiErrorSchema },
   },
+  closeTable: {
+    method: "POST",
+    path: "/admin/tables/:id/close",
+    pathParams: idParams,
+    body: z.object({}),
+    summary: "Close the table's open session so the next guest starts fresh",
+    responses: { 200: okResponseSchema, 401: apiErrorSchema, 404: apiErrorSchema },
+  },
 
   // --- Users ---------------------------------------------------------------
   listUsers: {

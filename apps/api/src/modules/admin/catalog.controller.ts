@@ -216,4 +216,16 @@ export class AdminCatalogController {
       return { status: 200 as const, body: result.value };
     });
   }
+
+  @TsRestHandler(apiContract.admin.closeTable)
+  closeTable(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.closeTable, async ({ params }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.catalog.closeTable(principal, params.id);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 200 as const, body: result.value };
+    });
+  }
 }

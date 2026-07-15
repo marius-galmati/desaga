@@ -537,12 +537,72 @@ export class CatalogService {
             .onRef("q.tenant_id", "=", "dt.tenant_id")
             .on("q.revoked_at", "is", null),
         )
-        .select(["dt.id", "dt.label", "dt.seats", "q.slug"])
+        .leftJoin("table_session as ts", (join) =>
+          join
+            .onRef("ts.dining_table_id", "=", "dt.id")
+            .onRef("ts.tenant_id", "=", "dt.tenant_id")
+            .on("ts.status", "in", ["open", "bill_requested"])
+            .on("ts.expires_at", ">", new Date()),
+        )
+        .select((eb) => [
+          "dt.id",
+          "dt.label",
+          "dt.seats",
+          "q.slug",
+          eb("ts.id", "is not", null).as("occupied"),
+        ])
         .where("dt.tenant_id", "=", principal.tenantId)
         .where("dt.archived_at", "is", null)
         .orderBy("dt.label")
         .execute();
-      return rows.map((r) => ({ id: r.id, label: r.label, seats: r.seats, qrSlug: r.slug }));
+      return rows.map((r) => ({
+        id: r.id,
+        label: r.label,
+        seats: r.seats,
+        qrSlug: r.slug,
+        occupied: Boolean(r.occupied),
+      }));
+    });
+  }
+
+  /** Close the table's open session (staff "clears" the table). Revokes its
+   *  device tokens so the next guest scan starts a brand-new session. */
+  async closeTable(principal: Principal, id: string): Promise<ServiceResult<{ ok: true }>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      const table = await trx
+        .selectFrom("dining_table")
+        .select("id")
+        .where("tenant_id", "=", principal.tenantId)
+        .where("id", "=", id)
+        .where("archived_at", "is", null)
+        .executeTakeFirst();
+      if (!table) {
+        return { ok: false as const, status: 404 as const, message: "table not found" };
+      }
+      const sessions = await trx
+        .selectFrom("table_session")
+        .select("id")
+        .where("tenant_id", "=", principal.tenantId)
+        .where("dining_table_id", "=", id)
+        .where("status", "in", ["open", "bill_requested"])
+        .execute();
+      const now = new Date();
+      for (const s of sessions) {
+        await trx
+          .updateTable("table_session")
+          .set({ status: "closed", closed_at: now })
+          .where("tenant_id", "=", principal.tenantId)
+          .where("id", "=", s.id)
+          .execute();
+        await trx
+          .updateTable("session_device_token")
+          .set({ revoked_at: now })
+          .where("tenant_id", "=", principal.tenantId)
+          .where("table_session_id", "=", s.id)
+          .where("revoked_at", "is", null)
+          .execute();
+      }
+      return { ok: true as const, value: { ok: true as const } };
     });
   }
 
@@ -621,7 +681,13 @@ export class CatalogService {
 
       return {
         ok: true as const,
-        value: { id: table.id, label: body.label, seats: body.seats ?? null, qrSlug: slug },
+        value: {
+          id: table.id,
+          label: body.label,
+          seats: body.seats ?? null,
+          qrSlug: slug,
+          occupied: false,
+        },
       };
     });
   }

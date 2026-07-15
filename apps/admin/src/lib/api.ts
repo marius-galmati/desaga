@@ -345,6 +345,10 @@ export function deleteTable(id: string): Promise<void> {
   return requestJson(`/admin/tables/${id}`, jsonInit("DELETE", {}), () => undefined);
 }
 
+export function closeTable(id: string): Promise<void> {
+  return requestJson(`/admin/tables/${id}/close`, jsonInit("POST", {}), () => undefined);
+}
+
 // --- Settings --------------------------------------------------------------
 
 export function getSettings(): Promise<AdminSettings> {

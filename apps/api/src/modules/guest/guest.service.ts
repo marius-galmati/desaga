@@ -496,8 +496,9 @@ export class GuestService {
     });
   }
 
-  /** Find the table's open tab or open a new one (small select-then-insert race
-   *  self-heals on retry via uq_open_session_per_table). */
+  /** Join the table's open tab, or open a fresh one. A previous guest's tab that
+   *  has EXPIRED (staff didn't clear it) is auto-recycled here so the next guest
+   *  never inherits the old orders; staff can also close it explicitly. */
   private async ensureOpenSession(
     trx: TenantTransaction,
     tenantId: string,
@@ -506,13 +507,31 @@ export class GuestService {
   ): Promise<string> {
     const existing = await trx
       .selectFrom("table_session")
-      .select(["id"])
+      .select(["id", "expires_at"])
       .where("tenant_id", "=", tenantId)
       .where("dining_table_id", "=", diningTableId)
       .where("status", "in", ["open", "bill_requested"])
       .executeTakeFirst();
     if (existing) {
-      return existing.id;
+      if (existing.expires_at.getTime() > Date.now()) {
+        return existing.id; // still-active shared tab: join it
+      }
+      // Expired: close it (frees the one-open-session-per-table index) + revoke
+      // its device tokens so the old guest can't keep ordering.
+      const now = new Date();
+      await trx
+        .updateTable("table_session")
+        .set({ status: "expired", closed_at: now })
+        .where("tenant_id", "=", tenantId)
+        .where("id", "=", existing.id)
+        .execute();
+      await trx
+        .updateTable("session_device_token")
+        .set({ revoked_at: now })
+        .where("tenant_id", "=", tenantId)
+        .where("table_session_id", "=", existing.id)
+        .where("revoked_at", "is", null)
+        .execute();
     }
     const created = await trx
       .insertInto("table_session")

@@ -2,7 +2,7 @@
 
 import type { AdminTable } from "@boca/contracts";
 import { type FormEvent, useEffect, useState } from "react";
-import { createTable, deleteTable, listTables } from "@/lib/api";
+import { closeTable, createTable, deleteTable, listTables } from "@/lib/api";
 import styles from "./panels.module.css";
 
 // Baked at build (compose passes NEXT_PUBLIC_GUEST_ORIGIN = the guest host).
@@ -55,6 +55,23 @@ export function TablesPanel() {
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nu am putut șterge masa.");
+    }
+  }
+
+  async function onClose(id: string) {
+    if (
+      !window.confirm(
+        "Eliberezi masa? Sesiunea curentă se închide, iar următorul client pornește o comandă nouă.",
+      )
+    ) {
+      return;
+    }
+    setError(null);
+    try {
+      await closeTable(id);
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nu am putut elibera masa.");
     }
   }
 
@@ -133,6 +150,7 @@ export function TablesPanel() {
               <tr>
                 <th>Masă</th>
                 <th>Locuri</th>
+                <th>Stare</th>
                 <th>Link comandă (QR)</th>
                 <th />
               </tr>
@@ -145,6 +163,13 @@ export function TablesPanel() {
                   </td>
                   <td>{t.seats ?? "—"}</td>
                   <td>
+                    {t.occupied ? (
+                      <span className="chip chip--gold">Ocupată</span>
+                    ) : (
+                      <span className="chip chip--pine">Liberă</span>
+                    )}
+                  </td>
+                  <td>
                     {t.qrSlug ? (
                       <span className={styles.tableLink}>{tableUrl(t.qrSlug)}</span>
                     ) : (
@@ -153,6 +178,11 @@ export function TablesPanel() {
                   </td>
                   <td style={{ textAlign: "right" }}>
                     <div style={{ display: "inline-flex", gap: 8, justifyContent: "flex-end" }}>
+                      {t.occupied ? (
+                        <button type="button" className="btn btn--sm" onClick={() => onClose(t.id)}>
+                          Eliberează masa
+                        </button>
+                      ) : null}
                       {t.qrSlug ? (
                         <button
                           type="button"

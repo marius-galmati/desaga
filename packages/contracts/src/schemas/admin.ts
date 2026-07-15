@@ -213,6 +213,7 @@ export const adminTableSchema = z.object({
   label: z.string(),
   seats: z.number().int().nullable(),
   qrSlug: z.string().nullable(),
+  occupied: z.boolean(),
 });
 export type AdminTable = z.infer<typeof adminTableSchema>;
 export const adminTableListSchema = z.array(adminTableSchema);
