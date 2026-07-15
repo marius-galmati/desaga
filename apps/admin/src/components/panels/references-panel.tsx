@@ -1,9 +1,15 @@
 "use client";
 
-import type { AdminDishListItem, ReferencePhotoRole, ReferenceSetDetail } from "@boca/contracts";
+import type {
+  AdminCategory,
+  AdminDishListItem,
+  ReferencePhotoRole,
+  ReferenceSetDetail,
+} from "@boca/contracts";
 import { useCallback, useEffect, useState } from "react";
-import { createReferenceSet, getReferenceSet, listDishes } from "@/lib/api";
+import { createReferenceSet, getReferenceSet, listCategories, listDishes } from "@/lib/api";
 import { Dropzone } from "../uploader";
+import { DishSelect } from "./dish-select";
 import styles from "./panels.module.css";
 
 interface Candidate {
@@ -20,6 +26,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 export function ReferencesPanel() {
   const [dishes, setDishes] = useState<AdminDishListItem[]>([]);
+  const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [set, setSet] = useState<ReferenceSetDetail | null>(null);
   const [loadingDishes, setLoadingDishes] = useState(true);
@@ -30,10 +37,11 @@ export function ReferencesPanel() {
 
   useEffect(() => {
     let cancelled = false;
-    listDishes()
-      .then((d) => {
+    Promise.all([listDishes(), listCategories()])
+      .then(([d, c]) => {
         if (cancelled) return;
         setDishes(d);
+        setCategories(c);
         setSelectedId((prev) => prev ?? d[0]?.id ?? null);
       })
       .catch((err) => {
@@ -111,18 +119,12 @@ export function ReferencesPanel() {
         <div className={styles.state}>Adaugă întâi preparate în meniu.</div>
       ) : (
         <>
-          <div className={styles.pickerRow}>
-            {dishes.map((d) => (
-              <button
-                key={d.id}
-                type="button"
-                className={`${styles.pick} ${selectedId === d.id ? styles.pickActive : ""}`}
-                onClick={() => setSelectedId(d.id)}
-              >
-                {d.name.ro}
-              </button>
-            ))}
-          </div>
+          <DishSelect
+            categories={categories}
+            dishes={dishes}
+            value={selectedId}
+            onChange={setSelectedId}
+          />
 
           <div className={`card ${styles.block}`}>
             <div className={styles.blockHead}>

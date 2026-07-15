@@ -571,6 +571,18 @@
   gap: 8px;
 }
 
+/* --- cascading category -> dish picker --- */
+.dishSelect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.dishSelect .field {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
 .tableLink {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.8rem;

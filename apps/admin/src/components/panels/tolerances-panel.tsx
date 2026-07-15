@@ -2,13 +2,15 @@
 
 import { SCORING_CRITERIA, type ScoringCriterionKey } from "@boca/config";
 import type {
+  AdminCategory,
   AdminDishListItem,
   ToleranceCriteria,
   ToleranceCriterion,
   ToleranceVariance,
 } from "@boca/contracts";
 import { useCallback, useEffect, useState } from "react";
-import { getTolerance, listDishes, putTolerance } from "@/lib/api";
+import { getTolerance, listCategories, listDishes, putTolerance } from "@/lib/api";
+import { DishSelect } from "./dish-select";
 import styles from "./panels.module.css";
 
 const VARIANTS: { key: ToleranceVariance; label: string }[] = [
@@ -31,6 +33,7 @@ function emptyCriteria(): ToleranceCriteria {
 
 export function TolerancesPanel() {
   const [dishes, setDishes] = useState<AdminDishListItem[]>([]);
+  const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [criteria, setCriteria] = useState<ToleranceCriteria>(emptyCriteria);
   const [hasExisting, setHasExisting] = useState(false);
@@ -42,10 +45,11 @@ export function TolerancesPanel() {
 
   useEffect(() => {
     let cancelled = false;
-    listDishes()
-      .then((d) => {
+    Promise.all([listDishes(), listCategories()])
+      .then(([d, c]) => {
         if (cancelled) return;
         setDishes(d);
+        setCategories(c);
         setSelectedId((prev) => prev ?? d[0]?.id ?? null);
       })
       .catch((err) => {
@@ -128,20 +132,12 @@ export function TolerancesPanel() {
         <div className={styles.state}>Adaugă întâi preparate în meniu.</div>
       ) : (
         <>
-          <label className="field" style={{ maxWidth: 420, marginBottom: 22 }}>
-            <span className="field-label">Preparat</span>
-            <select
-              className="input"
-              value={selectedId ?? ""}
-              onChange={(e) => setSelectedId(e.target.value || null)}
-            >
-              {dishes.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name.ro}
-                </option>
-              ))}
-            </select>
-          </label>
+          <DishSelect
+            categories={categories}
+            dishes={dishes}
+            value={selectedId}
+            onChange={setSelectedId}
+          />
 
           <div className={`card ${styles.block}`}>
             <div className={styles.blockHead}>
