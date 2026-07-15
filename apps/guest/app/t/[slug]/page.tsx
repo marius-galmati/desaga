@@ -266,7 +266,10 @@ export default function TableOrderPage() {
         </p>
       ) : null}
 
-      <div className={styles.view}>
+      <div
+        className={styles.view}
+        style={tab === "meniu" && cartCount > 0 ? { paddingBottom: 92 } : undefined}
+      >
         {tab === "meniu" && !detail ? (
           <MeniuView
             menu={menu}
@@ -297,7 +300,7 @@ export default function TableOrderPage() {
         {tab === "farfuria" ? <FarfuriaView plates={plates} lang={lang} /> : null}
       </div>
 
-      {tab === "meniu" && !detail && cartCount > 0 ? (
+      {tab === "meniu" && cartCount > 0 ? (
         <button type="button" className={styles.cartBar} onClick={() => setCartOpen(true)}>
           <span>
             {cartCount} {cartCount === 1 ? "produs" : "produse"}
@@ -540,7 +543,7 @@ function DetailView({
       </div>
       {inCart > 0 ? (
         <p className={styles.addedNote}>
-          S-a adăugat pe nota mesei. Deschide coșul ca să trimiți comanda.
+          Adăugat în comandă. Apasă bara „Vezi comanda” de jos ca să o trimiți.
         </p>
       ) : null}
     </div>

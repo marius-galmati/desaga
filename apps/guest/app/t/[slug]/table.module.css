@@ -575,15 +575,17 @@
 
 /* ---- Cart bar + sheet ---- */
 .cartBar {
-  position: sticky;
-  bottom: 8px;
-  z-index: 9;
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  /* Float just above the bottom tab bar, always reachable while ordering. */
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  z-index: 11;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 8px 12px;
-  padding: 13px 18px;
+  padding: 14px 18px;
   border: none;
   border-radius: var(--r-pill);
   background: var(--vin);
