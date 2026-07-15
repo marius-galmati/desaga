@@ -64,6 +64,9 @@ export function TolerancesPanel() {
     setLoadingTol(true);
     setError(null);
     setOk(null);
+    // Reset to defaults so the previous dish's profile can't linger on switch.
+    setHasExisting(false);
+    setCriteria(emptyCriteria());
     getTolerance(dishId)
       .then((c) => {
         setHasExisting(c !== null);

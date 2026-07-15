@@ -51,9 +51,13 @@ export function ReferencesPanel() {
   const loadSet = useCallback((dishId: string) => {
     setLoadingSet(true);
     setError(null);
+    setSet(null); // clear the previous dish's set so it can't linger on switch/error
     getReferenceSet(dishId)
       .then(setSet)
-      .catch((err) => setError(err instanceof Error ? err.message : "Nu am putut încărca setul."))
+      .catch((err) => {
+        setSet(null);
+        setError(err instanceof Error ? err.message : "Nu am putut încărca setul.");
+      })
       .finally(() => setLoadingSet(false));
   }, []);
 

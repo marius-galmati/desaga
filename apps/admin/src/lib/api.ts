@@ -137,7 +137,11 @@ async function requestJson<T>(
 ): Promise<T> {
   const res = await authFetch(path, init);
   if (!res.ok) throw new ApiRequestError(res.status, await extractMessage(res));
-  return parse(await res.json());
+  // Nullable GETs (tolerance, reference-set) return a `null` body, which ts-rest
+  // serializes as an EMPTY response — res.json() would throw on empty input, so
+  // read text and treat empty as null.
+  const text = await res.text();
+  return parse(text.length > 0 ? JSON.parse(text) : null);
 }
 
 function jsonInit(method: string, body: unknown): RequestInit {
