@@ -2,7 +2,7 @@ import type { Selectable } from "kysely";
 import type { AiEvaluation, EvalMode, NotScoreableReason } from "../generated/db";
 import type { TenantTransaction } from "../tenant";
 import { getDishVersionById } from "./menu";
-import { type InsertPassPhotoParams, insertPassPhoto } from "./passPhotos";
+import { type InsertPassPhotoParams, getNextRefireSequence, insertPassPhoto } from "./passPhotos";
 import {
   getActiveReferenceSetForDishVersion,
   getActiveToleranceProfileForDish,
@@ -189,11 +189,15 @@ export async function createQueuedEvaluationForOrderItem(
   trx: TenantTransaction,
   params: CreateEvaluationForItemParams,
 ): Promise<{ evaluation: Selectable<AiEvaluation>; passPhotoId: string }> {
+  // Re-shooting the same real order_item is a refire; take the next free slot so
+  // the (order_item, refire_sequence, plate_index) unique index does not collide.
+  const refireSequence = await getNextRefireSequence(trx, params.tenantId, params.orderItemId);
   const passPhotoId = await insertPassPhoto(trx, {
     ...params.photo,
     tenantId: params.tenantId,
     locationId: params.locationId,
     orderItemId: params.orderItemId,
+    refireSequence,
   });
 
   const referenceSet = await getActiveReferenceSetForDishVersion(trx, params.dishVersionId);
