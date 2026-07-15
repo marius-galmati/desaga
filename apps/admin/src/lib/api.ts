@@ -323,6 +323,10 @@ export function deactivateUser(id: string): Promise<void> {
   return requestJson(`/admin/users/${id}/deactivate`, jsonInit("POST", {}), () => undefined);
 }
 
+export function deleteUser(id: string): Promise<void> {
+  return requestJson(`/admin/users/${id}`, jsonInit("DELETE", {}), () => undefined);
+}
+
 // --- Settings --------------------------------------------------------------
 
 export function getSettings(): Promise<AdminSettings> {

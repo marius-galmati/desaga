@@ -311,6 +311,21 @@ export const adminContract = c.router({
       401: apiErrorSchema,
       403: apiErrorSchema,
       404: apiErrorSchema,
+      409: apiErrorSchema, // e.g. deactivating your own account
+    },
+  },
+  deleteUser: {
+    method: "DELETE",
+    path: "/admin/users/:id",
+    pathParams: idParams,
+    body: z.object({}),
+    summary: "Hard-delete a user (409 if they have activity — deactivate instead)",
+    responses: {
+      200: okResponseSchema,
+      401: apiErrorSchema,
+      403: apiErrorSchema,
+      404: apiErrorSchema,
+      409: apiErrorSchema,
     },
   },
 

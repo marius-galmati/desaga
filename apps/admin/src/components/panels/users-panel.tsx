@@ -2,7 +2,8 @@
 
 import type { AdminSettingsLocation, AdminUser, UserRole } from "@boca/contracts";
 import { type FormEvent, useEffect, useState } from "react";
-import { createUser, deactivateUser, getSettings, listUsers } from "@/lib/api";
+import { createUser, deactivateUser, deleteUser, getSettings, listUsers } from "@/lib/api";
+import { getCurrentUser } from "@/lib/auth";
 import styles from "./panels.module.css";
 
 const ROLES: { key: UserRole; label: string }[] = [
@@ -53,6 +54,8 @@ export function UsersPanel() {
     };
   }, []);
 
+  const currentEmail = getCurrentUser()?.email ?? null;
+
   async function onDeactivate(id: string) {
     setError(null);
     try {
@@ -60,6 +63,19 @@ export function UsersPanel() {
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nu am putut dezactiva utilizatorul.");
+    }
+  }
+
+  async function onDelete(id: string) {
+    if (!window.confirm("Ștergi definitiv acest utilizator? Acțiunea nu poate fi anulată.")) {
+      return;
+    }
+    setError(null);
+    try {
+      await deleteUser(id);
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nu am putut șterge utilizatorul.");
     }
   }
 
@@ -130,15 +146,30 @@ export function UsersPanel() {
                     )}
                   </td>
                   <td style={{ textAlign: "right" }}>
-                    {u.isActive ? (
-                      <button
-                        type="button"
-                        className="btn btn--ghost btn--sm"
-                        onClick={() => onDeactivate(u.id)}
-                      >
-                        Dezactivează
-                      </button>
-                    ) : null}
+                    {u.email === currentEmail ? (
+                      <span className="faint" style={{ fontSize: "0.8rem" }}>
+                        contul tău
+                      </span>
+                    ) : (
+                      <div style={{ display: "inline-flex", gap: 8, justifyContent: "flex-end" }}>
+                        {u.isActive ? (
+                          <button
+                            type="button"
+                            className="btn btn--ghost btn--sm"
+                            onClick={() => onDeactivate(u.id)}
+                          >
+                            Dezactivează
+                          </button>
+                        ) : null}
+                        <button
+                          type="button"
+                          className="btn btn--ghost btn--sm"
+                          onClick={() => onDelete(u.id)}
+                        >
+                          Șterge
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -73,6 +73,38 @@ export default function AdminHome() {
     router.replace("/login");
   }
 
+  // Role-based access: admin/manager get everything, waiter only Comenzi,
+  // kitchen_pass/management_viewer have no admin surface (kitchen_pass uses the
+  // staff pass app). Prevents the confusing "no permissions" broken panels.
+  const role = user?.role;
+  const allowedNav =
+    role === "tenant_admin" || role === "manager"
+      ? NAV
+      : role === "waiter"
+        ? NAV.filter((n) => n.key === "comenzi")
+        : [];
+  const activeNav = allowedNav.some((n) => n.key === nav) ? nav : (allowedNav[0]?.key ?? "comenzi");
+
+  if (allowedNav.length === 0) {
+    return (
+      <div className={styles.boot}>
+        <div style={{ maxWidth: 440, textAlign: "center", padding: 24 }}>
+          <span className="eyebrow eyebrow--ink">Acces restricționat</span>
+          <h2 style={{ fontFamily: "var(--font-display)", margin: "10px 0" }}>
+            Acest cont nu are acces la administrare
+          </h2>
+          <p className="faint" style={{ marginBottom: 18 }}>
+            Rolul „{ROLE_LABEL[role ?? ""] ?? role}” nu poate folosi panoul de administrare.
+            {role === "kitchen_pass" ? " Folosește aplicația de personal (pass)." : ""}
+          </p>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={onLogout}>
+            Deconectare
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
@@ -82,12 +114,12 @@ export default function AdminHome() {
 
         <nav className={styles.nav} aria-label="Secțiuni administrare">
           <span className={`eyebrow eyebrow--ink ${styles.navHeading}`}>Secțiuni</span>
-          {NAV.map((item) => (
+          {allowedNav.map((item) => (
             <button
               key={item.key}
               type="button"
-              className={`${styles.navItem} ${nav === item.key ? styles.navItemActive : ""}`}
-              aria-current={nav === item.key ? "page" : undefined}
+              className={`${styles.navItem} ${activeNav === item.key ? styles.navItemActive : ""}`}
+              aria-current={activeNav === item.key ? "page" : undefined}
               onClick={() => setNav(item.key)}
             >
               {item.label}
@@ -115,13 +147,13 @@ export default function AdminHome() {
       </aside>
 
       <main className={styles.content}>
-        {nav === "comenzi" && <OrdersPanel />}
-        {nav === "meniu" && <MenuPanel />}
-        {nav === "fotografii" && <PhotosPanel />}
-        {nav === "referinte" && <ReferencesPanel />}
-        {nav === "tolerante" && <TolerancesPanel />}
-        {nav === "utilizatori" && <UsersPanel />}
-        {nav === "setari" && <SettingsPanel />}
+        {activeNav === "comenzi" && <OrdersPanel />}
+        {activeNav === "meniu" && <MenuPanel />}
+        {activeNav === "fotografii" && <PhotosPanel />}
+        {activeNav === "referinte" && <ReferencesPanel />}
+        {activeNav === "tolerante" && <TolerancesPanel />}
+        {activeNav === "utilizatori" && <UsersPanel />}
+        {activeNav === "setari" && <SettingsPanel />}
       </main>
     </div>
   );

@@ -459,6 +459,9 @@ export class CatalogService {
   }
 
   async deactivateUser(principal: Principal, id: string): Promise<ServiceResult<{ ok: true }>> {
+    if (id === principal.userId) {
+      return { ok: false, status: 409, message: "Nu îți poți dezactiva propriul cont." };
+    }
     return withTenant(principal.tenantId, async (trx) => {
       const updated = await trx
         .updateTable("app_user")
@@ -471,5 +474,51 @@ export class CatalogService {
       }
       return { ok: true as const, value: { ok: true as const } };
     });
+  }
+
+  /**
+   * Hard-delete a user. Only works for accounts with NO activity — a user who
+   * created dishes / accepted orders / shot pass photos is FK-referenced
+   * (RESTRICT), so the delete raises 23503 and we return 409 (deactivate
+   * instead). Can't delete your own account.
+   */
+  async deleteUser(principal: Principal, id: string): Promise<ServiceResult<{ ok: true }>> {
+    if (id === principal.userId) {
+      return { ok: false, status: 409, message: "Nu îți poți șterge propriul cont." };
+    }
+    try {
+      return await withTenant(principal.tenantId, async (trx) => {
+        const existing = await trx
+          .selectFrom("app_user")
+          .select("id")
+          .where("tenant_id", "=", principal.tenantId)
+          .where("id", "=", id)
+          .executeTakeFirst();
+        if (!existing) {
+          return { ok: false as const, status: 404 as const, message: "user not found" };
+        }
+        await trx
+          .deleteFrom("app_user")
+          .where("tenant_id", "=", principal.tenantId)
+          .where("id", "=", id)
+          .execute();
+        return { ok: true as const, value: { ok: true as const } };
+      });
+    } catch (error) {
+      // 23503 = FK violation: the user has activity in the system.
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        (error as { code?: string }).code === "23503"
+      ) {
+        return {
+          ok: false,
+          status: 409,
+          message: "Utilizatorul are activitate în sistem — dezactivează-l în schimb.",
+        };
+      }
+      throw error;
+    }
   }
 }
