@@ -15,7 +15,7 @@ import {
 import { ReportView } from "./report-view";
 import s from "./floor.module.css";
 
-type Phase = "list" | "working" | "report";
+type Phase = "list" | "camera" | "working" | "report";
 type Target = { kind: "queue"; item: PassQueueItem } | { kind: "demo"; dish: AdminDishListItem };
 
 /** Pass plating capture, in the dark demo design: photograph the next plated
@@ -93,6 +93,10 @@ export function PassView() {
 
   function pick(t: Target) {
     setTarget(t);
+    setPhase("camera"); // open the in-app live viewfinder
+  }
+
+  function nativeCamera() {
     setTimeout(() => fileInput.current?.click(), 0);
   }
 
@@ -159,7 +163,14 @@ export function PassView() {
           </p>
         ) : null}
 
-        {phase === "working" ? (
+        {phase === "camera" && target ? (
+          <CameraCard
+            title={targetName}
+            onShoot={(file) => onPhoto(file, target)}
+            onCancel={reset}
+            onFallback={nativeCamera}
+          />
+        ) : phase === "working" ? (
           <section className={s.capture}>
             <div className={s.vf}>
               {candidateUrl ? (
@@ -223,7 +234,7 @@ export function PassView() {
               <div className={s.vfGuide} aria-hidden>
                 <Emblem size={46} tone="var(--ochre-soft)" />
               </div>
-              <span className={s.vfCap}>Așază farfuria în cadru</span>
+              <span className={s.vfCap}>Etalonul preparatului</span>
             </div>
 
             <button
@@ -297,5 +308,109 @@ export function PassView() {
         ) : null}
       </div>
     </div>
+  );
+}
+
+/** In-app live viewfinder: real rear-camera preview with the framing overlay,
+ *  a shutter that grabs a frame, and a fallback to the phone's native camera. */
+function CameraCard({
+  title,
+  onShoot,
+  onCancel,
+  onFallback,
+}: {
+  title: string;
+  onShoot: (file: File) => void;
+  onCancel: () => void;
+  onFallback: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [ready, setReady] = useState(false);
+  const [camErr, setCamErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    let stream: MediaStream | null = null;
+    let active = true;
+    (async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } },
+          audio: false,
+        });
+        if (!active) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play();
+          setReady(true);
+        }
+      } catch {
+        setCamErr("Nu am putut accesa camera în aplicație.");
+      }
+    })();
+    return () => {
+      active = false;
+      stream?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
+  function shoot() {
+    const v = videoRef.current;
+    if (!v || !v.videoWidth) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = v.videoWidth;
+    canvas.height = v.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(
+      (blob) => {
+        if (blob) onShoot(new File([blob], "montaj.jpg", { type: "image/jpeg" }));
+      },
+      "image/jpeg",
+      0.92,
+    );
+  }
+
+  return (
+    <section className={s.capture}>
+      <h2 className={s.capDish}>{title}</h2>
+      <div className={s.vf}>
+        {camErr ? (
+          <span className={s.vfCap}>{camErr}</span>
+        ) : (
+          <>
+            {/* biome-ignore lint/a11y/useMediaCaption: live camera preview, no captions */}
+            <video ref={videoRef} className={s.camVideo} playsInline muted autoPlay />
+            <span className={`${s.br} ${s.brTL}`} aria-hidden />
+            <span className={`${s.br} ${s.brTR}`} aria-hidden />
+            <span className={`${s.br} ${s.brBL}`} aria-hidden />
+            <span className={`${s.br} ${s.brBR}`} aria-hidden />
+            <span className={s.vfCap}>Așază farfuria în cadru</span>
+          </>
+        )}
+      </div>
+      {camErr ? (
+        <button type="button" className="btn btn--gold btn--block" onClick={onFallback}>
+          Deschide camera telefonului
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="btn btn--gold btn--block"
+          disabled={!ready}
+          onClick={shoot}
+        >
+          Fotografiază montajul
+        </button>
+      )}
+      <div className={s.ghosts}>
+        <button type="button" className={s.ghostBtn} onClick={onCancel}>
+          Anulează
+        </button>
+      </div>
+    </section>
   );
 }
