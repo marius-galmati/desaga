@@ -27,6 +27,8 @@ COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY apps/api/package.json apps/api/
 COPY apps/admin/package.json apps/admin/
 COPY apps/showcase/package.json apps/showcase/
+COPY apps/guest/package.json apps/guest/
+COPY apps/staff/package.json apps/staff/
 COPY packages/config/package.json packages/config/
 COPY packages/contracts/package.json packages/contracts/
 COPY packages/db/package.json packages/db/
