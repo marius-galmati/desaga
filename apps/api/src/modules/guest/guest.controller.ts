@@ -87,4 +87,16 @@ export class GuestController {
       return { status: 200 as const, body: { ok: true as const } };
     });
   }
+
+  @Public()
+  @TsRestHandler(apiContract.guest.listPlates)
+  listPlates(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.guest.listPlates, async () => {
+      const plates = await this.guest.listPlates(guestToken(request));
+      if (plates === null) {
+        return { status: 401 as const, body: { message: "invalid or expired session" } };
+      }
+      return { status: 200 as const, body: plates };
+    });
+  }
 }

@@ -1,42 +1,59 @@
-.page {
+/* ============================================================================
+   Desaga — guest phone app (real). 3 tabs: Meniu / Nota / Farfuria mea.
+   Ported 1:1 from the showcase demo (apps/showcase/app/oaspete), full-screen
+   (no phone-frame mockup), plus a compact topbar, cart, and plate strip.
+   Layout only; buttons/chips/cards reuse globals.
+   ============================================================================ */
+
+.app {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
   background: var(--paper);
-  color: var(--ink);
-  padding-bottom: 96px;
+}
+.view {
+  flex: 1;
+  padding-bottom: 8px;
 }
 .center {
-  padding: 80px 24px;
+  padding: 40vh 24px;
   text-align: center;
   color: var(--ink-soft);
 }
 
+/* ---- Compact topbar (table + language) ---- */
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 12;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px clamp(14px, 4vw, 28px);
-  background: color-mix(in srgb, var(--paper) 90%, transparent);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--line);
+  gap: 12px;
+  padding: max(10px, env(safe-area-inset-top, 0px)) 16px 10px;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line-soft);
 }
-.table {
+.tableChip {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
+  gap: 9px;
+  min-width: 0;
 }
 .tableEmoji {
-  font-size: 1.7rem;
+  font-size: 1.3rem;
+  flex: none;
 }
 .tableLabel {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
 }
 .tableSub {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--ink-faint);
 }
 .langToggle {
@@ -44,254 +61,643 @@
   border: 1px solid var(--line-strong);
   border-radius: var(--r-pill);
   overflow: hidden;
+  flex: none;
 }
 .langToggle button {
-  border: none;
-  background: transparent;
-  padding: 5px 12px;
-  font-size: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.34em 0.7em;
+  background: transparent;
   color: var(--ink-soft);
+  border: none;
   cursor: pointer;
 }
-.langToggle button + button {
-  border-left: 1px solid var(--line-strong);
-}
-.langToggle button.langOn {
-  background: var(--ochre);
-  color: var(--ink-surface);
+.langToggle .langOn {
+  background: var(--vin);
+  color: var(--on-dark);
 }
 
-.service {
-  display: flex;
-  gap: 10px;
-  padding: 14px clamp(14px, 4vw, 28px) 0;
-}
-
+/* ---- Transient notice / error ---- */
 .notice,
 .err {
-  margin: 12px clamp(14px, 4vw, 28px) 0;
+  margin: 10px 16px 0;
   padding: 10px 14px;
-  border-radius: var(--r);
-  font-size: 0.9rem;
+  border-radius: var(--r-sm);
+  font-size: 0.86rem;
 }
 .notice {
-  background: var(--pine-wash);
   color: var(--pine);
+  background: var(--pine-wash);
+  border: 1px solid color-mix(in srgb, var(--pine) 24%, transparent);
 }
 .err {
+  color: var(--vin-deep);
   background: var(--vin-wash);
-  color: var(--vin-deep, #7a2231);
+  border: 1px solid color-mix(in srgb, var(--vin) 26%, transparent);
 }
 
-.orders {
-  padding: 18px clamp(14px, 4vw, 28px) 0;
+/* ---- Meniu header ---- */
+.header {
+  padding: 18px 18px 20px;
+  background: radial-gradient(120% 80% at 100% 0%, var(--ochre-wash), transparent 62%), var(--card);
+  border-bottom: 1px solid var(--line-soft);
 }
-.orders h2,
-.catTitle {
-  font-family: var(--font-display);
-  font-weight: 600;
-}
-.orders h2 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-}
-.orderCard {
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  background: var(--card);
-  padding: 12px 14px;
-  margin-bottom: 10px;
-}
-.orderHead {
+.eyebrowRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  gap: 9px;
+  margin-bottom: 12px;
 }
-.orderTotal {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+.greeting {
+  font-size: 1.95rem;
+  line-height: 1.02;
+  color: var(--ink);
 }
-.orderCard ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.subline {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
 }
-.orderCard li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.9rem;
-  padding: 3px 0;
-}
-.itemStatus {
-  color: var(--ink-faint);
-  font-size: 0.8rem;
+.subline strong {
+  color: var(--vin);
+  font-weight: 600;
 }
 
-.menu {
-  padding: 8px clamp(14px, 4vw, 28px) 0;
-}
-.category {
-  padding-top: 26px;
-}
-.catTitle {
-  font-size: clamp(1.25rem, 4vw, 1.7rem);
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--ochre);
-  margin-bottom: 6px;
-}
-.dish {
+/* ---- Category filters ---- */
+.filters {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--line);
+  gap: 8px;
+  padding: 12px 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line-soft);
 }
-.thumb {
-  flex: 0 0 auto;
-  width: clamp(64px, 18vw, 92px);
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+.filters::-webkit-scrollbar {
+  display: none;
+}
+.filterPill {
+  flex: none;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.5em 0.95em;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    background 0.18s var(--ease),
+    color 0.18s var(--ease),
+    border-color 0.18s var(--ease);
+}
+.filterPill:hover {
+  border-color: var(--ink-faint);
+}
+.filterPillOn {
+  background: var(--vin);
+  color: var(--on-dark);
+  border-color: var(--vin);
+}
+
+/* ---- Dish list ---- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px 24px;
+}
+.dishCard {
+  display: flex;
+  gap: 13px;
+  padding: 11px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
   border-radius: var(--r);
-  background: var(--card);
+  transition:
+    transform 0.18s var(--ease),
+    box-shadow 0.18s var(--ease),
+    border-color 0.18s var(--ease);
 }
-.thumbEmpty {
-  border: 1px dashed var(--line-strong);
+.dishCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+  border-color: var(--line-strong);
+}
+.dishThumb {
+  width: 84px;
+  flex: none;
 }
 .dishBody {
-  flex: 1 1 auto;
+  flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-block: 2px;
 }
 .dishName {
   font-family: var(--font-display);
   font-size: 1.06rem;
   font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
 }
-.desc {
-  margin-top: 4px;
+.dishDesc {
+  font-size: 0.8rem;
+  line-height: 1.4;
   color: var(--ink-soft);
-  font-size: 0.9rem;
-  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.dishFoot {
-  margin-top: 8px;
+.dishMeta {
+  margin-top: auto;
+  padding-top: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
 }
 .price {
-  font-weight: 700;
-  color: var(--vin, #7a2231);
-  font-variant-numeric: tabular-nums;
-}
-.add {
-  border: 1px solid var(--ochre);
-  background: var(--ochre-wash);
-  color: var(--ink);
-  padding: 7px 14px;
-  border-radius: var(--r-pill);
-  font-size: 0.84rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
   font-weight: 600;
-  cursor: pointer;
+  color: var(--vin);
 }
-.stepper {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
+.dishArrow {
+  color: var(--ink-faint);
+  font-size: 0.95rem;
+  transition: transform 0.2s var(--ease);
 }
-.stepper button {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--line-strong);
-  background: var(--card);
-  font-size: 1.1rem;
-  line-height: 1;
-  cursor: pointer;
-}
-.stepper span {
-  font-weight: 700;
-  min-width: 16px;
-  text-align: center;
+.dishCard:hover .dishArrow {
+  transform: translateX(3px);
+  color: var(--vin);
 }
 
+/* ---- Detail ---- */
+.detail {
+  padding: 16px 18px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.backBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.backBtn:hover {
+  color: var(--vin);
+}
+.detailPhoto {
+  box-shadow: var(--shadow-card);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.detailTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.detailName {
+  font-size: 1.7rem;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.detailDesc {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.detailFoot {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.detailPrice {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--vin);
+  line-height: 1.1;
+}
+.addedNote {
+  font-size: 0.8rem;
+  color: var(--pine);
+  margin: 0;
+}
+
+/* ---- Nota ---- */
+.nota {
+  padding: 20px 18px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.notaHead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.notaTitle {
+  font-size: 1.5rem;
+  color: var(--ink);
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.initial,
+.initialSm {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  flex: none;
+  line-height: 1;
+}
+.initial {
+  width: 24px;
+  height: 24px;
+  font-size: 0.95rem;
+}
+.initialSm {
+  width: 30px;
+  height: 30px;
+  font-size: 1.05rem;
+}
+.notaTable {
+  padding: 4px 14px;
+}
+.notaLine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.notaLineBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.notaDish {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.notaWho {
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+}
+.notaPrice {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+  flex: none;
+}
+.totalRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 15px 0 13px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.totalValue {
+  font-size: 1.35rem;
+  color: var(--vin);
+}
+.notaHint {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  text-align: center;
+  margin: -4px 0 0;
+}
+.notaActions {
+  display: grid;
+  gap: 10px;
+}
+.empty {
+  padding: 36px 18px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* ---- Farfuria mea ---- */
+.farfurie {
+  padding: 20px 18px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.farfHead {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.farfTitle {
+  font-size: 1.42rem;
+  line-height: 1.12;
+  color: var(--ink);
+}
+.farfLede {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.plateStrip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.plateStrip::-webkit-scrollbar {
+  display: none;
+}
+.plateChip {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.plateChipOn {
+  background: var(--card);
+  border-color: var(--vin);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+.plateChipThumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: none;
+  background: var(--paper-2);
+}
+.plateChipThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.compareRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.compareCol {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.compareLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-align: center;
+}
+.compareVs {
+  display: grid;
+  place-items: center;
+  padding-top: 18px;
+}
+.sealWrap {
+  display: grid;
+  place-items: center;
+  padding: 4px 0;
+}
+.matchNum {
+  font-family: var(--font-display);
+  font-size: 2.7rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--pine);
+}
+.matchOf {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pine-soft);
+  margin-top: 3px;
+}
+.keepsakeLine {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--ink);
+  margin: 0;
+}
+.delightChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.keepsake {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 16px;
+  background: var(--ochre-wash);
+  border-color: transparent;
+}
+.keepsake > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.keepsake strong {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  color: var(--ink);
+}
+.keepsake span {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* ---- Cart bar + sheet ---- */
 .cartBar {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 16px;
-  width: min(560px, calc(100vw - 28px));
+  position: sticky;
+  bottom: 8px;
+  z-index: 9;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 20px;
+  margin: 8px 12px;
+  padding: 13px 18px;
   border: none;
   border-radius: var(--r-pill);
-  background: var(--ink, #2a201c);
-  color: var(--on-dark, #f5efe3);
+  background: var(--vin);
+  color: var(--on-dark);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   cursor: pointer;
-  box-shadow: var(--shadow-lift, 0 12px 32px rgba(0, 0, 0, 0.24));
-  z-index: 20;
+  box-shadow: var(--shadow-lift);
 }
-
 .sheet {
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 40;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  background: rgba(20, 12, 10, 0.45);
+  background: color-mix(in srgb, var(--ink-surface) 55%, transparent);
 }
 .sheetInner {
-  width: min(560px, 100vw);
+  width: 100%;
   background: var(--paper);
-  border-radius: var(--r-lg, 18px) var(--r-lg, 18px) 0 0;
-  padding: 20px clamp(16px, 5vw, 28px) calc(24px + env(safe-area-inset-bottom));
-  max-height: 82dvh;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: 18px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+  max-height: 80dvh;
   overflow-y: auto;
 }
 .sheetHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .sheetHead h2 {
-  font-family: var(--font-display);
   font-size: 1.3rem;
-  font-weight: 600;
 }
 .close {
+  background: none;
   border: none;
-  background: transparent;
   font-size: 1.1rem;
-  cursor: pointer;
   color: var(--ink-soft);
+  cursor: pointer;
+  padding: 4px 8px;
 }
 .cartList {
   list-style: none;
-  margin: 0 0 12px;
+  margin: 0;
   padding: 0;
 }
 .cartList li {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--line);
-  font-size: 0.95rem;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 0.94rem;
+}
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.stepper button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
 }
 .cartTotalRow {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  font-weight: 700;
-  font-size: 1.05rem;
-  padding: 12px 0 16px;
+  padding: 14px 0 16px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* ---- Bottom tab bar ---- */
+.tabbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  padding: 9px 10px calc(9px + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  background: none;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  color: var(--ink-faint);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  transition: color 0.15s var(--ease);
+}
+.tab:hover {
+  color: var(--ink-soft);
+}
+.tabOn {
+  color: var(--vin);
 }

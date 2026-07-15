@@ -1,8 +1,10 @@
 import {
   type GuestOrder,
+  type GuestPlate,
+  type GuestSession,
   guestOrderListSchema,
   guestOrderSchema,
-  type GuestSession,
+  guestPlateListSchema,
   guestSessionSchema,
   type PlaceOrderRequest,
   type ServiceRequestKind,
@@ -78,6 +80,12 @@ export async function serviceRequest(token: string, kind: ServiceRequestKind): P
     body: JSON.stringify({ kind }),
   });
   await jsonOrThrow(res, () => undefined);
+}
+
+/** "Farfuria mea" — the table's plates photographed at the pass + their fidelity. */
+export async function listPlates(token: string): Promise<GuestPlate[]> {
+  const res = await fetch("/api/guest/plates", { headers: { "X-Guest-Token": token } });
+  return jsonOrThrow(res, (p) => guestPlateListSchema.parse(p));
 }
 
 // Romanian status labels for the order/item state machine.

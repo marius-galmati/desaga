@@ -84,12 +84,19 @@ export const guestOrderLineSchema = z.object({
   note: z.string().nullable(),
 });
 
+// The guest persona who placed the order (for the shared-table bill attribution).
+export const guestOrderGuestSchema = z.object({
+  displayName: z.string(),
+  emoji: z.string(),
+});
+
 export const guestOrderSchema = z.object({
   id: uuidSchema,
   status: guestOrderStatusSchema,
   subtotalMinor: moneyMinorSchema,
   totalMinor: moneyMinorSchema,
   createdAt: z.string(),
+  guest: guestOrderGuestSchema.nullable(),
   items: z.array(guestOrderLineSchema),
 });
 export type GuestOrder = z.infer<typeof guestOrderSchema>;
@@ -100,3 +107,21 @@ export const guestOrderListSchema = z.array(guestOrderSchema);
 export const serviceRequestBodySchema = z.object({ kind: serviceRequestKindSchema });
 
 export const okResultSchema = z.object({ ok: z.literal(true) });
+
+// --- Farfuria mea (guest-facing AI comparison) -----------------------------
+
+// A plate the table ordered that was photographed at the pass and scored by the
+// AI. The guest sees ONLY the warm, keepsake framing — never the chef's QC
+// verdict or the 6-criterion breakdown. `fidelity` is 0-10 (median/5 * 10).
+export const guestPlateSchema = z.object({
+  evaluationId: uuidSchema,
+  dishName: bilingualTextSchema,
+  fidelity: z.number().min(0).max(10),
+  candidateUrl: z.string().nullable(), // the real served-plate photo (from the pass)
+  referenceUrl: z.string().nullable(), // one reference photo (the house recipe)
+  chips: z.array(z.string()), // warm delight chips derived from the top criteria
+  createdAt: z.string(),
+});
+export type GuestPlate = z.infer<typeof guestPlateSchema>;
+
+export const guestPlateListSchema = z.array(guestPlateSchema);

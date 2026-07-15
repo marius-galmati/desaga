@@ -5,6 +5,7 @@ import {
   guestMenuSchema,
   guestOrderListSchema,
   guestOrderSchema,
+  guestPlateListSchema,
   guestSessionSchema,
   guestTablesSchema,
   okResultSchema,
@@ -68,5 +69,14 @@ export const guestContract = c.router({
     body: serviceRequestBodySchema,
     summary: "Call a waiter or request the bill (X-Guest-Token header)",
     responses: { 200: okResultSchema, 401: apiErrorSchema },
+  },
+
+  // "Farfuria mea" — the table's plates that were photographed at the pass and
+  // scored, in the warm guest framing (X-Guest-Token header).
+  listPlates: {
+    method: "GET",
+    path: "/guest/plates",
+    summary: "The session's evaluated plates, as a guest-facing keepsake",
+    responses: { 200: guestPlateListSchema, 401: apiErrorSchema },
   },
 });

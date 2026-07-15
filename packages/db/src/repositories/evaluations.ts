@@ -381,6 +381,47 @@ export async function getReferencePhotosForSet(
     .execute();
 }
 
+/**
+ * Completed, scored plates for one table session — the guest "Farfuria mea"
+ * feed. Joins ai_evaluation back to the session through its order item, keeping
+ * only live completed rows. The caller presents ONLY the warm framing.
+ */
+export async function getSessionEvaluatedPlates(
+  trx: TenantTransaction,
+  tenantId: string,
+  tableSessionId: string,
+) {
+  return trx
+    .selectFrom("ai_evaluation as e")
+    .innerJoin("pass_photo as p", (join) =>
+      join.onRef("p.id", "=", "e.pass_photo_id").onRef("p.tenant_id", "=", "e.tenant_id"),
+    )
+    .innerJoin("order_item as oi", (join) =>
+      join.onRef("oi.id", "=", "p.order_item_id").onRef("oi.tenant_id", "=", "p.tenant_id"),
+    )
+    .innerJoin("guest_order as go", (join) =>
+      join.onRef("go.id", "=", "oi.order_id").onRef("go.tenant_id", "=", "oi.tenant_id"),
+    )
+    .innerJoin("dish_version as dv", (join) =>
+      join.onRef("dv.id", "=", "oi.dish_version_id").onRef("dv.tenant_id", "=", "oi.tenant_id"),
+    )
+    .select([
+      "e.id as id",
+      "dv.name as dishName",
+      "e.overall_score as overallScore",
+      "e.criterion_scores as criterionScores",
+      "e.reference_set_id as referenceSetId",
+      "p.storage_key as candidateStorageKey",
+      "e.created_at as createdAt",
+    ])
+    .where("e.tenant_id", "=", tenantId)
+    .where("go.table_session_id", "=", tableSessionId)
+    .where("e.status", "=", "completed")
+    .where("e.deleted_at", "is", null)
+    .orderBy("e.created_at", "desc")
+    .execute();
+}
+
 // ---------------------------------------------------------------------------
 // Management dashboard aggregates (real plating-conformity reporting)
 // ---------------------------------------------------------------------------

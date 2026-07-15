@@ -1,14 +1,18 @@
 import { createHash, randomBytes } from "node:crypto";
-import type {
-  GuestMenu,
-  GuestMenuDish,
-  GuestOrder,
-  GuestSession,
-  GuestTable,
-  PlaceOrderRequest,
-  ServiceRequestKind,
+import {
+  criterionScoresSchema,
+  type GuestMenu,
+  type GuestMenuDish,
+  type GuestOrder,
+  type GuestPlate,
+  type GuestSession,
+  type GuestTable,
+  type PlaceOrderRequest,
+  type ServiceRequestKind,
 } from "@boca/contracts";
 import {
+  getReferencePhotosForSet,
+  getSessionEvaluatedPlates,
   resolveQrSlug,
   resolveSessionToken,
   resolveTenantIdBySlug,
@@ -43,6 +47,34 @@ type GuestResult<T> = { ok: true; value: T } | { ok: false; status: 400 | 401; m
 // Fixture category the demo eval flow creates under a tenant — never shown to
 // guests (same filter the admin catalog applies).
 const HIDDEN_CATEGORY_RO = "Demo AI";
+
+// Warm, guest-facing chip per scoring criterion — the ONLY thing derived from
+// the criterion scores that ever reaches a guest (never the numeric verdict).
+const CRITERION_CHIP: Record<string, string> = {
+  components: "Toate la locul lor",
+  arrangement: "Montaj generos",
+  sauce: "Sos ca la carte",
+  cleanliness: "Farfurie îngrijită",
+  color: "Culori vii",
+  portion: "Porție pe măsură",
+};
+
+/**
+ * Up to three warm delight chips from a plate's strongest criteria. Always
+ * positive — the guest never sees a low score spelled out. Falls back to a
+ * generic keepsake chip when the scores can't be parsed.
+ */
+function warmChips(criterionScores: unknown): string[] {
+  const parsed = criterionScoresSchema.safeParse(criterionScores);
+  if (!parsed.success) {
+    return ["Ca acasă"];
+  }
+  const ranked = Object.entries(parsed.data)
+    .map(([key, v]) => ({ chip: CRITERION_CHIP[key] ?? "Ca acasă", score: v.score }))
+    .sort((a, b) => b.score - a.score);
+  const chips = ranked.slice(0, 3).map((r) => r.chip);
+  return chips.length > 0 ? chips : ["Ca acasă"];
+}
 
 @Injectable()
 export class GuestService {
@@ -369,6 +401,13 @@ export class GuestService {
         .where("id", "=", tableSessionId)
         .execute();
 
+      const guest = await trx
+        .selectFrom("session_guest")
+        .select(["display_name", "emoji"])
+        .where("tenant_id", "=", tenantId)
+        .where("id", "=", sessionGuestId)
+        .executeTakeFirst();
+
       return {
         ok: true as const,
         value: {
@@ -377,6 +416,7 @@ export class GuestService {
           subtotalMinor: subtotal,
           totalMinor: subtotal,
           createdAt: order.created_at.toISOString(),
+          guest: guest ? { displayName: guest.display_name, emoji: guest.emoji } : null,
           items: responseItems,
         },
       };
@@ -392,11 +432,24 @@ export class GuestService {
     const { tenantId, tableSessionId } = resolved;
     return withTenant(tenantId, async (trx) => {
       const orders = await trx
-        .selectFrom("guest_order")
-        .select(["id", "status", "subtotal_minor", "total_minor", "created_at"])
-        .where("tenant_id", "=", tenantId)
-        .where("table_session_id", "=", tableSessionId)
-        .orderBy("created_at", "desc")
+        .selectFrom("guest_order as go")
+        .leftJoin("session_guest as sg", (join) =>
+          join
+            .onRef("sg.id", "=", "go.submitted_by_guest_id")
+            .onRef("sg.tenant_id", "=", "go.tenant_id"),
+        )
+        .select([
+          "go.id",
+          "go.status",
+          "go.subtotal_minor",
+          "go.total_minor",
+          "go.created_at",
+          "sg.display_name as guest_display_name",
+          "sg.emoji as guest_emoji",
+        ])
+        .where("go.tenant_id", "=", tenantId)
+        .where("go.table_session_id", "=", tableSessionId)
+        .orderBy("go.created_at", "desc")
         .execute();
       if (orders.length === 0) {
         return [];
@@ -448,8 +501,63 @@ export class GuestService {
         subtotalMinor: o.subtotal_minor,
         totalMinor: o.total_minor,
         createdAt: o.created_at.toISOString(),
+        guest: o.guest_display_name
+          ? { displayName: o.guest_display_name, emoji: o.guest_emoji ?? "🍽️" }
+          : null,
         items: itemsByOrder.get(o.id) ?? [],
       }));
+    });
+  }
+
+  /**
+   * "Farfuria mea": the table's plates that were photographed at the pass and
+   * scored, in warm guest framing. Never exposes the QC verdict — only a
+   * fidelity score, the served-plate photo, the reference, and delight chips.
+   * null = 401.
+   */
+  async listPlates(rawToken: string): Promise<GuestPlate[] | null> {
+    const resolved = await resolveSessionToken(sha256(rawToken));
+    if (!resolved) {
+      return null;
+    }
+    const { tenantId, tableSessionId } = resolved;
+    return withTenant(tenantId, async (trx) => {
+      const rows = await getSessionEvaluatedPlates(trx, tenantId, tableSessionId);
+      // One reference photo per pinned set is enough for the comparison; cache
+      // the presigned URL so repeated dishes don't re-sign the same key.
+      const refUrlBySet = new Map<string, string | null>();
+      const plates: GuestPlate[] = [];
+      for (const r of rows) {
+        const overall = Number(r.overallScore);
+        if (!Number.isFinite(overall)) continue;
+
+        let referenceUrl: string | null = null;
+        if (r.referenceSetId) {
+          if (refUrlBySet.has(r.referenceSetId)) {
+            referenceUrl = refUrlBySet.get(r.referenceSetId) ?? null;
+          } else {
+            const photos = await getReferencePhotosForSet(trx, tenantId, r.referenceSetId);
+            const primary = photos[0];
+            referenceUrl = primary ? await this.storage.getSignedUrl(primary.storage_key) : null;
+            refUrlBySet.set(r.referenceSetId, referenceUrl);
+          }
+        }
+        const candidateUrl = r.candidateStorageKey
+          ? await this.storage.getSignedUrl(r.candidateStorageKey)
+          : null;
+
+        plates.push({
+          evaluationId: r.id,
+          dishName: parseBilingual(r.dishName),
+          // 1-5 median -> 0-10 fidelity, one decimal.
+          fidelity: Math.round((overall / 5) * 10 * 10) / 10,
+          candidateUrl,
+          referenceUrl,
+          chips: warmChips(r.criterionScores),
+          createdAt: r.createdAt.toISOString(),
+        });
+      }
+      return plates;
     });
   }
 
