@@ -18,6 +18,12 @@ import s from "./floor.module.css";
 type Phase = "list" | "camera" | "working" | "report";
 type Target = { kind: "queue"; item: PassQueueItem } | { kind: "demo"; dish: AdminDishListItem };
 
+// Mirror of the server quality gate (QUALITY_GATE_DEFAULTS.minShortEdgePx): a
+// candidate photo below this short-edge resolution is rejected as not_scoreable.
+// Catch it in the viewfinder so the user is routed to the full-res native camera
+// instead of getting an opaque "poor quality" verdict after a server round-trip.
+const MIN_SHORT_EDGE_PX = 800;
+
 /** Pass plating capture, in the dark demo design: photograph the next plated
  *  ticket -> live AI conformity report. Falls back to a demo dish when the
  *  queue is empty (no guest orders yet). */
@@ -334,7 +340,14 @@ function CameraCard({
     (async () => {
       try {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: "environment" } },
+          // Ask for a full-HD rear frame so the short edge clears the 800px
+          // quality gate; without this the browser hands back its 480p/720p
+          // default and the capture is rejected as too low-resolution.
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
           audio: false,
         });
         if (!active) {
@@ -359,6 +372,14 @@ function CameraCard({
   function shoot() {
     const v = videoRef.current;
     if (!v || !v.videoWidth) return;
+    // This camera can't deliver enough pixels for the gate — send the user to
+    // the phone's native camera (full-res still) rather than a doomed capture.
+    if (Math.min(v.videoWidth, v.videoHeight) < MIN_SHORT_EDGE_PX) {
+      setCamErr(
+        "Camera din aplicație oferă o rezoluție prea mică pentru evaluare. Folosește camera telefonului.",
+      );
+      return;
+    }
     const canvas = document.createElement("canvas");
     canvas.width = v.videoWidth;
     canvas.height = v.videoHeight;
