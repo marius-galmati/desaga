@@ -1,0 +1,4043 @@
+[
+  {
+    "ro": "Dăraburi de porc",
+    "dishes": [
+      {
+        "ro": "Coaste de porc mermelite la smoker (100g)",
+        "en": null,
+        "descRo": "Coaste de porc gătite în tihnă 24h la smoker și sous-vide, hidratate din jumătate în jumătate de oră, unse pe-ndelete cu un amestec de miere de albine cu muștar și tăvălite prin boia de ardei dulce, boabe de muștar, piper, praf de usturoi. Preț afișat la 100g; se servește la bucată.",
+        "descEn": "Pork ribs slow-cooked for 24h in the smoker and sous-vide, basted every half hour, brushed with a honey-mustard glaze, and rubbed with sweet paprika, mustard seeds, pepper, and garlic powder.",
+        "lei": 25,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ceafă de porc rotisată la smoker (100g)",
+        "en": null,
+        "descRo": "Ceafă de porc ținută în saramură 24h, gătită în tihnă 46h la smoker și sous-vide, hidratată din jumătate în jumătate de oră, garnisită cu miere de albine, boia de ardei dulce, cimbru, praf de usturoi, boabe de muștar Preț afișat la 100g; se servește la bucată.",
+        "descEn": "Pork neck brined for 24h, slow-cooked for 46h in the smoker and sous-vide, basted every half hour, garnished with honey, sweet paprika, thyme, garlic powder, and mustard seeds",
+        "lei": 25,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ciolan de porc uitat în smoker (100g)",
+        "en": null,
+        "descRo": "Ciolan de porc odihnit în saramură 24h, pus după aceea la desărat o zi întreagă, gătit în tihnă 24h la smoker și sous-vide cu foi de dafin și piper Preț afișat la 100g; se servește la bucată.",
+        "descEn": "Pork knuckle rested in brine for 24h, then desalted for 24h, slow cooked for 24h in the smoker and sous-vide with bay leaves and pepper",
+        "lei": 25,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Dăraburi de vită",
+    "dishes": [
+      {
+        "ro": "Beef brisket românizat în smoker (100g)",
+        "en": null,
+        "descRo": "Beef brisket ținut în saramură 24h, gătit 46h în smoker și la sous-vide, hidratat din jumătate în jumătate de oră, după ce în prealabil a fost uns pe-ndelete cu muștar și tăvălit prin boia de ardei dulce, praf de usturoi, boabe de muștar. Preț afișat la 100g; se servește la bucată.",
+        "descEn": "Beef brisket brined for 24h, slow-cooked for 46h in the smoker and sous-vide, basted every half hour after being carefully coated with mustard and rubbed with sweet paprika, garlic powder, and mustard seeds.",
+        "lei": 33,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ceafă de vită gătită ușurel la smoker (100g)",
+        "en": null,
+        "descRo": "Ceafă de vită ținută în saramură 24h, gătită în tihnă 46h la smoker și sous-vide, hidratată din jumătate în jumătate de oră, garnisită cu miere de albine, muștar, boia de ardei dulce, cimbru, praf de usturoi, boabe de muștar. Preț afișat la 100g; se servește la bucată.",
+        "descEn": "Beef neck brined for 24h, slowly cooked for 46h in the smoker and sous-vide, basted every half hour, garnished with honey, mustard, sweet paprika, thyme, garlic powder, and mustard seeds.",
+        "lei": 33,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Pui",
+    "dishes": [
+      {
+        "ro": "Piept de pui (200g)",
+        "en": "Chicken breast",
+        "descRo": null,
+        "descEn": null,
+        "lei": 47,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Aripioare de pui (300g)",
+        "en": "Chicken wings",
+        "descRo": null,
+        "descEn": null,
+        "lei": 53,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Baghețele de pui crocante (250g/50ml)",
+        "en": null,
+        "descRo": "Baghețele de pui pane rumenite servite cu sos de usturoi",
+        "descEn": "Crispy chicken fingers served with garlic sauce",
+        "lei": 48,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Aripioare de pui iuți (300g)",
+        "en": null,
+        "descRo": "Aripi de pui rumenite și tăvălite prin sos iute de ardei",
+        "descEn": "Crispy chicken wings tossed in hot chili sauce",
+        "lei": 53,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Șnițel de pui (250g)",
+        "en": null,
+        "descRo": "Piept de pui dat prin ou, făină și pesmet.",
+        "descEn": "Fried breast chicken schnitzel rolled through egg, flour, and bread crumbs",
+        "lei": 48,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Jumătate de pui la ceaun (600g/50g)",
+        "en": null,
+        "descRo": "Jumătate de pui, uns cu miere de albine, mix de condimente, gătit sous-vide. Servit cu mujdei de usturoi și pătrunjel.",
+        "descEn": "Half chicken glazed with honey and spices, cooked sous-vide. Served with garlic and parsley sauce.",
+        "lei": 81,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Pulpe de rață rumenite la cuptor (270g/50g)",
+        "en": null,
+        "descRo": "Pulpe de rață, condimentată cu mirodenii și portocală, gătite sous-vide și la cuptor, servite cu sos de vin roșu",
+        "descEn": "Duck legs seasoned with spices and orange, cooked sous-vide and in the oven, and served with red wine sauce",
+        "lei": 86,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Porc",
+    "dishes": [
+      {
+        "ro": "Ceafă de porc (200g)",
+        "en": "Pork neck",
+        "descRo": null,
+        "descEn": null,
+        "lei": 49,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Costiță la garniță (300g)",
+        "en": null,
+        "descRo": "Costiță gătită în untură de porc la foc domol.",
+        "descEn": "Pork ribs slowly cooked in pork fat.",
+        "lei": 61,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Sarmale durdulii cu ciolan (200g/100g/50g)",
+        "en": null,
+        "descRo": "Carne tocată de porc amestecată cu orez, ceapă călită, potrivite la gust cu sare, piper, îndesate și-nvelite într-o foaie de varză murată și băgate la cuptor împreună cu ciolan de porc afumat. Servite cu smântână.",
+        "descEn": "Sour cabbage rolls filled with minced pork, rice, and sautéed onions, seasoned with salt and pepper, served with smoked pork knuckle and served with sour cream.",
+        "lei": 61,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ceafă țigănească la jar (200g/50g/50g)",
+        "en": null,
+        "descRo": "Ceafă de porc marinată, coaptă la jar împreună cu slăninuță prăjită și pârgălaș",
+        "descEn": "Marinated pork neck, grilled over embers with crispy bacon and Transylvanian onion and paprika roux",
+        "lei": 61,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Coaste de porc marinate (400g/50g)",
+        "en": null,
+        "descRo": "Coaste de porc marinate, servite cu sos barbeque",
+        "descEn": "Marinated pork ribs, served with barbeque sauce",
+        "lei": 61,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Aripioară de porc (550g)",
+        "en": null,
+        "descRo": "Ciolan de porc rumenit pe-ndelete la cuptor",
+        "descEn": "Oven baked pork wing",
+        "lei": 86,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Vită",
+    "dishes": [
+      {
+        "ro": "Ficat de vită (100g)",
+        "en": "Beef liver",
+        "descRo": "Preț afișat la 100g; se servește la bucată.",
+        "descEn": null,
+        "lei": 24,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Antricot de vită Limousin / Black Angus (maturat minim 21 de zile) (100g)",
+        "en": "Rib-eye steak (aged for 21 days)",
+        "descRo": "Preț afișat la 100g; se servește la bucată.",
+        "descEn": null,
+        "lei": 69,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Mușchi de vită Limousin / Black Angus (maturat minim 21 de zile) (100g)",
+        "en": "Beef tenderloin",
+        "descRo": "Preț afișat la 100g; se servește la bucată.",
+        "descEn": null,
+        "lei": 96,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Biftec tartar (180g/100g/50g)",
+        "en": null,
+        "descRo": "Mușchi de vită Limousin, gălbenuș crud de ou, unt, castraveți murați, ceapă, capere, pastă de roșii, muștar, sos de Worcestershire, tabasco, servit cu pâine cu maia prăjită și unt.",
+        "descEn": "Limousin beef tenderloin, raw egg yolk, butter, pickled cucumbers, onion, capers, tomato paste, mustard, Worcestershire sauce, tabasco, served with toasted bread and butter",
+        "lei": 99,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Șnițel de vită Limousin/ Black Angus (250g/30g)",
+        "en": null,
+        "descRo": "Șnițel din carne de vită Limousin/ Black Angus pane, servit cu lămâie",
+        "descEn": "Breaded Limousin/ Black Angus beef schnitzel served with lemon",
+        "lei": 136,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Cârnați",
+    "dishes": [
+      {
+        "ro": "Cârnați Euphoria serviți cu pârgălaș (250g)",
+        "en": "Euphoria sausages served with Transylvanian onion and paprika roux",
+        "descRo": null,
+        "descEn": null,
+        "lei": 46,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Cârnați picanți Euphoria serviți cu pârgălaș (250g)",
+        "en": "Euphoria spicy sausages served with Transylvanian onion and paprika roux",
+        "descRo": null,
+        "descEn": null,
+        "lei": 46,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Mici Euphoria vită & porc (50g/buc)",
+        "en": "Euphoria forcemeat rolls (beef & pork)",
+        "descRo": null,
+        "descEn": null,
+        "lei": 12,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Pește",
+    "dishes": [
+      {
+        "ro": "Păstrăv întreg la grătar (100g)",
+        "en": "Grilled whole trout",
+        "descRo": "Preț afișat la 100g; se servește la bucată.",
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": false
+      },
+      {
+        "ro": "File de șalău (200g)",
+        "en": "Perch fillet",
+        "descRo": null,
+        "descEn": null,
+        "lei": 69,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Păstrăv întreg tăvălit prin mălai (100g/50g/30g)",
+        "en": null,
+        "descRo": "Păstrăv întreg prăjit în făină de mălai, servit cu mujdei de usturoi și lămâie",
+        "descEn": "Cornmeal-crusted whole trout, served with garlic traditional garlic sauce (mujdei) and lemon",
+        "lei": 25,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Baghețele de șalău tăvălite prin mălai (200g/50g/30g)",
+        "en": null,
+        "descRo": "Baghețele de șalău prăjit în făină de mălai servit cu mujdei de usturoi și lămâie",
+        "descEn": "Cornmeal-crusted pike-perch strips, served with traditional garlic sauce (mujdei) and lemon",
+        "lei": 69,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Baghețele de pește pane cu sos de usturoi (200g/50g/30g)",
+        "en": null,
+        "descRo": "Baghețele de șalău în crustă crocantă, servit cu sos de usturoi și lămâie",
+        "descEn": "Pike-perch strips in a crunchy crust, served with garlic sauce and lemon",
+        "lei": 69,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Sosuri",
+    "dishes": [
+      {
+        "ro": "Muștar (50g)",
+        "en": "Mustard",
+        "descRo": "- Recomandat pentru mici și cârnați",
+        "descEn": "- Recommended for forcemeat rolls (mici) and sausages",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ketchup (50g)",
+        "en": "Ketchup",
+        "descRo": "- Recomandat pentru cartofi prăjiți",
+        "descEn": "- Recommended for French fries",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Smântână (50g)",
+        "en": "Sour cream",
+        "descRo": "- Recomandată pentru preparate tradiționale și supe",
+        "descEn": "- Recommended for traditional dishes and sour soups",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ulei de măsline picant (50g)",
+        "en": "Spicy olive oil",
+        "descRo": "- Recomandat pentru pizza și legume la grătar",
+        "descEn": "- Recommended for pizza and grilled vegetables",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos pizza picant (50g)",
+        "en": "Spicy pizza sauce",
+        "descRo": "- Recomandat pentru pizza și preparate rapide",
+        "descEn": "- Recommended for pizza and snacks",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos pizza dulce (50g)",
+        "en": "Sweet pizza sauce",
+        "descRo": "- Recomandat pentru pizza și preparate rapide",
+        "descEn": "- Recommended for pizza and snacks",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos Barbeque (50g)",
+        "en": "Barbeque Sauce",
+        "descRo": "- Recomandat pentru coaste de porc și cărniță de porc scărmănată (pulled pork)",
+        "descEn": "- Recommended for ribs and pulled pork",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos 1000 Insule (50g)",
+        "en": "Thousand Island sauce",
+        "descRo": "- Recomandat pentru crispy chicken și cartofi",
+        "descEn": "- Recommended for crispy chicken strips and potatoes",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos Burger Euphoria (50g)",
+        "en": "Euphoria Burger Sauce",
+        "descRo": "- Recomandat pentru burgeri și sandwich-uri",
+        "descEn": "- Recommended for burgers and sandwiches",
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos de hrean (50g)",
+        "en": "Horseradish sauce",
+        "descRo": "- Recomandat pentru vită și porc (în special brisket și crispy pork knuckle)",
+        "descEn": "- Recommended for beef and pork (especially brisket and crispy pork knuckle)",
+        "lei": 8,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos de piper verde (50g)",
+        "en": "Green peppercorn sauce",
+        "descRo": "- Recomandat alături de preparatele din vită (rib-eye, tenderloin, T-bone)",
+        "descEn": "- Recommended alongside beef cuts (rib-eye, tenderloin, T-bone)",
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos de ciuperci (50g)",
+        "en": "Mushroom sauce",
+        "descRo": "- Recomandat cu pui și vită (piept de pui, baghețele de pui crocante, mușchi de vită, antricot, T-Bone)",
+        "descEn": "- Recommended for chicken and beef: (Chicken breast, crispy chicken strips, beef tenderloin, rib-eye, and T-bone)",
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos de vin roșu (50g)",
+        "en": "Red wine reduction",
+        "descRo": "- Recomandat pentru vită si rata (brisket, beef ribs, steak-uri, duck legs)",
+        "descEn": "- Recommended for beef and duck: (brisket, steaks, and duck legs)",
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos usturoi (50g)",
+        "en": "Garlic sauce",
+        "descRo": "- Recomandat pentru preparate cu pui, porc și cartofi prăjiți",
+        "descEn": "- Recommended for chicken and pork dishes, and French fries",
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mujdei (50g)",
+        "en": "Traditional Garlic Dip",
+        "descRo": "- Recomandat pentru preparate cu pui, mici, pește și carne la grătar",
+        "descEn": "- Recommended for chicken dishes, forcemeat rolls (mici), fish, and grilled meats",
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos Chimichurri (50g)",
+        "en": null,
+        "descRo": "- Recomandat pentru vită, măduvă și pește",
+        "descEn": "- Recommended for beef, bone marrow, and fish",
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sos de brânză (50g)",
+        "en": "Cheese sauce",
+        "descRo": "- Recomandat pentru cartofi, burger și sandwich-uri",
+        "descEn": "- Recommended for potatoes, burgers, and sandwiches",
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Dressing de ardei copt (50g)",
+        "en": "Roasted pepper dressing",
+        "descRo": "- Recomandat pentru carne la grill/smoker, burgeri, și sandwich-uri",
+        "descEn": "- Recommended for grilled or smoked meats, burgers, and sandwiches.",
+        "lei": 9,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Garnituri",
+    "dishes": [
+      {
+        "ro": "Cartofi prăjiți (200g)",
+        "en": "French fries",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cartofi piure (200g)",
+        "en": "Mashed potatoes",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cartofi aurii cu usturoi (200g)",
+        "en": "Golden garlic potatoes",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cartofi răntăliți (200g)",
+        "en": "Sautéed potatoes with onion and paprika",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cartofi prăjiți cu parmezan și usturoi (230g)",
+        "en": "French fries with parmesan and garlic",
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cartofi dulci prăjiți (200g)",
+        "en": "Sweet potato fries",
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cartofi dulci prăjiți, cu parmezan și usturoi (230g)",
+        "en": "Sweet potato fries with parmesan and garlic",
+        "descRo": null,
+        "descEn": null,
+        "lei": 30,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mazăre trasă la tigaie cu unt și usturoi (200g)",
+        "en": "Sauteed peas with butter and garlic",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Varză călită cu măr și stafide (200g)",
+        "en": "Cabbage stew with apple and raisins",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mămăligă la grătar (200g)",
+        "en": "Grilled polenta",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ciuperci trase la tigaie cu usturoi, pătrunjel și unt (200g)",
+        "en": "Pan-seared mushrooms with garlic, parsley, and butter",
+        "descRo": null,
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Legume la grătar (200g)",
+        "en": "Grilled vegetables",
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cașcaval pane (250g)",
+        "en": "Fried breaded cheese",
+        "descRo": null,
+        "descEn": null,
+        "lei": 48,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mămăligă cu brânză (400g/50g)",
+        "en": null,
+        "descRo": "Mămăligă cu brânză frământată din lapte de vacă, slănină prăjită și ou ochi",
+        "descEn": "Polenta with kneaded cow milk cheese, fried traditional cured pork fat, and fried egg",
+        "lei": 53,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Sandwich-uri",
+    "dishes": [
+      {
+        "ro": "Ceafă de porc gătită la smoker, împachetată în pită (400g/200g)",
+        "en": null,
+        "descRo": "Sandwich servit în chiflă de burger cu ou și susan, cu ceafă de porc ținută în saramură 24h, gătită în tihnă 46h la smoker și sous-vide, hidratată din jumătate în jumătate de oră, garnisită cu miere de albine, boia de ardei dulce, cimbru, praf de usturoi, boabe de muștar, sos brun, piper, ceapă caramelizată, ceapă crocantă, cașcaval afumat, castraveți murați, potrivit cu cartofi prăjiți.",
+        "descEn": "Sandwich served in a burger bun with egg and sesame, with pork neck kept in brine for 24h, slow-cooked for 46h at the smoker and sous-vide, constantly hydrated, seasoned with honey, mustard, sweet paprika, thyme, garlic powder and mustard seeds, caramelized onion, crispy onion, smoked cheese and pickled cucumber. Served with French fries.",
+        "lei": 74,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Piept de vită gătit la smoker, făcut sandwich (400g/200g)",
+        "en": null,
+        "descRo": "Beef brisket sandwich servit în chiflă de burger cu ou și susan, beef brisket ținut în saramură 24h, gătit 46h în smoker și la sous-vide, hidratat din jumătate în jumătate de oră, după ce în prealabil a fost uns pe-ndelete cu muștar și tăvălit prin boia de ardei dulce, praf de usturoi, boabe de muștar, sos brun, ceapă caramelizată, ceapă crocantă, sos Cheddar, salată cole slaw, potrivit cu cartofi prăjiți.",
+        "descEn": "Beef brisket sandwich served in a burger bun with egg and sesame, beef brisket kept in brine for 24h, cooked for 46h in the smoker and sous-vide, hydrated every half hour, after being previously thoroughly brushed with mustard and rolled in sweet paprika, garlic powder, mustard seeds, brown sauce, caramelized onion, crispy onion, Cheddar sauce, coleslaw salad. Served with French fries.",
+        "lei": 74,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Pljeskavica (220g/200g/50g)",
+        "en": null,
+        "descRo": "Specialitate sârbească din carne de vită Limousin/ Black Angus prăjită la grill (carne premium, carmangeria proprie), servită cu salată proaspătă de roșii, castraveți, ceapă, pâine sârbească făcută în casă și sos de brânză.",
+        "descEn": "Serbian specialty made of Limousin/ Black Angus beef grilled (premium meat, own butcher shop), served with fresh salad of tomatoes, cucumbers, onion, homemade Serbian bread and cheese sauce.",
+        "lei": 72,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Burger Euphoria (400g/200g)",
+        "en": null,
+        "descRo": "Chiflă făcută în casă (în brutăria proprie), chiftea burger vită Limousin (gătită mediu) (carne premium, carmangeria proprie), ou ochi (moale), roșii, salată Iceberg, sos burger. Servit cu cartofi prăjiți.",
+        "descEn": "Homemade burger bun (from our own bakery), Limousin Beef burger patty (medium done) (premium meat, from our own butchery), fried egg (runny yolk), tomatoes, Iceberg lettuce, burger sauce. Served with French fries.",
+        "lei": 72,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Cheeseburger (380g/200g)",
+        "en": null,
+        "descRo": "Chiflă făcută în casă (în brutăria proprie), chiftea burger vită Limousin (gătită mediu) (carne premium, carmangeria proprie), roșii, salată Iceberg, brânză Cheddar, sos burger. Servit cu cartofi prăjiți.",
+        "descEn": "Homemade burger bun (from our own bakery), Beef burger patty (medium done) (premium meat, from our own butchery), tomatoes, Iceberg lettuce, Cheddar cheese, burger sauce. Served with French fries.",
+        "lei": 72,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Burgeri",
+    "dishes": [
+      {
+        "ro": "Burger Avocado (400gr/200gr)",
+        "en": null,
+        "descRo": "Chiflă făcută în casă (în brutăria proprie), chiftea burger vită Limousin (gătită mediu) (carne premium, carmangeria proprie), bacon prăjit, guacamole, sos burger. Servit cu cartofi prăjiți",
+        "descEn": "Homemade burger bun (from our own bakery), Limousin Beef burger patty (medium done) (premium meat, from our own butchery), fried kaiser (smoked bacon), guacamole, burger sauce. Served with French fries.",
+        "lei": 72,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Burger cu ardei copți (400gr/200gr)",
+        "en": null,
+        "descRo": "Chiflă făcută în casă (în brutăria proprie), chiftea burger vită Limousin (gătită mediu) (carne premium, carmangeria proprie), cremă de brânză cu ceapă verde, ardei copți marinați, roșii, sos burger, servit cu cartofi prăjiți",
+        "descEn": "Homemade burger bun (from our own bakery), Limousin beef burger patty (medium done) (premium meat, from our own butchery), spring onion cream cheese, marinated roasted peppers, tomatoes, burger sauce. Served with French fries.",
+        "lei": 72,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Pif-paf burger adică Double smash burger (380gr/200gr)",
+        "en": null,
+        "descRo": "Chiflă făcută în casă (în brutăria proprie), sos burger, chiftea de vită Limousin (gătită mediu) (carne premium din carmangeria proprie), castraveți murați, ceapă roșie, brânză Cheddar și ceapă crocantă. Servit cu cartofi prăjiți.",
+        "descEn": "Homemade bun (from our own bakery), burger sauce, Limousin beef patty (cooked medium) (premium meat from our own butchery), pickles, red onion, Cheddar cheese, and crispy onion. Served with French fries.",
+        "lei": 72,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Dăraburi din carne de porc împachetată în pită unsă cu zoft (450gr/200gr)",
+        "en": null,
+        "descRo": "Zoft: sosul sau zeama delicioasă lăsată de carne, ceapă și alte legume în timpul gătirii. Pâine de pljeskavica proaspăt coaptă, îmbibată în zoft cu unt, carne de porc dăraburi (odihnită în saramură timp o zi), gătită lent la smoker și sous-vide cu foi de dafin și piper, cu castraveți murați, sos Cheddar și ceapă crocantă, alături de cartofi prăjiți.",
+        "descEn": "Freshly baked pljeskavica bread soaked in buttery pan juices (zoft), with hand-cut pork chunks (brined for a day), slow-cooked in a smoker and sous-vide with bay leaves and pepper. With pickles, Cheddar sauce, crispy onion, and French fries. Zoft: The delicious, rich juices released by meat, onions, and vegetables during the cooking process.",
+        "lei": 72,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Platouri",
+    "dishes": [
+      {
+        "ro": "Măduvă la cuptor (600gr/100gr/50gr)",
+        "en": null,
+        "descRo": "Măduvă din oase de vită la cuptor, servită cu pâine prăjită și sos de plante aromatice (plante aromatice, ulei măsline, usturoi copt, ardei iute și zeamă de lămâie; pisate în mojar)",
+        "descEn": "Oven-baked beef bone marrow, served with toasted bread and aromatic herb sauce (aromatic herbs, olive oil, roasted garlic, chili pepper and lemon juice; crushed in a mortar)",
+        "lei": 96,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Platou „O burtă de bere” (1kg/150gr/4 pers)",
+        "en": null,
+        "descRo": "Mici Euphoria, cârnați picanți Euphoria, cârnați Euphoria, serviți cu muștar și pârgălaș",
+        "descEn": "Euphoria forcemeat rolls, Euphoria spicy sausages, Euphoria sausages, served with mustard and Transylvanian onion and paprika roux",
+        "lei": 236,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Un purcoi de carne la smoker (1,2kg)",
+        "en": null,
+        "descRo": "Platou rostuit la smoker, o amestecătură de beef brisket, ceafă de vită, ceafă de porc, scăricică de porc, gătită 24h, servite cu sos brun și, cum sigur nu rămâne nemâncat, Colebilul îl cumpărați singuri de la farmacie.",
+        "descEn": "Platter cooked in the smoker: a mix of beef brisket, beef neck, pork neck, and pork ribs cooked for 24h, served with brown sauce. And since it surely won't be left unfinished, you'll have to buy Colebil separately from the pharmacy.",
+        "lei": 326,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Platou rostuit la grill (1kg/4 pers)",
+        "en": null,
+        "descRo": "Ceafă de porc, coaste de porc marinate, scăricică de porc, piept și aripioare de pui",
+        "descEn": "Pork neck, marinated pork ribs, pork ribs, chicken breast and chicken wings",
+        "lei": 286,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Platou de garnituri după poftă (800gr/4 pers)",
+        "en": null,
+        "descRo": "Varză roșie călită cu măr și stafide, cartofi prăjiți, cartofi cu usturoi, legume la grătar.",
+        "descEn": "Braised red cabbage with apple and raisins, French fries, Garlic potatoes, Grilled vegetables.",
+        "lei": 86,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Mic dejun",
+    "dishes": [
+      {
+        "ro": "Mic dejun în pită (450gr)",
+        "en": null,
+        "descRo": "Pită proaspăt coaptă cu kaiser prăjit, guacamole, sos de Cheddar și papară din ouă, servit cu mix de salată cu ardei copt marinat",
+        "descEn": "Freshly baked bread with fried kaiser (smoked bacon), guacamole, Cheddar sauce, and scrambled eggs. Served with a salad mix and marinated roasted peppers.",
+        "lei": 53,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Papară împăturită în pită (450gr)",
+        "en": null,
+        "descRo": "Papară din ouă, în pită proaspăt coaptă, cu ceapă verde, telemea maturată din lapte de vacă, spanac, ceafă de porc crud-uscată și ceapă crocantă",
+        "descEn": "Scrambled eggs in a freshly baked bread with spring onions, brined matured cow milk cheese, spinach, dry-cured pork neck, and crispy onion.",
+        "lei": 53,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Bundás Kenyér (200gr)",
+        "en": null,
+        "descRo": "Pâine dată prin lapte cu ou, prăjită la foc domol",
+        "descEn": "Bread dipped in milk and egg, fried at low heat",
+        "lei": 31,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Papară vegetariană (250g)",
+        "en": null,
+        "descRo": "Papară cu dovlecei, ciuperci și ardei kapia, servită cu brânză frământată din lapte de vacă, asezonată cu arpagic și roșii",
+        "descEn": "Scrambled eggs with zucchini, mushrooms and kapia peppers, served with kneaded cow milk cheese seasoned with chives and tomatoes",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ochii lui Popeye (300g)",
+        "en": null,
+        "descRo": "Ouă ochiuri servite cu spanac gătit cu lapte, unt și usturoi",
+        "descEn": "Fried eggs served with spinach cooked with milk, butter and garlic",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Papara cosașului (250g)",
+        "en": null,
+        "descRo": "Papară cu ceapă roșie și ceapă verde și slăninuță prăjită",
+        "descEn": "Scrambled eggs with red and spring onion, served with fried cured pork fat",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Papară tradițională (300g)",
+        "en": null,
+        "descRo": "Papară cu kaiser, telemea maturată din lapte de bivoliță, ardei kapia, ceapă roșie și ceapă verde, servită cu jumări",
+        "descEn": "Scrambled eggs with kaiser bacon, brined matured buffalo milk cheese, kapia pepper, red onion and spring onion, served with pork cracklings",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ochiuri țărănești cu cartofi rântăliți și kaizer (350g)",
+        "en": null,
+        "descRo": "Ouă ochiuri pe pat de cartofi rântăliți cu kaizer, pârgălaș și ceapă verde",
+        "descEn": "Fried eggs on a bed of sautéed potatoes with onion and paprika, with kaiser bacon, Transylvanian onion and paprika roux (pârgălaș), and spring onion.",
+        "lei": 47,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ouă cârcălite cu cârnat Euphoria și kaizer (350g)",
+        "en": null,
+        "descRo": "Papară din ouă cârcălite, cu cârnat Euphoria, kaizer, crutoane de pâine, pârgălaș, roșii cherry și ceapă verde",
+        "descEn": "Rustic scrambled eggs (papară) with Euphoria sausage, kaiser bacon, bread croutons, Transylvanian onion and paprika roux (pârgălaș), cherry tomatoes, and spring onion",
+        "lei": 47,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Mizilicuri și salate",
+    "dishes": [
+      {
+        "ro": "Jumări de porc (200g)",
+        "en": null,
+        "descRo": "Piept de porc prăjit în untură",
+        "descEn": "Pork belly fried in lard",
+        "lei": 43,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Platou brânzeturi (1kg)",
+        "en": null,
+        "descRo": "Brânzeturi românești maturate: brânză din lapte de bivoliță, brânză de vacă, telemea din lapte de oaie, telemea din lapte de bivoliță, telemea din lapte de vacă, servite cu struguri verzi, stafide, nuci și dulceață",
+        "descEn": "Matured Romanian Cheeses: buffalo milk cheese, cow milk cheese, matured sheep milk telemea, brined buffalo milk cheese, brined cow milk cheese, served with green grapes, raisins, walnuts, and jam, served with green grapes, raisins, walnuts and fruit jam",
+        "lei": 234,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Platou Desaga (1kg)",
+        "en": null,
+        "descRo": "Mușchi file, cârnați uscați Euphoria, cârnați picanți Euphoria, salam uscat Euphoria, slăninuță maturată, jumări, mușchi țigănesc, telemea maturată din lapte de vacă, telemea maturată din lapte de bivolița, telemea maturată din lapte de oaie, ceapă roșie, ceapă verde, hrean, roșii",
+        "descEn": "Pork tenderloin, Euphoria dry sausage, Euphoria spicy sausage, Euphoria dry salami, matured smoked pork fat, pork cracklings, gypsy-style pork fillet, brined aged cow milk cheese, brined aged buffalo milk cheese, brined aged sheep milk cheese, red and spring onion, horseradish, and tomatoes",
+        "lei": 234,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Platou de platou (1kg)",
+        "en": null,
+        "descRo": "Pastramă de vită, ceafă de porc crud-uscată, ceafă de vită, piept de vită, mușchi țigănesc, brânză maturată din lapte bivoliță, brânză maturată din lapte de vacă, telemea maturată din lapte de oaie, roșii, ceapă verde, ceapă roșie",
+        "descEn": "Beef pastrami, dry-cured pork neck, beef neck, beef brisket, traditional smoked pork loin, aged buffalo milk cheese, aged cow milk cheese, brined aged sheep milk cheese, tomatoes, spring onion, and red onion",
+        "lei": 259,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată de conopidă (300g/100g/100g)",
+        "en": null,
+        "descRo": "Salată de conopidă cu maioneză și usturoi, servită cu roșii și pâine prăjită",
+        "descEn": "Cauliflower salad with mayonnaise and garlic, served with tomatoes and toasted bread",
+        "lei": 56,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată „Mai adă una” (300g/100g/100g)",
+        "en": null,
+        "descRo": "Salată de vinete coapte la jar, amestecată cu ceapă roșie, ulei și gălbenuș de ou, servită cu pâine prăjită și roșii",
+        "descEn": "Charcoal-grilled eggplant salad, mixed with red onion, oil, and egg yolk, served with toasted bread and tomatoes",
+        "lei": 56,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată de „drum lung” (350g/50g)",
+        "en": null,
+        "descRo": "Salată de cartofi, ceapă verde, ceapă roșie, ouă fierte, pătrunjel și măsline, servită cu maioneză de casă",
+        "descEn": "Potato salad, spring onion, red onion, boiled eggs, fresh parsley, and olives served with homemade mayonnaise",
+        "lei": 46,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată vegetariană (350g)",
+        "en": null,
+        "descRo": "Salată cu năut, mix de salate, quinoa, roșii uscate, rodie, alune caju și dressing de ardei copți",
+        "descEn": "Chickpeas salad, salad mix, quinoa, dried tomatoes, pomegranate, cashew nuts and roasted bell peppers dressing",
+        "lei": 56,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată din grădină cu brânză maturată de bivoliță (400g)",
+        "en": null,
+        "descRo": "Roșii, castraveți, mix de salate, măsline, ceapă roșie, telemea maturată din lapte de bivoliță, cu busuioc",
+        "descEn": "Cherry tomatoes, cucumbers, mixed greens, olives, and red onion, topped with aged buffalo milk cheese and fresh basil.",
+        "lei": 58,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată Euphoria (400g)",
+        "en": null,
+        "descRo": "Salată cu baghete din piept de pui pane, ardei copți marinați, roșii cherry, mix de salate, ridiche albă și cremă de brânză învelită în susan alb",
+        "descEn": "Salad with crispy breaded chicken fingers, marinated roasted peppers, cherry tomatoes, salad mix, white radish and cream cheese wrapped in white sesame seeds",
+        "lei": 65,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată după poftă (200g)",
+        "en": null,
+        "descRo": "Salată de crudități la alegere: mix de salate, roșii, ardei, castraveți, ceapă și varză",
+        "descEn": "Fresh vegetable salad of your choice: salad mix, tomatoes, peppers, cucumbers, onion and cabbage",
+        "lei": 32,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată de sfeclă roșie cu hrean și chimen (200g)",
+        "en": "Beetroot salad with horseradish and caraway seeds",
+        "descRo": null,
+        "descEn": null,
+        "lei": 32,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată de castraveți murați (200g)",
+        "en": "Pickled cucumbers",
+        "descRo": null,
+        "descEn": null,
+        "lei": 32,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată de ardei copți (200g)",
+        "en": null,
+        "descRo": "Salată de ardei copți dreasă cu usturoi",
+        "descEn": "Baked pepper salad seasoned with garlic",
+        "lei": 43,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Salată de ceapă (150g)",
+        "en": "Onion salad",
+        "descRo": null,
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Loște",
+    "dishes": [
+      {
+        "ro": "Loște ca la mama acasă (400g)",
+        "en": "Pappardelle with kneaded cow milk cheese, smoked cured pork fat and cream",
+        "descRo": "Loște cu brânză frământată din lapte de vacă, slănină afumată și smântână",
+        "descEn": "Pappardelle with kneaded cow milk cheese, smoked cured pork fat and cream",
+        "lei": 53,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Loște cu sos din carne tocată de vită (400g)",
+        "en": "Pappardelle with minced beef, kaiser, onions, carrots, celery, olive oil, butter, tomato paste, tomatoes, red wine, beef stock, salt, pepper, and bay leaves, slow-cooked until reduced to a sauce. Served with parmesan.",
+        "descRo": "Loște cu carne tocată de vită, kaiser, ceapă, morcovi, apio, ulei de măsline, unt, pastă de roșii, roșii, vin roșu, supă de vită, sare, piper și foi de dafin, lăsate la foc domol până devin sos. Servite cu parmezan.",
+        "descEn": "Pappardelle with minced beef, kaiser, onions, carrots, celery, olive oil, butter, tomato paste, tomatoes, red wine, beef stock, salt, pepper, and bay leaves, slow-cooked until reduced to a sauce. Served with parmesan.",
+        "lei": 63,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Loște cu mușchi de vită și ciuperci (400g)",
+        "en": "Pappardelle with beef tenderloin, cooked with butter, cherry tomatoes, mushrooms, garlic, and basil",
+        "descRo": "Loște cu mușchi de vită gătite cu unt, roșii cherry, ciuperci, usturoi și busuioc",
+        "descEn": "Pappardelle with beef tenderloin, cooked with butter, cherry tomatoes, mushrooms, garlic, and basil",
+        "lei": 91,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Loște cu sos de roșii (350g)",
+        "en": "Pappardelle with basil tomato sauce, garlic, Grana Padano, and cherry tomatoes",
+        "descRo": "Loște cu sos de roșii cu busuioc, usturoi, Grana Padano și roșii cherry",
+        "descEn": "Pappardelle with basil tomato sauce, garlic, Grana Padano, and cherry tomatoes",
+        "lei": 53,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Din cuptor",
+    "dishes": [
+      {
+        "ro": "Pită picurată (250g)",
+        "en": "Our homemade bread, drizzled with smoked fried pork fat, topped with kneaded cow milk cheese, spring onion, roasted tomatoes and red onion",
+        "descRo": "Pâine cu slănină afumată, brânză frământată din lapte de vacă, ceapă verde, roșii coapte și ceapă roșie",
+        "descEn": "Our homemade bread, drizzled with smoked fried pork fat, topped with kneaded cow milk cheese, spring onion, roasted tomatoes and red onion",
+        "lei": 43,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Pită de noi plămădită (150g)",
+        "en": "Homemade bread",
+        "descRo": null,
+        "descEn": null,
+        "lei": 10,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Moft",
+    "dishes": [
+      {
+        "ro": "Moft Margherita (400g)",
+        "en": "Pizza dough, tomato sauce, basil, mozzarella, and brined matured cow milk cheese",
+        "descRo": "Blat, sos de roșii, busuioc, mozzarella și telemea maturată din lapte de vacă",
+        "descEn": "Pizza dough, tomato sauce, basil, mozzarella, and brined matured cow milk cheese",
+        "lei": 56,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Cu legume (400g)",
+        "en": "Pizza dough, tomato sauce, vegan cheese, olives, eggplant, zucchini, cherry tomatoes, mushrooms and roasted pepper",
+        "descRo": "Blat, sos de roșii, brânză vegetală, măsline, vinete, dovlecel, roșii cherry, ciuperci și ardei copt",
+        "descEn": "Pizza dough, tomato sauce, vegan cheese, olives, eggplant, zucchini, cherry tomatoes, mushrooms and roasted pepper",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Mușchi file & ciuperci (450g)",
+        "en": "Pizza dough, tomato sauce, mozzarella, smoked pork loin, mushrooms, and brined matured buffalo milk cheese",
+        "descRo": "Blat, sos de roșii, mozzarella, mușchi file, ciuperci, telemea maturată din lapte de bivoliță",
+        "descEn": "Pizza dough, tomato sauce, mozzarella, smoked pork loin, mushrooms, and brined matured buffalo milk cheese",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Desaga (450g)",
+        "en": "Pizza dough, tomato sauce, mozzarella, brined matured sheep milk cheese, fried kaiser bacon, spring onion",
+        "descRo": "Blat, sos de roșii, mozzarella, telemea maturată din lapte de oaie, kaizer prăjit, ceapă verde",
+        "descEn": "Pizza dough, tomato sauce, mozzarella, brined matured sheep milk cheese, fried kaiser bacon, spring onion",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Pișcăcios (450g)",
+        "en": "Pizza dough, tomato sauce, Euphoria spicy salami, jalapeno, mozzarella",
+        "descRo": "Blat, sos de roșii, salam picant Euphoria, jalapeno, mozzarella",
+        "descEn": "Pizza dough, tomato sauce, Euphoria spicy salami, jalapeno, mozzarella",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Unguresc (450g)",
+        "en": "Pizza dough, tomato sauce, mozzarella, Euphoria salami, Euphoria spicy sausages, red onion, and chili pepper",
+        "descRo": "Blat, sos de roșii, mozzarella, salam Euphoria, cârnați picanți Euphoria, ceapă roșie și ardei iute",
+        "descEn": "Pizza dough, tomato sauce, mozzarella, Euphoria salami, Euphoria spicy sausages, red onion, and chili pepper",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft De la bunica (450g)",
+        "en": "Pizza dough, tomato sauce, mozzarella, minced meat, red onion, and sweetcorn",
+        "descRo": "Blat, sos de roșii, mozzarella, carne tocată, ceapă roșie și porumb",
+        "descEn": "Pizza dough, tomato sauce, mozzarella, minced meat, red onion, and sweetcorn",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Haiducesc (450g)",
+        "en": "Pizza dough, tomato sauce, kneaded cow milk cheese, kaiser bacon, Euphoria sausage and red onion",
+        "descRo": "Blat, sos de roșii, brânză frământată din lapte de vacă, kaizer, cârnați Euphoria și ceapă roșie",
+        "descEn": "Pizza dough, tomato sauce, kneaded cow milk cheese, kaiser bacon, Euphoria sausage and red onion",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Afumat (450g)",
+        "en": "Pizza dough, tomato sauce, mozzarella, kneaded cow milk cheese, kaiser bacon, Euphoria sausage",
+        "descRo": "Blat, sos de roșii, mozzarella, brânză frământată din lapte de vacă, kaizer, cârnați Euphoria",
+        "descEn": "Pizza dough, tomato sauce, mozzarella, kneaded cow milk cheese, kaiser bacon, Euphoria sausage",
+        "lei": 59,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Moft Ca „la noi acasă\" (450g)",
+        "en": "Pizza dough, mozzarella, brined matured sheep milk cheese, kaiser bacon, sautéed mushrooms",
+        "descRo": "Blat, mozzarella, telemea maturată din lapte de oaie, kaizer, ciuperci trase la tigaie",
+        "descEn": "Pizza dough, mozzarella, brined matured sheep milk cheese, kaiser bacon, sautéed mushrooms",
+        "lei": 59,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Zemuri după rețete alese",
+    "dishes": [
+      {
+        "ro": "Supă cremă de hribi (400ml/50g)",
+        "en": "Funghi porcini mushrooms, champignon mushrooms, potato, with onion, garlic, salt, pepper, dried thyme, olive oil, chicken stock, bay leaves, cooking cream, and white wine. Served with croutons.",
+        "descRo": "Hribi, champignon, cartof, ceapă, usturoi, sare, piper, cimbru uscat, ulei de măsline, supă de pui, foi de dafin, smântână de gătit, vin alb. Servită cu crutoane.",
+        "descEn": "Funghi porcini mushrooms, champignon mushrooms, potato, with onion, garlic, salt, pepper, dried thyme, olive oil, chicken stock, bay leaves, cooking cream, and white wine. Served with croutons.",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Supă de pui cu tăietei (400ml)",
+        "en": "Chicken soup, carrots, celery, parsley, parsnip, red pepper, served with homemade noodles",
+        "descRo": "Supă clară de pui, morcovi, țelină, pătrunjel, păstârnac, ardei, servită cu tăieței de casă",
+        "descEn": "Chicken soup, carrots, celery, parsley, parsnip, red pepper, served with homemade noodles",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ciorbă de fasole cu ciolan afumat (400ml)",
+        "en": "Bean soup made from beef bone stock, with smoked pork knuckle, carrots, parsnip, celery, parsley, red pepper, onion, tomato purée, paprika, bay leaves, and tarragon",
+        "descRo": "Ciorbă de fasole din bază de supă de oase de vită, cu ciolan de porc afumat, morcovi, păstârnac, țelină, pătrunjel, ardei roșu, ceapă, bulion, boia, foi de dafin și tarhon",
+        "descEn": "Bean soup made from beef bone stock, with smoked pork knuckle, carrots, parsnip, celery, parsley, red pepper, onion, tomato purée, paprika, bay leaves, and tarragon",
+        "lei": 39,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Supe și ciorbe",
+    "dishes": [
+      {
+        "ro": "Supă țărănească de vită (400ml)",
+        "en": null,
+        "descRo": "Supă din bază de supă de oase de vită, cu carne de vită cu morcovi, țelină, ceapă, rădăcină de pătrunjel, păstârnac, fasole verde, cartofi, ardei, bulion și boia dulce",
+        "descEn": "Soup made from beef bone stock, with beef meat, carrots, celery,onion, parsley root, parsnip, green beans, potatoes, peppers, tomato purée, and sweet paprika",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Ciorbă de burtă (400ml)",
+        "en": null,
+        "descRo": "Ciorbă de burtă din bază de supă de oase de vită, cu burtă de vită, morcovi, usturoi, păstârnac, țelină, ceapă, ardei iute, ou, oțet și smântână",
+        "descEn": "Tripe soup made from beef bone stock, with beef tripe, carrots, garlic, parsnip, celery, onion, hot pepper, egg, vinegar, and sour cream",
+        "lei": 39,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Gulyás de vită Limousin (400ml)",
+        "en": null,
+        "descRo": "Gulaș din bază de supă de oase de vită, cu carne de vită cu ceapă, cartofi, morcovi, țelină, ardei gras, boia dulce, pastă de ardei iute, chimen, foi de dafin, bulion, gătite în ceaun",
+        "descEn": "Goulash made from beef bone broth, with beef, onion, potatoes, carrots, celery, bell pepper, sweet paprika, hot pepper paste, cumin, bay leaves, and tomato purée, cooked in a cauldron",
+        "lei": 39,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Tradițional",
+    "dishes": [
+      {
+        "ro": "Gulyás de vită Limousin/ Black Angus cu găluște (400g)",
+        "en": null,
+        "descRo": "Mâncare din carne de vită, cu ceapă, cartofi, morcovi, țelină, ardei gras, boia dulce, pastă de ardei iute, chimen, foi de dafin, bulion, gătită în ceaun cu untură. Servită cu găluște.",
+        "descEn": "Beef stew with onions, potatoes, carrots, celery, bell peppers, sweet paprika, chili paste, caraway seeds, bay leaves, and tomato paste, cooked in a cauldron with lard. Served with dumplings.",
+        "lei": 79,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Tocăniță de ciuperci (250g)",
+        "en": null,
+        "descRo": "Tocăniță de ciuperci cu ceapă, usturoi și vin, ardei, cimbru, pătrunjel, boia dulce de ardei, făină, unt și smântână de gătit",
+        "descEn": "Mushroom stew with onions, garlic, wine, bell peppers, thyme, parsley, sweet paprika, flour, butter, and cooking cream",
+        "lei": 48,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Fasole făcăluită cu pârgălaș (300g/50g)",
+        "en": null,
+        "descRo": "Fasole frecată cu ceapă albă, morcovi, țelină, usturoi, boia afumată și foi de dafin, servită cu pârgălaș.",
+        "descEn": "Mashed beans with white onion, carrots, celery, garlic, smoked paprika and bay leaves, served with Transylvanian onion and paprika roux",
+        "lei": 48,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Iahnie de fasole cu untură (300g)",
+        "en": null,
+        "descRo": "Iahnie de fasole, gătită lent în untură și bulion de roșii, cu ceapă, țelină, morcovi, usturoi, și foi de dafin.",
+        "descEn": "Bean stew slowly cooked in lard and tomato sauce, with onion, celery, carrots, garlic, and bay leaves.",
+        "lei": 48,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Desert",
+    "dishes": [
+      {
+        "ro": "Papanași ropogoși (240g)",
+        "en": null,
+        "descRo": "Papanași prăjiți, serviți cu smântână și gem de afine",
+        "descEn": "Fried cheese doughnuts, served with sour cream and blueberry jam",
+        "lei": 42,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Somlói galuska (230g)",
+        "en": null,
+        "descRo": "Rețetă autentică făcută din trei tipuri de pandișpan pufos, însiropat cu rom, servit cu nuci, stafide, cremă de vanilie, frișcă",
+        "descEn": "Authentic recipe made out of three types of puffy sponge cake, dipped in rum, served with nuts, raisins, vanilla cream, whipped cream",
+        "lei": 42,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Arsă și delicioasă (250g)",
+        "en": null,
+        "descRo": "Cremă de zahăr caramelizat, cu ou, lapte și cremă de vanilie",
+        "descEn": "Crème brûlée made with caramelised sugar, egg, milk and vanilla cream",
+        "lei": 42,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Tort Diplomat cu fructe (220g)",
+        "en": null,
+        "descRo": "Tort Diplomat cu fructe, servit cu cremă de vanilie",
+        "descEn": "Charlotte Russe with fruit, and served with custard",
+        "lei": 42,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Prăjitură cu brânză și fructe de pădure (220g)",
+        "en": null,
+        "descRo": "Prăjitură cu brânză și fructe de pădure, blat de biscuiți crocanți și cremă engleză",
+        "descEn": "Cheese and forest fruit cake with a crunchy biscuit crust and crème anglaise",
+        "lei": 42,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Tartă cu mere și nuci (260g)",
+        "en": null,
+        "descRo": "Tartă cu mere și nuci servită cu cremă de vanilie și înghețată de vanilie",
+        "descEn": "Apple pie with walnuts, served with custard and vanilla ice-cream",
+        "lei": 42,
+        "nonScoreable": false
+      },
+      {
+        "ro": "Înghețată Euphoria (200g)",
+        "en": null,
+        "descRo": "3 arome la alegere: vanilie, cacao, căpșuni, caramel sărat. Servită cu frișcă vegetală",
+        "descEn": "Choice of 3 flavors: vanilla, cocoa, strawberry, salted caramel. Served with vegan cream.",
+        "lei": 42,
+        "nonScoreable": false
+      }
+    ]
+  },
+  {
+    "ro": "Extra",
+    "dishes": [
+      {
+        "ro": "Ardei iute (40g)",
+        "en": "Chili pepper",
+        "descRo": null,
+        "descEn": null,
+        "lei": 5,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Lămâie (50g)",
+        "en": "Lemon",
+        "descRo": null,
+        "descEn": null,
+        "lei": 6,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ciuperci (50g)",
+        "en": "Mushrooms",
+        "descRo": null,
+        "descEn": null,
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Porumb (50g)",
+        "en": "Sweetcorn",
+        "descRo": null,
+        "descEn": null,
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Măsline (50g)",
+        "en": "Olives",
+        "descRo": null,
+        "descEn": null,
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ceapă (50g)",
+        "en": "Onion",
+        "descRo": null,
+        "descEn": null,
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Șuncă (50g)",
+        "en": "Ham",
+        "descRo": null,
+        "descEn": null,
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ceapă crocantă (30g)",
+        "en": "Crispy Onion",
+        "descRo": null,
+        "descEn": null,
+        "lei": 7,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Rucola (50g)",
+        "en": "Arugula",
+        "descRo": null,
+        "descEn": null,
+        "lei": 8,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ou ochi sau ou fiert (50g)",
+        "en": "Fried or boiled egg",
+        "descRo": null,
+        "descEn": null,
+        "lei": 8,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Brânză frământată (50g)",
+        "en": "Kneaded cheese",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Slănină prăjită (50g)",
+        "en": "Fried traditional cured pork fat",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Telemea maturată din lapte de vacă (50g)",
+        "en": "Brined Matured Cow Milk Cheese",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Telemea maturată din lapte de bivoliță (50g)",
+        "en": "Matured buffalo milk cheese in brine",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Telemea maturată din lapte de oaie (50g)",
+        "en": "Matured sheep milk cheese in brine",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cheddar (50g)",
+        "en": "Cheddar",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cașcaval afumat (50g)",
+        "en": "Traditional Smoked Semi-Hard Cheese",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Salam Euphoria (50g)",
+        "en": "Euphoria salami",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Salam Euphoria picant (50g)",
+        "en": "Euphoria spicy salami",
+        "descRo": null,
+        "descEn": null,
+        "lei": 9,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ceafă de porc crud-uscată (50g)",
+        "en": "Dry-cured pork neck",
+        "descRo": null,
+        "descEn": null,
+        "lei": 11,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Piept de pui (50g)",
+        "en": "Chicken breast",
+        "descRo": null,
+        "descEn": null,
+        "lei": 11,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Pâine sârbească (200g)",
+        "en": "Serbian bread",
+        "descRo": null,
+        "descEn": null,
+        "lei": 13,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Draught Special Selection",
+    "dishes": [
+      {
+        "ro": "Azuga Nepasteurizată (0.400 l)",
+        "en": null,
+        "descRo": "Märzen (5,5% alc./vol.)",
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Azuga Nefiltrată (0.500 l)",
+        "en": null,
+        "descRo": "Weißbier (5,3% alc./vol.)",
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus Premium (0.400 l)",
+        "en": null,
+        "descRo": "(5% alc./vol.)",
+        "descEn": null,
+        "lei": 18,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus IPA (0.400 l)",
+        "en": null,
+        "descRo": "(6% alc./vol.)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Pilsner Urquell (0.500 l)",
+        "en": null,
+        "descRo": "(4,4% alc./vol.)",
+        "descEn": null,
+        "lei": 26,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Kozel Lager (0.500 l)",
+        "en": null,
+        "descRo": "(4,6% alc./vol.)",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Peroni Nastro Azzurro (0.400 l)",
+        "en": null,
+        "descRo": "(4,6% alc./vol.)",
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Azuga Nepasteurizată (1 l)",
+        "en": null,
+        "descRo": "Märzen (5,5% alc./vol.)",
+        "descEn": null,
+        "lei": 43,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus Premium (1 l)",
+        "en": null,
+        "descRo": "(5% alc./vol.)",
+        "descEn": null,
+        "lei": 34,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Kozel Lager (1 l)",
+        "en": null,
+        "descRo": "(4,6% alc./vol.)",
+        "descEn": null,
+        "lei": 34,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Kozel Draught Mix",
+    "dishes": [
+      {
+        "ro": "Kozel Mix (0.500 l)",
+        "en": null,
+        "descRo": "(4,1% alc./vol.) Kozel Dark & Kozel Lager",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Flavored Draught / Bottle Beer",
+    "dishes": [
+      {
+        "ro": "Half & Half (0.400 l)",
+        "en": "Half & Half",
+        "descRo": "Bere Ursus Premium & limonadă",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Strawberry Beer (0.400 l)",
+        "en": "Strawberry Beer",
+        "descRo": "Bere Ursus Premium & sirop de căpșune",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Elderflower Beer (0.400 l)",
+        "en": "Elderflower Beer",
+        "descRo": "Bere Ursus Premium & sirop de soc",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus Remix (0.330 l)",
+        "en": null,
+        "descRo": "Soc - Lime - Mentă (3,2% alc./vol.)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus Remix (0.330 l)",
+        "en": null,
+        "descRo": "Căpșună - Zmeură - Lămâie (3,2% alc./vol.)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Lager Beer - Bottle",
+    "dishes": [
+      {
+        "ro": "Ursus Premium (0.330 l)",
+        "en": null,
+        "descRo": "(5% alc./vol.)",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus Premium (0.500 l)",
+        "en": null,
+        "descRo": "(5% alc./vol.)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Peroni Nastro Azzurro (0.500 l)",
+        "en": null,
+        "descRo": "(5,1% alc./vol.)",
+        "descEn": null,
+        "lei": 22,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Kozel Lager (0.500 l)",
+        "en": null,
+        "descRo": "(4,6% alc./vol.)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Kozel Dark (0.330 l)",
+        "en": null,
+        "descRo": "(3,7% alc./vol.)",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Special Beers - Bottle",
+    "dishes": [
+      {
+        "ro": "Ursus Retro (0.500 l)",
+        "en": null,
+        "descRo": "(5,1% alc./vol.)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus Black (0.330 l)",
+        "en": null,
+        "descRo": "(6% alc./vol.)",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus IPA (0.330 l)",
+        "en": null,
+        "descRo": "(6% alc./vol.)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus nefiltrată de grâu (0.330 l)",
+        "en": null,
+        "descRo": "(5,1% alc./vol., 12 IBU)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Azuga Nepasteurizată (0.500 l)",
+        "en": null,
+        "descRo": "Märzen (5,5% alc./vol.)",
+        "descEn": null,
+        "lei": 24,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Azuga Nefiltrată (0.500 l)",
+        "en": null,
+        "descRo": "Weißbier (5,3% alc./vol.)",
+        "descEn": null,
+        "lei": 26,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Azuga Helles (0.500 l)",
+        "en": null,
+        "descRo": "(4,8% alc./vol.)",
+        "descEn": null,
+        "lei": 24,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Imported Beers - Bottle",
+    "dishes": [
+      {
+        "ro": "Pilsner Urquell (0.330 l)",
+        "en": null,
+        "descRo": "(4,4% alc./vol.) Cehia",
+        "descEn": null,
+        "lei": 24,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Asahi Dry (0.330 l)",
+        "en": null,
+        "descRo": "(5,2% alc./vol.) Japonia",
+        "descEn": null,
+        "lei": 24,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Peroni Stile Capri (0.330 l)",
+        "en": null,
+        "descRo": "(4,2% alc./vol.)",
+        "descEn": null,
+        "lei": 24,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Non Alcoholic Beer",
+    "dishes": [
+      {
+        "ro": "Ursus Premium (0.500 l)",
+        "en": null,
+        "descRo": "(fără alcool)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ursus Cooler (0.330 l)",
+        "en": null,
+        "descRo": "Lemon/Zmeură și Mure/Grapefruit (fără alcool)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Peroni (0.330 l)",
+        "en": null,
+        "descRo": "(fără alcool)",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Sparkling wine & champagne",
+    "dishes": [
+      {
+        "ro": "Scintti (750ml)",
+        "en": null,
+        "descRo": "Fetească Regală 11% alc./vol. - Brut; Jidvei - Valea Târnavelor - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Maestro Prosecco (750ml)",
+        "en": null,
+        "descRo": "Glera 12% alc./vol. - Extra Dry; Apriori - Veneto - Italia",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "La Plage Prosecco (750ml)",
+        "en": null,
+        "descRo": "Glera 11% alc./vol. - Brut; Crama Rasova - Cantina di Castelnuovo del Garda - Italia",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Blanc de Blancs (750ml)",
+        "en": null,
+        "descRo": "Chardonnay 12% alc./vol. - Brut; Chateau Cristi - Valul lui Traian - Rep. Moldova",
+        "descEn": null,
+        "lei": 176,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Castillo de Montblanc Reserva - Cava (750ml)",
+        "en": null,
+        "descRo": "12% alc./vol. - Brut; Bodegas Concavin - Catalunia - Spania",
+        "descEn": null,
+        "lei": 176,
+        "nonScoreable": true
+      },
+      {
+        "ro": "V8 Prosecco Brut (750ml)",
+        "en": null,
+        "descRo": "11,5% alc./vol. - Millesimato; Italia",
+        "descEn": null,
+        "lei": 176,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Sparkling Brut (750ml)",
+        "en": null,
+        "descRo": "11.5% alc./vol. - Brut; Veneto - Friuli Venezia Giulia - Italia",
+        "descEn": null,
+        "lei": 176,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Prosecco Sparkling (750ml)",
+        "en": null,
+        "descRo": "11.5% alc./vol. - Brut; Veneto - Italia",
+        "descEn": null,
+        "lei": 176,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ca'di Rajo Prosecco Millesimato (750ml)",
+        "en": null,
+        "descRo": "11% alc./vol. - Brut; Valdobbiadene DOCG - Italia",
+        "descEn": null,
+        "lei": 176,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Adami Dei Casel (750ml)",
+        "en": null,
+        "descRo": "11% alc./vol. - Extra Dry; Valdobbiadene DOCG - Italia",
+        "descEn": null,
+        "lei": 196,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Maestro Spumant Suave Rose (750ml)",
+        "en": null,
+        "descRo": "Muscat 7% alc./vol. - Dulce; Apriori - Veneto - Italia",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "V8 Prosecco Rosé (750ml)",
+        "en": null,
+        "descRo": "11,5% alc./vol. - Brut; Italia",
+        "descEn": null,
+        "lei": 176,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Prosecco Rosé Sparkling (750ml)",
+        "en": null,
+        "descRo": "11.5% alc./vol. - Extra Sec; Veneto - Friuli Venezia Giulia - Italia",
+        "descEn": null,
+        "lei": 196,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Sparkling Rosé (750ml)",
+        "en": null,
+        "descRo": "9.5% alc./vol. - Demisec; Piemonte - Italia",
+        "descEn": null,
+        "lei": 196,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mysterium Vintage (750ml)",
+        "en": null,
+        "descRo": "Pinot Noir 12% alc./vol. - Brut; Jidvei - Valea Târnavelor - România",
+        "descEn": null,
+        "lei": 319,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Moët Brut Alb (750ml)",
+        "en": null,
+        "descRo": "12% alc./vol. - Brut; Champagne - Franța",
+        "descEn": null,
+        "lei": 516,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Moët Brut Rosé (750ml)",
+        "en": null,
+        "descRo": "12% alc./vol. - Brut; Champagne - Franța",
+        "descEn": null,
+        "lei": 536,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Nicolas Feuillatte Reserve Exclusive (750ml)",
+        "en": null,
+        "descRo": "12% alc./vol. - Brut; Champagne - Franța",
+        "descEn": null,
+        "lei": 596,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Laurent Perrier La Cuvée (750ml)",
+        "en": null,
+        "descRo": "12% alc./vol. - Brut; Champagne - Franța",
+        "descEn": null,
+        "lei": 716,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Laurent Perrier Heritage (750ml)",
+        "en": null,
+        "descRo": "12% alc./vol. - Brut; Champagne - Franța",
+        "descEn": null,
+        "lei": 999,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Laurent Perrier Cuvée Rosé (750ml)",
+        "en": null,
+        "descRo": "12% alc./vol. - Brut; Champagne - Franța",
+        "descEn": null,
+        "lei": 1069,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Vin la pahar",
+    "dishes": [
+      {
+        "ro": "Iluziv (150ml)",
+        "en": null,
+        "descRo": "Sauvignon Blanc, Riesling Italian, Muscat Ottonel 13,5% alc./vol. - Alb, Sec; Jidvei - Valea Târnavelor - România",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Glamour (150ml)",
+        "en": null,
+        "descRo": "Sauvignon Blanc 13% alc./vol. - Alb, Demisec; Suvorov - Codru - Rep. Moldova",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Carpathia (150ml)",
+        "en": null,
+        "descRo": "Chardonnay 14% alc./vol. - Alb, Sec; Domeniile Sâmburești - Sâmburești - România",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bravoure (150ml)",
+        "en": null,
+        "descRo": "Sauvignon Blanc, Pinot Grigio 13,5% alc./vol. - Alb, Sec; Chateau Cristi - Valul lui Traian - Rep. Moldova",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Arrogance (150ml)",
+        "en": null,
+        "descRo": "Pinot Noir 14% alc./vol. - Rosé, Sec; Domeniile Franco-Române - Dealu Mare - România",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Carpathia (150ml)",
+        "en": null,
+        "descRo": "Fetească Neagră 14,5% alc./vol. - Alb, Sec; Domeniile Sâmburești - Sâmburești - România",
+        "descEn": null,
+        "lei": 36,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Prince Vlad Cabernet Sauvignon (150ml)",
+        "en": null,
+        "descRo": "Cabernet Sauvignon , 13,5% alc./vol. - Roșu, Sec; Vînju Mare - Mehedinți - România",
+        "descEn": null,
+        "lei": 36,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Individo (150ml)",
+        "en": null,
+        "descRo": "Rară Neagră, Malbec, Syrah 13% alc./vol. - Sec; Château Vartely - Orhei - Rep. Moldova",
+        "descEn": null,
+        "lei": 36,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Primordial (150ml)",
+        "en": null,
+        "descRo": "Fetească Neagră 14,5% alc./vol. - Roșu, Sec; Domeniul Bogdan - Murfatlar - România",
+        "descEn": null,
+        "lei": 39,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Prosecco (120 ml)",
+        "en": null,
+        "descRo": "Italia",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Vin alb",
+    "dishes": [
+      {
+        "ro": "Carpathia (750ml)",
+        "en": null,
+        "descRo": "Sauvignon Blanc 13% alc./vol. - Sec; Domeniile Sâmburești - Sâmburești - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Liliac Cuvée Antonia (750ml)",
+        "en": null,
+        "descRo": "Chardonnay, Sauvignon Blanc, Neuburger, Muscat Ottonel 13% alc.vol. - Sec; Crama Liliac - Lechința - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "La Plage (750ml)",
+        "en": null,
+        "descRo": "Sauvignon Blanc, Fetească Regală, Muscat Ottonel 12% alc./vol. - Sec; Crama Rasova - Murfatlar - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Heritage (750ml)",
+        "en": null,
+        "descRo": "Chardonnay 12,9% alc./vol. - Sec; Domeniile Franco-Române - Dealu Mare - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Zaig Sauvignon Blanc (750ml)",
+        "en": null,
+        "descRo": "Sauvignon Blanc 11,5% alc./vol. - Sec; Vinifera Eco Zem - Lechința - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Domeniile Davidescu (750ml)",
+        "en": null,
+        "descRo": "Viorica, Muscat Ottonel 12,5% alc./vol. - Sec; Podgoria Alexandru Ioan Cuza - Valul lui Traian - Rep. Moldova",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Tsariste (750ml)",
+        "en": null,
+        "descRo": "Riesling, Chardonnay, Fetească Neagră 13% alc./vol. - Sec; Land of Basarabia - Ștefan Vodă - Rep. Moldova",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "IMplicit (750ml)",
+        "en": null,
+        "descRo": "Pinot Grigio 12% alc./vol. - Sec; Cramele Recaș - Recaș - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mysterium (750ml)",
+        "en": null,
+        "descRo": "Rhein Riesling/Muscat Ottonel 13% alc./vol. - Sec; Jidvei - Valea Târnavelor - România",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bauer Sauvignonasse (750ml)",
+        "en": null,
+        "descRo": "Friulano 12,5% alc./vol. - Sec; Crama Bauer - Drăgășani - România",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bauer Bobita (750ml)",
+        "en": null,
+        "descRo": "Fetească Regală 10,5% alc./vol. - Demisec; Crama Bauer - Drăgășani - România",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Organic Riesling de Rhin (750ml)",
+        "en": null,
+        "descRo": "Riesling de Rhin 12,8% alc./vol. - Sec; Domeniul Bogdan - Murfatlar - România",
+        "descEn": null,
+        "lei": 151,
+        "nonScoreable": true
+      },
+      {
+        "ro": "White Artisan (750ml)",
+        "en": null,
+        "descRo": "Fetească Albă, Tămâioasă Românească, Riesling 12,5% alc./vol. - Sec; Aurelia Vișinescu - Dealu Mare - România",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Karakter Chardonnay",
+        "en": null,
+        "descRo": "Chardonnay; 13% alc./vol. - Sec; Aurelia Vișinescu - Dealu Mare - România",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Purcari Sapiens Alb",
+        "en": null,
+        "descRo": "Chardonnay; 13,5% alc./vol. - Sec; Purcari - Ștefan Vodă - România",
+        "descEn": null,
+        "lei": 156,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mircești Sauvignon Blanc",
+        "en": null,
+        "descRo": "Sauvignon Blanc; 13% alc./vol. - Sec; Mircești - Codru - Rep. Moldova",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Individo",
+        "en": null,
+        "descRo": "Fetească Regală, Riesling; 13% alc./vol. - Sec; Château Vartely - Orhei - Rep. Moldova",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Rusalcă Albă",
+        "en": null,
+        "descRo": "Sauvignon Blanc, Chardonnay, Riesling, Pinot Grigio; 13% alc./vol. - Sec; Crama Oprișor - Podgoria Dealurile Olteniei - România",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Prince Știrbey",
+        "en": null,
+        "descRo": "Crâmpoșie Selecționată; 13% alc./vol. - Sec; Agricola Știrbey - Drăgășani - România",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Premium Fumé",
+        "en": null,
+        "descRo": "Chardonnay, Sauvignon Blanc, Fetească Regală; 13% alc./vol. - Sec; Budureasca - Dealu Mare - România",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Issa Sauvignon Blanc",
+        "en": null,
+        "descRo": "Sauvignon Blanc; 12,5% alc./vol. - Sec; Crama La Salina - Dealurile Transilvaniei - România",
+        "descEn": null,
+        "lei": 163,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Issa Chardonnay",
+        "en": null,
+        "descRo": "Chardonnay; 12,5% alc./vol. - Sec; Crama La Salina - Dealurile Transilvaniei - România",
+        "descEn": null,
+        "lei": 163,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Caii de la Letea Princeps",
+        "en": null,
+        "descRo": "Aligote; 13% alc./vol. - Sec; Crama Sarica Niculițel - Sarica Niculițel - România",
+        "descEn": null,
+        "lei": 163,
+        "nonScoreable": true
+      },
+      {
+        "ro": "The Sign",
+        "en": null,
+        "descRo": "Tămâioasă Românească; 13.5% alc./vol. - Sec; Budureasca - Dealu Mare - România",
+        "descEn": null,
+        "lei": 163,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Owner's Choice Ana",
+        "en": null,
+        "descRo": "Fetească Regală; 13% alc./vol. - Sec; Jidvei - Valea Târnavelor - România",
+        "descEn": null,
+        "lei": 163,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Prince Vlad Chardonnay",
+        "en": null,
+        "descRo": "Chardonnay; 12% alc./vol. - Sec; Vînju Mare - Mehedinți - România",
+        "descEn": null,
+        "lei": 163,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Migala",
+        "en": null,
+        "descRo": "Fetească Albă, Fetească Regală, Chardonnay, Aligote, Tămâioasă Românească, Riesling Italian; 13% alc./vol. - Sec; DeMatei - Dealu Mare - România",
+        "descEn": null,
+        "lei": 163,
+        "nonScoreable": true
+      },
+      {
+        "ro": "ReVivre Alb",
+        "en": null,
+        "descRo": "Sauvignon Blanc, Chardonnay; 13% alc./vol. - Sec; Serve - Dealu Mare - România",
+        "descEn": null,
+        "lei": 169,
+        "nonScoreable": true
+      },
+      {
+        "ro": "ReVivre Alb",
+        "en": null,
+        "descRo": "Sauvignon Blanc, Fetească Albă; 13% alc./vol. - Sec; Serve - Dealu Mare - România",
+        "descEn": null,
+        "lei": 169,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Prince Știrbey",
+        "en": null,
+        "descRo": "Tămâioasă Românească; 10% alc./vol. - Dulce; Agricola Știrbey - Drăgășani - România",
+        "descEn": null,
+        "lei": 173,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Muse White",
+        "en": null,
+        "descRo": "Fetească Regală, Muscat Ottonel; 12,5% alc./vol. - Demisec; Cramele Recaș - Recaș - România",
+        "descEn": null,
+        "lei": 184,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Zaig FA&MO",
+        "en": null,
+        "descRo": "Fetească Albă, Muscat Ottonel; 13,5% alc./vol. - Sec; Vinifera Eco Zem - Lechința - România",
+        "descEn": null,
+        "lei": 184,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Tarla 201",
+        "en": null,
+        "descRo": "Chardonnay Barrique 2023; 14% alc./vol. - Alb, Sec; Tarla 201 - Dealu Mare - România",
+        "descEn": null,
+        "lei": 184,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Chateau Cristi",
+        "en": null,
+        "descRo": "Chardonnay Barrel Fermented; 14% alc./vol. - Sec; Chateau Cristi - Valul lui Traian - Rep. Moldova",
+        "descEn": null,
+        "lei": 199,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sole",
+        "en": null,
+        "descRo": "Fetească Regală; 12,5% alc./vol. - Sec; Cramele Recaș - Recaș - România",
+        "descEn": null,
+        "lei": 199,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Primordial",
+        "en": null,
+        "descRo": "Chardonnay; 13,5% alc./vol. - Alb, Sec; Cramele Domeniile Bogdan - Murfatlar - România",
+        "descEn": null,
+        "lei": 219,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Chateau Valvis",
+        "en": null,
+        "descRo": "Chardonnay; 14% alc./vol. - Sec; Domeniile Sâmburești - Sâmburești - România",
+        "descEn": null,
+        "lei": 254,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Chateau Valvis",
+        "en": null,
+        "descRo": "Sauvignon Blanc; 14% alc./vol. - Sec; Domeniile Sâmburești - Sâmburești - România",
+        "descEn": null,
+        "lei": 254,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Solo Quinta",
+        "en": null,
+        "descRo": "Chardonnay, Fetesca Regala, Muscat Ottonel, Sauvignon Blanc, Traminer Roz; 13% alc./vol. - Sec; Cramele Recaș - Recaș - România",
+        "descEn": null,
+        "lei": 259,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Vin rosé",
+    "dishes": [
+      {
+        "ro": "La Plage",
+        "en": null,
+        "descRo": "Pinot Noir, Cabernet Sauvignon; 12,3% alc./vol. - Sec; Crama Rasova - Murfatlar - România",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Liliac Rosé",
+        "en": null,
+        "descRo": "Pinot Noir; 13% alc./vol. - Sec; Crama Liliac - Lechința - România",
+        "descEn": null,
+        "lei": 169,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bristena",
+        "en": null,
+        "descRo": "Busuioacă; 12% alc./vol. - Demidulce; Budureasca - Dealu Mare - România",
+        "descEn": null,
+        "lei": 169,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Issa Rosé",
+        "en": null,
+        "descRo": "Pinot Noir; 12% alc./vol. - Sec; Crama La Salina - Dealurile Transilvaniei - România",
+        "descEn": null,
+        "lei": 179,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jiana Rosé",
+        "en": null,
+        "descRo": "Pinot Noir, Shiraz; 13% alc./vol. - Sec; Crama Oprișor - Podgoria Dealurile Olteniei - România",
+        "descEn": null,
+        "lei": 179,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Majestic",
+        "en": null,
+        "descRo": "Fetească Neagră, Merlot; 12,5% alc./vol. - Demisec; Vînju Mare - Mehedinți - România",
+        "descEn": null,
+        "lei": 189,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Muse Night",
+        "en": null,
+        "descRo": "Merlot, Cabernet Sauvignon, Fetească Neagră, Syrah; 13% alc./vol. - Demisec; Cramele Recaș - Recaș - România",
+        "descEn": null,
+        "lei": 199,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Vin roșu",
+    "dishes": [
+      {
+        "ro": "Carpathia",
+        "en": null,
+        "descRo": "Cabernet Sauvignon, Merlot; 14.5% alc./vol. - Sec; Domeniile Sâmburești - Sâmburești - România",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "La Plage",
+        "en": null,
+        "descRo": "Cabernet Sauvignon, Pinot Noir, Fetească Neagră, Syrah; 14,5% alc./vol. - Sec; Crama Rasova - Murfatlar - România",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cuvée Experience",
+        "en": null,
+        "descRo": "Fetească Neagră, Merlot, Cabernet Sauvignon; 14,5% alc./vol. - Sec; Cramele Domeniile Bogdan - Murfatlar - România",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Domeniile Davidescu",
+        "en": null,
+        "descRo": "Fetească Neagră, Saperavi; 13,5% alc./vol. - Sec; Podgoria Alexandru Ioan Cuza - Valul lui Traian - Rep. Moldova",
+        "descEn": null,
+        "lei": 159,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Land of Basarabia MAS",
+        "en": null,
+        "descRo": "Saperavi, Fetească Neagră; 14% alc./vol. - Sec; Land of Basarabia - Ștefan Vodă - Rep. Moldova",
+        "descEn": null,
+        "lei": 169,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Purcari Sapiens",
+        "en": null,
+        "descRo": "Rară Neagră; 12,5% alc./vol. - Sec; Château Purcari - Ștefan Vodă - Rep. Moldova",
+        "descEn": null,
+        "lei": 179,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Prince Vlad Fetească Neagră",
+        "en": null,
+        "descRo": "Fetească Neagră; 13,5% alc./vol. - Sec; Vînju Mare - Mehedinți - România",
+        "descEn": null,
+        "lei": 179,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Caii de la Letea Princeps Quintessence",
+        "en": null,
+        "descRo": "Fetească Neagră, Cabernet Sauvignon, Cabernet Franc, Petit Verdot, Merlot; 14% alc./vol. - Sec; Crama Sarica Niculițel - Dobrogea - România",
+        "descEn": null,
+        "lei": 179,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Arrogance",
+        "en": null,
+        "descRo": "Fetească Neagră, Merlot; 14,5% alc./vol. - Sec; Domeniile Franco-Române - Dealu Mare - România",
+        "descEn": null,
+        "lei": 179,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Prince Știrbey",
+        "en": null,
+        "descRo": "Negru de Drăgășani; 14,8% alc./vol. - Sec; Agricola Știrbey - Drăgășani - România",
+        "descEn": null,
+        "lei": 186,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Liliac Red Cuvée",
+        "en": null,
+        "descRo": "Fetească Neagră, Merlot, Cabernet Sauvignon; 14% alc./vol. - Sec; Crama Liliac - Lechința - România",
+        "descEn": null,
+        "lei": 196,
+        "nonScoreable": true
+      },
+      {
+        "ro": "The Sign Shiraz",
+        "en": null,
+        "descRo": "Shiraz; 14,5% alc./vol. - Sec; Budureasca - Dealu Mare - România",
+        "descEn": null,
+        "lei": 196,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Migala",
+        "en": null,
+        "descRo": "Fetească Neagră, Merlot, Cabernet Sauvignon; 14,5% alc./vol. - Sec; DeMatei - Dealu Mare - România",
+        "descEn": null,
+        "lei": 196,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Chateau Cristi",
+        "en": null,
+        "descRo": "Malbec, Saperavi; 14% alc./vol. - Sec; Chateau Cristi - Valul lui Traian - Rep. Moldova",
+        "descEn": null,
+        "lei": 209,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Tarla 201",
+        "en": null,
+        "descRo": "Syrah, Cabernet Sauvignon, Merlot; 14,5% alc./vol. - Roșu, Sec; Tarla 201 - Dealu Mare - România",
+        "descEn": null,
+        "lei": 224,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Drăgaică Rosie",
+        "en": null,
+        "descRo": "Cabernet Sauvignon, Merlot, Fetească Neagră, Syrah; 14,8% alc./vol. - Roșu, Sec; Crama Oprișor - Podgoria Dealurile Olteniei - România",
+        "descEn": null,
+        "lei": 229,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Selene",
+        "en": null,
+        "descRo": "Syrah; 14,5% alc./vol. - Sec; Cramele Recaș - Recaș - România",
+        "descEn": null,
+        "lei": 234,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bauer Pinot Noir",
+        "en": null,
+        "descRo": "Pinot Noir; 14,5% alc./vol. - Sec; Crama Bauer - Drăgășani - România",
+        "descEn": null,
+        "lei": 259,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Noble Five",
+        "en": null,
+        "descRo": "Fetească Neagră, Shiraz, Cabernet Sauvignon, Merlot, Pinot Noir; 14,5% alc./vol. - Sec; Budureasca - Dealu Mare - România",
+        "descEn": null,
+        "lei": 259,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Taraboste",
+        "en": null,
+        "descRo": "Cabernet Sauvignon, Malbec, Syrah; 14,5% alc./vol. - Sec; Chateau Vartely - Codru - Rep. Moldova",
+        "descEn": null,
+        "lei": 259,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Anima 3 Fete Negre",
+        "en": null,
+        "descRo": "Fetească Neagră din 3 ani; 14,5% alc./vol. - Sec; Crama Aurelia Vișinescu - Dealu Mare - România",
+        "descEn": null,
+        "lei": 349,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Licori amestecate",
+    "dishes": [
+      {
+        "ro": "Watermelon Gin Bull (320ml)",
+        "en": null,
+        "descRo": "Gin, Red Bull pepene roșu, gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Pornstar Martini (150ml)",
+        "en": null,
+        "descRo": "Vodka, sirop Vanilie, lichior Passion Fruit, puree Passionfruit, Fresh lămâie, Prosecco, suc ananas, gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Golden Dream (120ml)",
+        "en": null,
+        "descRo": "Galliano, suc portocale, Cointreau, half & half",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Negroni (90ml)",
+        "en": null,
+        "descRo": "Gin, Campari, Vermouth roșu, gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Old Fashioned (60ml)",
+        "en": null,
+        "descRo": "Bourbon, Bitter Angostura, zahăr brun, portocală, gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Disaronno Sour (120ml)",
+        "en": null,
+        "descRo": "Amaretto Disaronno, fresh de lămâie, sirop de zahăr și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cosmopolitan (120ml)",
+        "en": null,
+        "descRo": "Vodka, Triplu Sec, suc de cranberry și suc de lime",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Manhattan (60ml)",
+        "en": null,
+        "descRo": "Bourbon Whiskey, Vermut roșu, Bitter Angostura și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Screaming Orgasm (100ml)",
+        "en": null,
+        "descRo": "Vodka, Kahlua lichior de cafea, Baileys, Amaretto Disaronno și half & half",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "White Russian (80ml)",
+        "en": null,
+        "descRo": "Vodka, lichior de cafea și frișcă lichidă",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Godfather (60ml)",
+        "en": null,
+        "descRo": "Scotch Whisky, Amaretto Disaronno și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Limoncello Spritz (360ml)",
+        "en": null,
+        "descRo": "Limoncello, Prosecco, apă minerală, gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Gin & Tonic (320ml)",
+        "en": null,
+        "descRo": "Gin, apă tonică, lime și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Euphoria Cocktail (360ml)",
+        "en": null,
+        "descRo": "Vermouth, Triplu Sec, busuioc proaspăt, sirop zmeură, Prosecco și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mojito (320ml)",
+        "en": null,
+        "descRo": "Rom, mentă, lime, sirop de zahăr din trestie, suc de lime, apă minerală și gheață. Vă recomandăm varianta cu căpșune.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Cocktailuri",
+    "dishes": [
+      {
+        "ro": "Caipirinha (120ml)",
+        "en": null,
+        "descRo": "Cachaca, lime, zahăr brun, apă minerală și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Caipiroska/Strawberry Caipiroska (120ml)",
+        "en": null,
+        "descRo": "Vodka, lime, zahăr brun, apă minerală și gheață/+ piure de căpșune",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cuba Libre (320ml)",
+        "en": null,
+        "descRo": "Rom, Pepsi Cola, suc de lime și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Turbofin (320ml)",
+        "en": null,
+        "descRo": "Irish Whiskey, piure de căpșune, lichior de pepene, Red Bull și gheață pisată",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Pina Colada (320ml)",
+        "en": null,
+        "descRo": "Rom, sirop de cocos, half & half, suc de ananas și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Alien Secretion (320ml)",
+        "en": null,
+        "descRo": "Vodka, lichior de pepene, sirop de cocos, suc de ananas și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Tequila Sunrise (320ml)",
+        "en": null,
+        "descRo": "Tequila, suc de portocale, sirop de grenadine și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sex on the Beach (320ml)",
+        "en": null,
+        "descRo": "Vodka, lichior de piersici, suc de ananas, suc de cranberry și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hugo (360ml)",
+        "en": null,
+        "descRo": "Prosecco, sirop de soc, mentă, apă minerală și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mai Tai (320ml)",
+        "en": null,
+        "descRo": "Rom, Triplu Sec, suc de lămâie, suc de ananas, suc de cranberry, sirop de migdale, sirop de zahăr și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Long Island Iced Tea (320ml)",
+        "en": null,
+        "descRo": "Vodka, Rom, Gin, Triplu Sec, Pepsi Cola, sirop de zahăr, suc de lămâie și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Tokyo Iced tea (320ml)",
+        "en": null,
+        "descRo": "Vodka, Rom, Gin, lichior de pepene, 7Up, sirop de zahăr, suc de lămâie și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bullfrog (320ml)",
+        "en": null,
+        "descRo": "Vodka, Rom, Gin, lichior Blue Curacao, Red Bull, sirop de zahăr, suc de lămâie și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Fiero Spritz (360ml)",
+        "en": null,
+        "descRo": "Martini Fiero, Prosecco, apă minerală, gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Fiero Tonic (320ml)",
+        "en": null,
+        "descRo": "Martini Fiero, True Tonic, gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Aperol Spritz (320ml)",
+        "en": null,
+        "descRo": "Aperol, Prosecco, apă minerală și gheață",
+        "descEn": null,
+        "lei": 43,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Monkey Ginger (320ml)",
+        "en": null,
+        "descRo": "Monkey Shoulders, True Happiness Ginger, gheață",
+        "descEn": null,
+        "lei": 43,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Tullamore Lemon (320ml)",
+        "en": null,
+        "descRo": "Tullamore, sweet & sour, 7up, gheață",
+        "descEn": null,
+        "lei": 43,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hendrick's & Tonic (320ml)",
+        "en": null,
+        "descRo": "Gin, True tonic, gheață",
+        "descEn": null,
+        "lei": 45,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hendrick's Oasium Spritz (360ml)",
+        "en": null,
+        "descRo": "Gin, triplu sec, Prosecco, apă minerală, gheață",
+        "descEn": null,
+        "lei": 45,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hendrick's Grand Cabaret Spritz (360ml)",
+        "en": null,
+        "descRo": "Gin, sirop soc, Prosecco, apă minerală, gheață",
+        "descEn": null,
+        "lei": 45,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Glen Fizzy (320ml)",
+        "en": null,
+        "descRo": "Glenfiddich, sweet & sour, suc mere, apa tonică, gheață",
+        "descEn": null,
+        "lei": 45,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Mixuri",
+    "dishes": [
+      {
+        "ro": "Vodka & Red Bull (320ml)",
+        "en": null,
+        "descRo": "Vodka, Red Bull și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Vodka & Juice (320ml)",
+        "en": null,
+        "descRo": "Vodka, suc de cranberry/ mere/ portocale și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's & Pepsi Cola/ Red Bull (320ml)",
+        "en": null,
+        "descRo": "Jack Daniel's & Pepsi Cola/ Red Bull și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Honey Ginger (320ml)",
+        "en": null,
+        "descRo": "Jack Daniel's Honey, True Ginger și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Apple Tonic (320ml)",
+        "en": null,
+        "descRo": "Jack Daniel's Applr, True Tonic, și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jägermeister & Red Bull (320ml)",
+        "en": null,
+        "descRo": "Jägermeister, Red Bull și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jägermeister & Juice (320ml)",
+        "en": null,
+        "descRo": "Jägermeister, suc de cranberry/ mere/ portocale și gheață",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Fulgerări",
+    "dishes": [
+      {
+        "ro": "Kamikaze (30ml)",
+        "en": null,
+        "descRo": "Vodka, Triplu Sec, suc de lămâie și sirop de zahăr",
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Rusty Nails (30ml)",
+        "en": null,
+        "descRo": "Scotch Whisky și Drambuie",
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Specialitatea Barmanului (30ml)",
+        "en": null,
+        "descRo": "Vodka, lichior de piersici și Baileys",
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Quick One (30ml)",
+        "en": null,
+        "descRo": "Baileys, lichior de cafea și lichior de pepene galben",
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "B 52 (30ml)",
+        "en": null,
+        "descRo": "Lichior de cafea, Baileys și Triplu Sec",
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Baby Guinness (30ml)",
+        "en": null,
+        "descRo": "Baileys și lichior de cafea",
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cozonac Pack (5x30ml)",
+        "en": null,
+        "descRo": "Jagermeister, Baileys, Bacardi",
+        "descEn": null,
+        "lei": 63,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Fără alcool",
+    "dishes": [
+      {
+        "ro": "Energizers (320ml)",
+        "en": null,
+        "descRo": "Red Bull, apă minerală, sirop, gheață",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Green Apple (320ml)",
+        "en": null,
+        "descRo": "Suc de mere, scorțișoară, sweet & sour și gheață",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Summer Breeze (360ml)",
+        "en": null,
+        "descRo": "Suc de ananas, suc de portocale, sirop de grenadine și gheață",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cranberjito (360ml)",
+        "en": null,
+        "descRo": "Suc de cranberry, suc de lime, mentă, sirop de zahăr, apă minerală și gheață",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Nolo Floreal (320ml)",
+        "en": null,
+        "descRo": "Martini Nolo Floreal, apă tonică, gheață",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Nolo Vibrante (320ml)",
+        "en": null,
+        "descRo": "Martini Nolo Vibrante, apă tonică, gheață",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Taurul roșu",
+    "dishes": [
+      {
+        "ro": "Red Bull (250ml)",
+        "en": null,
+        "descRo": "Classic, Zero, Pepene roșu, Caise și căpșune",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Lămâițele",
+    "dishes": [
+      {
+        "ro": "Classic Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lămâie, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 27,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mint & Ginger/Basil & Ginger Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lime, fresh de ghimbir, mentă sau busuioc, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Lime & Mint Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lime, suc de lămâie, mentă, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Passion Fruit Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lămâie, piure de fructul pasiunii, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Raspberry & Basil Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lămâie, piure de zmeură, busuioc proaspăt, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Orange & Ginger Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lămâie, suc de portocale, mentă, fresh de ghimbir, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Strawberry & Mint Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lămâie, piure de căpșune, mentă, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mango Special Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lămâie, piure de mango, busuioc proaspăt, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Elderflower Lemonade (450ml)",
+        "en": null,
+        "descRo": "Suc de lămâie, sirop de soc, sirop de zahăr, apă și gheață",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Sucuri acidulate",
+    "dishes": [
+      {
+        "ro": "Gama Pepsi (250ml)",
+        "en": null,
+        "descRo": "Pepsi Cola, Pepsi Twist, Pepsi Zero Zahăr, Mirinda, 7UP Zero Zahăr",
+        "descEn": null,
+        "lei": 17,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Evervess (250ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 18,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Lipton Ice Tea (250ml)",
+        "en": null,
+        "descRo": "Lămâie, Piersici",
+        "descEn": null,
+        "lei": 18,
+        "nonScoreable": true
+      },
+      {
+        "ro": "True (200ml)",
+        "en": null,
+        "descRo": "Happiness Ginger, Social Tonic, Tonic Elderflower",
+        "descEn": null,
+        "lei": 18,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Sucuri Naturale",
+    "dishes": [
+      {
+        "ro": "Gama Prigat Nectar (250ml)",
+        "en": null,
+        "descRo": "Portocale, Mere, Piersici - Caise, Kiwi - Pere, Căpșune - Banane - Măr",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Apă cu și fără bule",
+    "dishes": [
+      {
+        "ro": "Aqua Carpatica (330ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 15,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Aqua Carpatica (750ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Evian (330ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 28,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Prospături scurte",
+    "dishes": [
+      {
+        "ro": "Shot de ghimbir (20ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 12,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Shot de lămâie (20ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 12,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Portocale* (250ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grapefruit (250ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ananas (250ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Morcov (250ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Măr (250ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Mix (250ml)",
+        "en": null,
+        "descRo": "Combinație de oricare două",
+        "descEn": null,
+        "lei": 25,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Prospături de fructe amestecate",
+    "dishes": [
+      {
+        "ro": "Fresh Mint Smoothie (360ml)",
+        "en": null,
+        "descRo": "Banane, fresh de portocale, mango, mentă și gheață spartă",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Orange & Banana Smoothie (360ml)",
+        "en": null,
+        "descRo": "Suc de portocale, banană, piure de fructul pasiunii, sirop de zahăr și gheață spartă",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ginger Apple Smoothie (360ml)",
+        "en": null,
+        "descRo": "Fresh de ghimbir, suc de ananas, fructul pasiunii, suc de mere și gheață spartă",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Strawberry, Orange & Banana Smoothie (360ml)",
+        "en": null,
+        "descRo": "Piure de căpșune, fresh de portocale, banană și gheață spartă",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Distilat numa' o dată",
+    "dishes": [
+      {
+        "ro": "Glenfiddich 12 YO (40ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 42,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Glenfiddich 15 YO (40ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 61,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Glenfiddich 18 YO (40ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 79,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Balvenie 12 YO (40ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 42,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Balvenie 14 YO (40ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 54,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Monkey Shoulder's (40ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 32,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Wiskane americane",
+    "dishes": [
+      {
+        "ro": "Jack Daniel's (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Honey (40ml)",
+        "en": null,
+        "descRo": "35% alc./vol.",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Apple (40ml)",
+        "en": null,
+        "descRo": "35% alc./vol.",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Gentleman Jack (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 37,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Fire (40ml)",
+        "en": null,
+        "descRo": "35% alc./vol.",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Bonded (40ml)",
+        "en": null,
+        "descRo": "50% alc./vol.",
+        "descEn": null,
+        "lei": 42,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Triple Mash (40ml)",
+        "en": null,
+        "descRo": "50% alc./vol.",
+        "descEn": null,
+        "lei": 42,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jack Daniel's Single Barrel (40ml)",
+        "en": null,
+        "descRo": "50% alc./vol.",
+        "descEn": null,
+        "lei": 47,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Woodford Reserve (40ml)",
+        "en": null,
+        "descRo": "43,2% alc./vol.",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Woodford Rye (40ml)",
+        "en": null,
+        "descRo": "45,2% alc./vol.",
+        "descEn": null,
+        "lei": 37,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Unii o beau ca pă apă",
+    "dishes": [
+      {
+        "ro": "Russia Standard (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grey Goose (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grey Goose La Poire (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grey Goose Altius (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 81,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Whisky scoțian a'ntâia",
+    "dishes": [
+      {
+        "ro": "Grant's Triple Wood (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 28,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grant's 8 YO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 33,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grant's 12 YO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 35,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grant's Rum Cask (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grant's Smoky (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Dewar's 12 YO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 34,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Mexicu' la noi acasă",
+    "dishes": [
+      {
+        "ro": "Camino Real (20ml)",
+        "en": null,
+        "descRo": "Blanco/ Gold, 35%-40% alc./vol.",
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Herradura Reposado (20ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Patron (20ml)",
+        "en": null,
+        "descRo": "Silver/ Reposado, 40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Patron XO Cafe (20ml)",
+        "en": null,
+        "descRo": "35% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Patron Reposado El Alto (20ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 112,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Beuturica spiridușilor",
+    "dishes": [
+      {
+        "ro": "Tullamore DEW (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Tullamore DEW 12 YO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 34,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Teeling Small Batch (40ml)",
+        "en": null,
+        "descRo": "46% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Slane (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Licori așa cum îs ele",
+    "dishes": [
+      {
+        "ro": "Bombay Sapphire (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hendrick's (40ml)",
+        "en": null,
+        "descRo": "44% alc./vol.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hendrick's Another (40ml)",
+        "en": null,
+        "descRo": "41.4% alc./vol.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hendrick's Grand Cabaret (40ml)",
+        "en": null,
+        "descRo": "43,4% alc./vol.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Hendrick's Oasium (40ml)",
+        "en": null,
+        "descRo": "43,4% alc./vol.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "The Botanist Islay (40ml)",
+        "en": null,
+        "descRo": "46% alc./vol.",
+        "descEn": null,
+        "lei": 34,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Gin Mare (40ml)",
+        "en": null,
+        "descRo": "42,7% alc./vol.",
+        "descEn": null,
+        "lei": 38,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Siropul veseliei",
+    "dishes": [
+      {
+        "ro": "Jägermeister Orange (40ml)",
+        "en": null,
+        "descRo": "33% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Jägermeister Ice Cold (40ml)",
+        "en": null,
+        "descRo": "35% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Galliano Vanilla (40ml)",
+        "en": null,
+        "descRo": "30% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Aperol (40ml)",
+        "en": null,
+        "descRo": "11% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Baileys Irish Cream (40ml)",
+        "en": null,
+        "descRo": "17% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Disaronno Amaretto Liqueur (40ml)",
+        "en": null,
+        "descRo": "28% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Vaccari Sambuca (40ml)",
+        "en": null,
+        "descRo": "38% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Grande Absinthe (20ml)",
+        "en": null,
+        "descRo": "69% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Drambuie (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ouzo (40ml)",
+        "en": null,
+        "descRo": "38% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Passoa (40ml)",
+        "en": null,
+        "descRo": "17% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cointreau (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Sheridan's (40ml)",
+        "en": null,
+        "descRo": "15,5% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Balsamul căpitanului",
+    "dishes": [
+      {
+        "ro": "Bacardi Carta Blanca/ Oro/ Negra (40ml)",
+        "en": null,
+        "descRo": "37,5% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bacardi Spiced (40ml)",
+        "en": null,
+        "descRo": "35% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bacardi Caribbean Spiced (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Bacardi Reserva Ocho (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 34,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Diplomatico (40ml)",
+        "en": null,
+        "descRo": "47% alc./vol.",
+        "descEn": null,
+        "lei": 53,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Demon's Share 6 YO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 46,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Demon's Share 12 YO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 57,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Brandy & Cognac",
+    "dishes": [
+      {
+        "ro": "Metaxa 7* (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Metaxa 12* (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 41,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Remy Martin V.S.O.P. (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 46,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Remy Martin XO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 81,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Kvint 10 YO XO (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 36,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Vermouth",
+    "dishes": [
+      {
+        "ro": "Martini Bianco/ Rosso (40ml)",
+        "en": null,
+        "descRo": "15% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Martini Fiero (40ml)",
+        "en": null,
+        "descRo": "14,9% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Pălincă/Rachiu/Vișinată",
+    "dishes": [
+      {
+        "ro": "Ilie Galben Prune/ Pere (40ml)",
+        "en": null,
+        "descRo": "52% alc./vol.",
+        "descEn": null,
+        "lei": 36,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Rachiu Ungheni Gutui (40ml)",
+        "en": null,
+        "descRo": "40% alc./vol.",
+        "descEn": null,
+        "lei": 36,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Vișinată/ Afinată (40ml)",
+        "en": null,
+        "descRo": "20% alc./vol.",
+        "descEn": null,
+        "lei": 29,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Cafea",
+    "dishes": [
+      {
+        "ro": "Espresso/Espresso Decofeinizat (25ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 14,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Espresso Ristretto (10ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 14,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Espresso Doppio (50ml)",
+        "en": null,
+        "descRo": null,
+        "descEn": null,
+        "lei": 16,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Espresso Americano (90ml)",
+        "en": null,
+        "descRo": "Espresso și apă fierbinte",
+        "descEn": null,
+        "lei": 15,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Espresso Macchiato (60ml)",
+        "en": null,
+        "descRo": "Espresso și cremă de lapte",
+        "descEn": null,
+        "lei": 15,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Cappuccino (200ml)",
+        "en": null,
+        "descRo": "Espresso și cremă de lapte",
+        "descEn": null,
+        "lei": 21,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Latte Macchiato (220ml)",
+        "en": null,
+        "descRo": "Cremă de lapte, lapte și espresso",
+        "descEn": null,
+        "lei": 22,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Flavoured Cappuccino (200ml)",
+        "en": null,
+        "descRo": "Espresso, cremă de lapte și la alegere: vanilie, căpșune, migdale",
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Choco-Nutty (220ml)",
+        "en": null,
+        "descRo": "Espresso, cremă de lapte, sirop de cocos și sirop de ciocolată",
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Flat White (200ml)",
+        "en": null,
+        "descRo": "Espresso dublu, cremă de lapte și lapte",
+        "descEn": null,
+        "lei": 23,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Euphoria Ice Coffee (340ml)",
+        "en": null,
+        "descRo": "Espresso, lapte de cocos, sirop de zahăr și gheață",
+        "descEn": null,
+        "lei": 24,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Irish Coffee (220ml)",
+        "en": null,
+        "descRo": "Tullamore DEW, espresso, frișcă lichidă, apă fierbinte",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Ness Frappé (360ml)",
+        "en": null,
+        "descRo": "Cafea solubilă, lapte, frișcă, gheață spartă",
+        "descEn": null,
+        "lei": 31,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Ceai",
+    "dishes": [
+      {
+        "ro": "Black Tea (220ml)",
+        "en": null,
+        "descRo": "Earl Gray",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Green Tea (220ml)",
+        "en": null,
+        "descRo": "Chamomile, Mint, Jasmine",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Fruit Tea (220ml)",
+        "en": null,
+        "descRo": "Winter, Autumn",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Red Tea (220ml)",
+        "en": null,
+        "descRo": "Rooibos",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      }
+    ]
+  },
+  {
+    "ro": "Ceai natural cu gheață",
+    "dishes": [
+      {
+        "ro": "Black Tea (220ml)",
+        "en": null,
+        "descRo": "Earl Gray și gheață",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Green Tea (220ml)",
+        "en": null,
+        "descRo": "Chamomile/ Mint/ Jasmine și gheață",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      },
+      {
+        "ro": "Fruit Tea (220ml)",
+        "en": null,
+        "descRo": "Winter/ Autumn și gheață",
+        "descEn": null,
+        "lei": 19,
+        "nonScoreable": true
+      }
+    ]
+  }
+]

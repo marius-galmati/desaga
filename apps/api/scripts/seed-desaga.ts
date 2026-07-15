@@ -15,6 +15,7 @@
  */
 import argon2 from "argon2";
 import pg from "pg";
+import menuData from "./desaga-menu.json";
 
 const DEFAULT_DEV_URL = "postgres://boca:boca@127.0.0.1:55432/boca";
 const VAT_FOOD_BP = 900; // Romanian restaurant food VAT ~9% (edit per accountant)
@@ -32,133 +33,33 @@ const config = {
 
 type SeedDish = {
   ro: string;
-  desc: string;
+  en?: string | null;
+  descRo?: string | null;
+  descEn?: string | null;
   lei: number;
-  signature?: boolean;
   nonScoreable?: boolean;
 };
 type SeedCategory = { ro: string; dishes: SeedDish[] };
 
-const MENU: SeedCategory[] = [
-  {
-    ro: "Aperitive",
-    dishes: [
-      {
-        ro: "Mici Euphoria",
-        desc: "Din vită și porc, la grătar, cu muștar de casă.",
-        lei: 8,
-        signature: true,
-      },
-      {
-        ro: "Cârnați picanți Euphoria",
-        desc: "Afumați în casă, cu ardei iute și usturoi.",
-        lei: 28,
-      },
-      { ro: "File de șalău", desc: "Prăjit crocant, cu felie de lămâie.", lei: 42 },
-      { ro: "File de păstrăv", desc: "De munte, rumenit la tigaie.", lei: 38 },
-    ],
-  },
-  {
-    ro: "Ciorbe & Supe",
-    dishes: [
-      {
-        ro: "Ciorbă de burtă",
-        desc: "Cu os de vită, smântână și ardei iute, ca la carte.",
-        lei: 26,
-        signature: true,
-      },
-      {
-        ro: "Ciorbă de fasole cu ciolan afumat",
-        desc: "Legată, cu ceapă călită și tarhon.",
-        lei: 24,
-      },
-      { ro: "Supă de pui cu tăieței", desc: "Cu tăieței de casă, întinși cu mâna.", lei: 22 },
-      { ro: "Ciorbă de perișoare", desc: "Acrită cu borș, cu leuștean proaspăt.", lei: 24 },
-      { ro: "Supă țărănească de vită", desc: "Cu multe legume, gospodărească.", lei: 24 },
-    ],
-  },
-  {
-    ro: "Feluri principale",
-    dishes: [
-      {
-        ro: "Sarmale durdulii cu ciolan",
-        desc: "În foaie de varză murată, cu mămăligă și smântână.",
-        lei: 44,
-        signature: true,
-      },
-      {
-        ro: "Taci și-nghite",
-        desc: "Mămăligă cu brânză, jumări și ou ochi — vorbește singură.",
-        lei: 38,
-        signature: true,
-      },
-      { ro: "Ciolan de-ți lasă gura apă", desc: "Copt încet la cuptor, cu varză călită.", lei: 58 },
-      {
-        ro: "Șalău „Nu mă uita”",
-        desc: "File cu cartofi noi și fasole verde, cu unt de lămâie.",
-        lei: 62,
-        signature: true,
-      },
-      {
-        ro: "Papricaș de pui zglobiu",
-        desc: "Cu pulpe de pui și găluște, în sos de boia dulce.",
-        lei: 42,
-      },
-      { ro: "Tocăniță ungurească", desc: "De vită, în sos de vin roșu, cu gnocchi.", lei: 54 },
-      { ro: "Antricot de vită Limousin", desc: "La grătar, cu unt aromat și legume.", lei: 96 },
-      { ro: "Biftec tartar", desc: "Cu măduvă la grătar și pită prăjită.", lei: 68 },
-      { ro: "Gulyás de vită Limousin", desc: "Cu găluște și boia, gros și aromat.", lei: 48 },
-      { ro: "Pulpă de rață rumenită", desc: "Cu condimente, pe pat de varză roșie.", lei: 64 },
-      { ro: "Varză à la Cluj", desc: "Varză murată cu carne tocată de porc, la cuptor.", lei: 40 },
-      { ro: "Șnițel de porc", desc: "În crustă crocantă de panko, cu cartofi.", lei: 44 },
-    ],
-  },
-  {
-    ro: "Brânzeturi & Garnituri",
-    dishes: [
-      {
-        ro: "Palaneț cu brânză",
-        desc: "Plăcintă cu brânză și ceapă verde, coaptă pe vatră.",
-        lei: 22,
-      },
-      { ro: "Pită picurată", desc: "Cu jumări și brânză, direct din cuptor.", lei: 18 },
-      { ro: "Mămăligă la grătar", desc: "Feliată și rumenită pe plită.", lei: 12 },
-      { ro: "Hribi trași la tigaie", desc: "Cu usturoi și pătrunjel.", lei: 26 },
-      { ro: "Cartofi cu usturoi", desc: "Copți, cu usturoi și verdeață.", lei: 14 },
-    ],
-  },
-  {
-    ro: "Salate",
-    dishes: [
-      { ro: "Salată de boeuf", desc: "Cu mazăre, morcov, vită și maioneză de casă.", lei: 24 },
-      { ro: "Salată Euphoria", desc: "Pui, ardei copt și roșii cherry.", lei: 28 },
-      { ro: "Salată de ardei copți", desc: "Cu usturoi și ulei de măsline.", lei: 18 },
-    ],
-  },
-  {
-    ro: "Deserturi",
-    dishes: [
-      {
-        ro: "Papanași ropogoși",
-        desc: "Cu smântână și dulceață de afine, calzi.",
-        lei: 26,
-        signature: true,
-      },
-      { ro: "Somlói galuska", desc: "Pandișpan însiropat, cu nucă și sos de ciocolată.", lei: 24 },
-      {
-        ro: "Arsă și delicioasă",
-        desc: "Crème brûlée cu crustă de zahăr caramelizat.",
-        lei: 22,
-        nonScoreable: true,
-      },
-      { ro: "Tartă cu mere și nuci", desc: "Cu aluat fraged și scorțișoară.", lei: 22 },
-    ],
-  },
-];
+// The real Desaga menu, transcribed 1:1 from the official PDF menu
+// (apps/api/scripts/desaga-menu.json - 61 categories, 467 items, food + drinks).
+// Regenerate that JSON from the PDF if the printed menu changes.
+const MENU = menuData as unknown as SeedCategory[];
 
 function bilingual(ro: string): string {
   // en defaults to the RO string — editable later in the panel.
   return JSON.stringify({ ro, en: ro });
+}
+
+// Name with a distinct English translation when the menu prints one.
+function bi(ro: string, en?: string | null): string {
+  return JSON.stringify({ ro, en: en && en.trim() ? en.trim() : ro });
+}
+
+// Description: nullable jsonb — null when the item has no description.
+function biOrNull(ro?: string | null, en?: string | null): string | null {
+  if (!ro || !ro.trim()) return null;
+  return JSON.stringify({ ro: ro.trim(), en: en && en.trim() ? en.trim() : ro.trim() });
 }
 
 async function main(): Promise<void> {
@@ -282,7 +183,21 @@ async function main(): Promise<void> {
       `select count(*)::text as n from dish where tenant_id = $1`,
       [tenantId],
     );
-    if (Number(dishCount.rows[0]!.n) > 0) {
+    // RESEED_MENU=true replaces the whole menu: archive the current categories +
+    // dishes (soft, so existing orders/references stay valid) and insert the new
+    // menu below. Set it once, redeploy, then REMOVE it (else every deploy
+    // re-archives and re-inserts a fresh copy).
+    if (process.env.RESEED_MENU === "true") {
+      await client.query(
+        `update dish set archived_at = now() where tenant_id = $1 and archived_at is null`,
+        [tenantId],
+      );
+      await client.query(
+        `update menu_category set archived_at = now() where tenant_id = $1 and archived_at is null`,
+        [tenantId],
+      );
+      console.log("RESEED_MENU=true: archived the existing menu; inserting the new one.");
+    } else if (Number(dishCount.rows[0]!.n) > 0) {
       await client.query("commit");
       console.log(`Desaga already has dishes — skipped menu insert. tenant ${tenantId}`);
       printLogin();
@@ -315,9 +230,9 @@ async function main(): Promise<void> {
             [
               tenantId,
               dishId,
-              bilingual(d.ro),
-              bilingual(d.desc),
-              d.lei * 100,
+              bi(d.ro, d.en),
+              biOrNull(d.descRo, d.descEn),
+              Math.round(d.lei * 100),
               VAT_FOOD_BP,
               stationId,
               d.nonScoreable ?? false,
