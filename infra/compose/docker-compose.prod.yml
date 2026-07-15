@@ -177,6 +177,10 @@ services:
       DATABASE_URL: postgres://boca:${POSTGRES_PASSWORD}@postgres:5432/boca
       SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
+      SEED_STAFF_PASSWORD: ${SEED_STAFF_PASSWORD:-}
+      # Set RESEED_MENU=true in the Dokploy env to replace the menu on a deploy,
+      # then REMOVE it. Without this line the flag never reaches the seed.
+      RESEED_MENU: ${RESEED_MENU:-}
     networks:
       - boca-internal
 
