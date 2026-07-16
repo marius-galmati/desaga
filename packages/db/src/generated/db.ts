@@ -632,6 +632,18 @@ export interface Tenant {
   updated_at: Generated<Timestamp>;
 }
 
+export interface TenantBranding {
+  display_name: string | null;
+  greeting: string | null;
+  locations: Generated<string[]>;
+  logo_media_id: string | null;
+  palette: Generated<Json>;
+  promise: string | null;
+  tagline: string | null;
+  tenant_id: string;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface TenantDomain {
   created_at: Generated<Timestamp>;
   domain: string;
@@ -697,6 +709,7 @@ export interface DB {
   table_qr_slug: TableQrSlug;
   table_session: TableSession;
   tenant: Tenant;
+  tenant_branding: TenantBranding;
   tenant_domain: TenantDomain;
   tolerance_profile: ToleranceProfile;
 }

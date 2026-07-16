@@ -38,6 +38,7 @@ import {
   updateStationRequestSchema,
   updateTenantRequestSchema,
 } from "../schemas/admin";
+import { updateBrandingRequestSchema } from "../schemas/branding";
 import { apiErrorSchema } from "../schemas/common";
 
 const c = initContract();
@@ -431,6 +432,18 @@ export const adminContract = c.router({
     path: "/admin/tenant",
     body: updateTenantRequestSchema,
     responses: { 200: adminSettingsSchema, 400: apiErrorSchema, 401: apiErrorSchema },
+  },
+  updateBranding: {
+    method: "PUT",
+    path: "/admin/tenant/branding",
+    summary: "Replace the tenant's brand identity (texts, logo, palette)",
+    body: updateBrandingRequestSchema,
+    responses: {
+      200: adminSettingsSchema,
+      400: apiErrorSchema,
+      401: apiErrorSchema,
+      404: apiErrorSchema, // logoMediaId not in this tenant's library
+    },
   },
   updateLocation: {
     method: "PATCH",

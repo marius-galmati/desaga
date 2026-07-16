@@ -2,10 +2,20 @@
 
 import { createContext, useContext } from "react";
 
-/** The tenant serving this request's hostname, resolved server-side in layout. */
+/**
+ * The resolved brand view for this request's hostname, computed server-side in
+ * layout (branding row merged with fallbacks). `shortName` is the compact brand
+ * mark (topbar, keepsake); `fullName` is the long display name (hero, footer).
+ */
 export interface TenantInfo {
   slug: string;
-  name: string;
+  fullName: string;
+  shortName: string;
+  tagline: string | null;
+  greeting: string;
+  promise: string | null;
+  locations: string[];
+  logoUrl: string | null;
 }
 
 const TenantContext = createContext<TenantInfo | null>(null);

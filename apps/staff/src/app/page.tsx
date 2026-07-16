@@ -1,5 +1,6 @@
 "use client";
 
+import { hostTenantSchema } from "@boca/contracts";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PassView } from "@/components/pass-view";
@@ -33,6 +34,12 @@ export default function StaffApp() {
   const router = useRouter();
   const [phase, setPhase] = useState<"checking" | "ready">("checking");
   const [section, setSection] = useState<Section>("sala");
+  // Multi-brand: the footer shows the resolved tenant's identity; unresolved
+  // hosts keep the baked default.
+  const [brandFoot, setBrandFoot] = useState<{ name: string; locations: string[] }>({
+    name: BRAND.full,
+    locations: [...BRAND.locations],
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -41,6 +48,16 @@ export default function StaffApp() {
       if (ok) setPhase("ready");
       else router.replace("/login");
     });
+    fetch("/api/guest/tenant-context")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((raw) => {
+        if (cancelled || !raw) return;
+        const ctx = hostTenantSchema.parse(raw);
+        setBrandFoot({ name: ctx.tenantName, locations: ctx.branding.locations });
+      })
+      .catch(() => {
+        /* baked default stays */
+      });
     return () => {
       cancelled = true;
     };
@@ -104,7 +121,7 @@ export default function StaffApp() {
       )}
 
       <footer className={styles.foot}>
-        {BRAND.full} · {BRAND.locations.join(" · ")}
+        {[brandFoot.name, ...brandFoot.locations].join(" · ")}
       </footer>
     </div>
   );

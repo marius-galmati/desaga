@@ -22,6 +22,7 @@ import {
   withTenant,
 } from "@boca/db";
 import { Injectable } from "@nestjs/common";
+import { loadBranding } from "../../common/branding";
 import { parseBilingual } from "../admin/admin.helpers";
 import { StorageService } from "../storage/storage.service";
 
@@ -109,19 +110,21 @@ export class GuestService {
     if (!resolved) {
       return null;
     }
-    const tenant = await withTenant(resolved.tenantId, (trx) =>
-      trx
+    const { tenant, branding } = await withTenant(resolved.tenantId, async (trx) => ({
+      tenant: await trx
         .selectFrom("tenant")
         .select(["name"])
         .where("id", "=", resolved.tenantId)
         .executeTakeFirst(),
-    );
+      branding: await loadBranding(trx, resolved.tenantId, this.storage),
+    }));
     const surface =
       resolved.surface === "admin" || resolved.surface === "staff" ? resolved.surface : "guest";
     return {
       tenantSlug: resolved.tenantSlug,
       tenantName: tenant?.name ?? resolved.tenantSlug,
       surface,
+      branding,
     };
   }
 

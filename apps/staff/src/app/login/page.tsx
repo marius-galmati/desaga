@@ -18,6 +18,7 @@ export default function LoginPage() {
   // resolved automatically and the field hidden; unknown hosts (local dev)
   // keep the manual field.
   const [resolvedName, setResolvedName] = useState<string | null>(null);
+  const [resolvedGreeting, setResolvedGreeting] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -27,7 +28,8 @@ export default function LoginPage() {
         if (cancelled || !raw) return;
         const ctx = hostTenantSchema.parse(raw);
         setTenantSlug(ctx.tenantSlug);
-        setResolvedName(ctx.tenantName);
+        setResolvedName(ctx.branding.displayName ?? ctx.tenantName);
+        setResolvedGreeting(ctx.branding.greeting);
       })
       .catch(() => {
         /* unresolved host — manual slug stays */
@@ -60,7 +62,9 @@ export default function LoginPage() {
         <p className="eyebrow" style={{ marginTop: 22 }}>
           Panou de administrare
         </p>
-        <h1 className={styles.title}>No, zîua bună!</h1>
+        <h1 className={styles.title}>
+          {resolvedName === null ? "No, zîua bună!" : (resolvedGreeting ?? "Bine ați venit!")}
+        </h1>
         <p className={styles.lede}>
           Autentifică-te pentru a administra meniul, fotografiile și standardele AI ale
           restaurantului.

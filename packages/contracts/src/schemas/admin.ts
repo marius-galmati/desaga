@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { tenantBrandingSchema } from "./branding";
 import { bilingualTextSchema, moneyMinorSchema, uuidSchema, vatRateBpSchema } from "./common";
 import {
   evalStatusSchema,
@@ -383,6 +384,7 @@ export const adminSettingsSchema = z.object({
   // The tenant's canonical guest origin (https://<primary guest domain>) —
   // what QR links print. Null until a guest domain is registered.
   guestOrigin: z.string().nullable(),
+  branding: tenantBrandingSchema,
   locations: z.array(adminSettingsLocationSchema),
   stations: z.array(adminStationSchema),
 });

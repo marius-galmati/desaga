@@ -5,6 +5,7 @@
 export * from "./routers";
 export * from "./schemas/admin";
 export * from "./schemas/auth";
+export * from "./schemas/branding";
 export * from "./schemas/common";
 export * from "./schemas/enums";
 export * from "./schemas/evaluation";

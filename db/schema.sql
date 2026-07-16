@@ -117,6 +117,21 @@ CREATE TABLE tenant_domain (
 CREATE UNIQUE INDEX uq_tenant_domain_primary
   ON tenant_domain (tenant_id, surface) WHERE is_primary;
 
+-- Per-tenant brand identity (0016). Absent row = app-side neutral defaults.
+-- palette is a whitelisted token->hex map validated in the contract layer.
+CREATE TABLE tenant_branding (
+  tenant_id     uuid PRIMARY KEY REFERENCES tenant(id),
+  display_name  text,
+  tagline       text,
+  greeting      text,
+  promise       text,
+  locations     text[] NOT NULL DEFAULT '{}',
+  logo_media_id uuid,
+  palette       jsonb NOT NULL DEFAULT '{}'::jsonb,
+  updated_at    timestamptz NOT NULL DEFAULT now(),
+  FOREIGN KEY (tenant_id, logo_media_id) REFERENCES media_asset (tenant_id, id)
+);
+
 -- Platform operators (Bitup)  deliberately OUTSIDE the tenant model so
 -- tenant_id can stay NOT NULL on all tenant-scoped tables. Only reachable via
 -- the boca_platform DB role / dedicated admin endpoints.

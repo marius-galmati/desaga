@@ -108,12 +108,19 @@ export class MediaService {
           .where("storage_key", "=", asset.storage_key)
           .limit(1)
           .executeTakeFirst();
-        if (heroUse || refUse) {
+        const logoUse = await trx
+          .selectFrom("tenant_branding")
+          .select("tenant_id")
+          .where("tenant_id", "=", principal.tenantId)
+          .where("logo_media_id", "=", id)
+          .limit(1)
+          .executeTakeFirst();
+        if (heroUse || refUse || logoUse) {
           return {
             ok: false,
             status: 409,
             message:
-              "Fotografia e folosită de un preparat sau un set de referință. Înlocuiește-o acolo întâi.",
+              "Fotografia e folosită de un preparat, un set de referință sau ca logo. Înlocuiește-o acolo întâi.",
           };
         }
         await trx

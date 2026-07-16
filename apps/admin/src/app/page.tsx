@@ -1,14 +1,15 @@
 "use client";
 
+import { hostTenantSchema } from "@boca/contracts";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ManagementPanel } from "@/components/panels/management-panel";
 import { MenuPanel } from "@/components/panels/menu-panel";
 import { OrdersPanel } from "@/components/panels/orders-panel";
 import { PhotosPanel } from "@/components/panels/photos-panel";
-import { TablesPanel } from "@/components/panels/tables-panel";
 import { ReferencesPanel } from "@/components/panels/references-panel";
 import { SettingsPanel } from "@/components/panels/settings-panel";
+import { TablesPanel } from "@/components/panels/tables-panel";
 import { TolerancesPanel } from "@/components/panels/tolerances-panel";
 import { UsersPanel } from "@/components/panels/users-panel";
 import { BRAND } from "@/design/brand";
@@ -51,6 +52,12 @@ export default function AdminHome() {
   const router = useRouter();
   const [phase, setPhase] = useState<"checking" | "ready">("checking");
   const [nav, setNav] = useState<NavKey>("meniu");
+  // Multi-brand: the sidebar footer shows the resolved tenant's identity;
+  // unresolved hosts keep the baked default.
+  const [brandFoot, setBrandFoot] = useState<{ name: string; locations: string[] }>({
+    name: BRAND.full,
+    locations: [...BRAND.locations],
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -59,6 +66,16 @@ export default function AdminHome() {
       if (ok) setPhase("ready");
       else router.replace("/login");
     });
+    fetch("/api/guest/tenant-context")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((raw) => {
+        if (cancelled || !raw) return;
+        const ctx = hostTenantSchema.parse(raw);
+        setBrandFoot({ name: ctx.tenantName, locations: ctx.branding.locations });
+      })
+      .catch(() => {
+        /* baked default stays */
+      });
     return () => {
       cancelled = true;
     };
@@ -148,9 +165,13 @@ export default function AdminHome() {
             Deconectare
           </button>
           <p className={styles.brandFoot}>
-            {BRAND.full}
-            <br />
-            {BRAND.locations.join(" · ")}
+            {brandFoot.name}
+            {brandFoot.locations.length > 0 ? (
+              <>
+                <br />
+                {brandFoot.locations.join(" · ")}
+              </>
+            ) : null}
           </p>
         </div>
       </aside>

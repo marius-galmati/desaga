@@ -71,6 +71,7 @@ import {
   type ToleranceCriteria,
   toleranceCriteriaSchema,
   UPLOAD_FILE_FIELD,
+  type UpdateBrandingRequest,
   type UpdateCategoryRequest,
   type UpdateDishRequest,
   type UpdateLocationRequest,
@@ -384,6 +385,12 @@ export function deleteEvaluation(id: string): Promise<void> {
 
 export function getSettings(): Promise<AdminSettings> {
   return requestJson("/admin/settings", { method: "GET" }, (p) => adminSettingsSchema.parse(p));
+}
+
+export function updateBranding(body: UpdateBrandingRequest): Promise<AdminSettings> {
+  return requestJson("/admin/tenant/branding", jsonInit("PUT", body), (p) =>
+    adminSettingsSchema.parse(p),
+  );
 }
 
 export function updateTenant(body: UpdateTenantRequest): Promise<AdminSettings> {

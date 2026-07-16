@@ -104,6 +104,22 @@ async function main(): Promise<void> {
       );
     }
 
+    // Brand identity — FIRST RUN ONLY (never clobber what the admin edited
+    // in-app). Colors stay empty: the CSS defaults already ARE Desaga.
+    await client.query(
+      `insert into tenant_branding (tenant_id, display_name, tagline, greeting, promise, locations)
+       values ($1, $2, $3, $4, $5, $6)
+       on conflict (tenant_id) do nothing`,
+      [
+        tenantId,
+        config.tenantName,
+        "Gust Autentic",
+        "No, zîua bună!",
+        "Peste 100 de preparate tradiționale din bucătăria românească și maghiară",
+        ["Cluj-Napoca", "Topa Mică"],
+      ],
+    );
+
     const existingLoc = await client.query<{ id: string }>(
       `select id from location where tenant_id = $1 and name = $2 and archived_at is null`,
       [tenantId, config.locationName],

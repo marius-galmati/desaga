@@ -9,7 +9,7 @@ import type {
 } from "@boca/contracts";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { BRAND, ro1 } from "@/lib/brand";
+import { ro1 } from "@/lib/brand";
 import { Emblem, Seal } from "@/lib/emblem";
 import { fetchMenu, formatLei } from "@/lib/menu";
 import {
@@ -416,6 +416,7 @@ function MeniuView({
   setActiveCat: (c: string) => void;
   onOpen: (id: string) => void;
 }) {
+  const tenant = useTenant();
   const cats = menu.categories;
   const dishes =
     activeCat === "toate"
@@ -428,9 +429,9 @@ function MeniuView({
       <header className={styles.header}>
         <div className={styles.eyebrowRow}>
           <Emblem size={18} tone="var(--ochre)" />
-          <span className="eyebrow">{BRAND.tagline}</span>
+          {tenant.tagline ? <span className="eyebrow">{tenant.tagline}</span> : null}
         </div>
-        <h1 className={styles.greeting}>{BRAND.greeting}</h1>
+        <h1 className={styles.greeting}>{tenant.greeting}</h1>
         <p className={styles.subline}>
           Astăzi avem <strong>{total} de preparate</strong> tradiționale, gata de masă. Alege pe
           îndelete.
@@ -668,6 +669,7 @@ function keepsakeLine(fidelity: number): string {
 }
 
 function FarfuriaView({ plates, lang }: { plates: GuestPlate[]; lang: Lang }) {
+  const tenant = useTenant();
   const [sel, setSel] = useState(0);
   const plate = plates[Math.min(sel, plates.length - 1)];
 
@@ -762,7 +764,7 @@ function FarfuriaView({ plates, lang }: { plates: GuestPlate[]; lang: Lang }) {
             <div>
               <strong>Un suvenir de la masa ta</strong>
               <span className="muted">
-                Am păstrat momentul pentru tine, cu drag de la {BRAND.name}.
+                Am păstrat momentul pentru tine, cu drag de la {tenant.shortName}.
               </span>
             </div>
           </div>

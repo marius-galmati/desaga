@@ -11,6 +11,7 @@ import type {
   CreateStationRequest,
   CreateTableRequest,
   CreateUserRequest,
+  UpdateBrandingRequest,
   UpdateCategoryRequest,
   UpdateLocationRequest,
   UpdateStationRequest,
@@ -19,12 +20,16 @@ import type {
 import { type TenantTransaction, withTenant } from "@boca/db";
 import { Injectable } from "@nestjs/common";
 import * as argon2 from "argon2";
+import { loadBranding } from "../../common/branding";
 import type { Principal } from "../../common/principal";
 import type { ServiceResult } from "../evaluation/evaluation.service";
+import { StorageService } from "../storage/storage.service";
 import { parseBilingual } from "./admin.helpers";
 
 @Injectable()
 export class CatalogService {
+  constructor(private readonly storage: StorageService) {}
+
   // --- Allergens -----------------------------------------------------------
   async listAllergens(principal: Principal): Promise<AdminAllergen[]> {
     return withTenant(principal.tenantId, async (trx) => {
@@ -322,6 +327,61 @@ export class CatalogService {
     });
   }
 
+  /** Whole-object replace of the tenant's brand identity (texts, logo, palette). */
+  async updateBranding(
+    principal: Principal,
+    body: UpdateBrandingRequest,
+  ): Promise<ServiceResult<AdminSettings>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      if (body.logoMediaId) {
+        const asset = await trx
+          .selectFrom("media_asset")
+          .select(["id"])
+          .where("tenant_id", "=", principal.tenantId)
+          .where("id", "=", body.logoMediaId)
+          .executeTakeFirst();
+        if (!asset) {
+          return {
+            ok: false as const,
+            status: 404 as const,
+            message: "Fotografia pentru logo nu există în biblioteca acestui restaurant.",
+          };
+        }
+      }
+      await trx
+        .insertInto("tenant_branding")
+        .values({
+          tenant_id: principal.tenantId,
+          display_name: body.displayName,
+          tagline: body.tagline,
+          greeting: body.greeting,
+          promise: body.promise,
+          locations: body.locations,
+          logo_media_id: body.logoMediaId,
+          palette: JSON.stringify(body.colors),
+          updated_at: new Date(),
+        })
+        .onConflict((oc) =>
+          oc.column("tenant_id").doUpdateSet({
+            display_name: body.displayName,
+            tagline: body.tagline,
+            greeting: body.greeting,
+            promise: body.promise,
+            locations: body.locations,
+            logo_media_id: body.logoMediaId,
+            palette: JSON.stringify(body.colors),
+            updated_at: new Date(),
+          }),
+        )
+        .execute();
+      const settings = await this.buildSettings(trx, principal.tenantId);
+      if (!settings) {
+        return { ok: false as const, status: 404 as const, message: "tenant not found" };
+      }
+      return { ok: true as const, value: settings };
+    });
+  }
+
   async updateLocation(
     principal: Principal,
     id: string,
@@ -394,9 +454,11 @@ export class CatalogService {
       .where("surface", "=", "guest")
       .where("is_primary", "=", true)
       .executeTakeFirst();
+    const branding = await loadBranding(trx, tenantId, this.storage);
     return {
       tenant: { name: tenant.name, slug: tenant.slug },
       guestOrigin: guestDomain ? `https://${guestDomain.domain}` : null,
+      branding,
       locations: locations.map((l) => ({
         id: l.id,
         name: l.name,

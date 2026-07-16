@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { tenantBrandingSchema } from "./branding";
 import { bilingualTextSchema, moneyMinorSchema, uuidSchema } from "./common";
 import { serviceRequestKindSchema } from "./enums";
 
@@ -117,6 +118,7 @@ export const hostTenantSchema = z.object({
   tenantSlug: z.string(),
   tenantName: z.string(),
   surface: z.enum(["guest", "admin", "staff"]),
+  branding: tenantBrandingSchema,
 });
 export type HostTenant = z.infer<typeof hostTenantSchema>;
 

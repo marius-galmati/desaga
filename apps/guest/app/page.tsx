@@ -2,7 +2,6 @@
 
 import type { GuestMenu, GuestTable } from "@boca/contracts";
 import { useEffect, useMemo, useState } from "react";
-import { BRAND } from "@/lib/brand";
 import { Emblem } from "@/lib/emblem";
 import { fetchMenu, fetchTables, formatLei } from "@/lib/menu";
 import { useTenant } from "@/lib/tenant";
@@ -72,8 +71,16 @@ export default function GuestMenuPage() {
     <div className={styles.page}>
       <header className={styles.topbar}>
         <div className={styles.brand}>
-          <Emblem size={26} />
-          <span>{BRAND.name}</span>
+          {tenant.logoUrl ? (
+            <img
+              src={tenant.logoUrl}
+              alt=""
+              style={{ height: 28, width: "auto", display: "block" }}
+            />
+          ) : (
+            <Emblem size={26} />
+          )}
+          <span>{tenant.shortName}</span>
         </div>
         <div className={styles.langToggle} role="group" aria-label="Limbă / Language">
           {(["ro", "en"] as const).map((l) => (
@@ -91,9 +98,9 @@ export default function GuestMenuPage() {
       </header>
 
       <section className={styles.hero}>
-        <span className="eyebrow eyebrow--ink">{BRAND.tagline}</span>
-        <h1>{BRAND.full}</h1>
-        <p>{BRAND.promise}</p>
+        {tenant.tagline ? <span className="eyebrow eyebrow--ink">{tenant.tagline}</span> : null}
+        <h1>{tenant.fullName}</h1>
+        {tenant.promise ? <p>{tenant.promise}</p> : null}
       </section>
 
       {tables.length > 0 ? (
@@ -181,11 +188,9 @@ export default function GuestMenuPage() {
           </main>
 
           <footer className={styles.footer}>
-            <span>
-              {BRAND.full} · {BRAND.locations.join(" · ")}
-            </span>
+            <span>{[tenant.fullName, ...tenant.locations].join(" · ")}</span>
             <span className={styles.footNote}>
-              {dishCount} preparate · {BRAND.greeting}
+              {dishCount} preparate · {tenant.greeting}
             </span>
           </footer>
         </>
