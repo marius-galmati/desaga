@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BRAND } from "@/lib/brand";
 import { Emblem } from "@/lib/emblem";
 import { fetchMenu, fetchTables, formatLei } from "@/lib/menu";
+import { useTenant } from "@/lib/tenant";
 import styles from "./page.module.css";
 
 type Lang = "ro" | "en";
@@ -34,6 +35,7 @@ const UI = {
 } as const;
 
 export default function GuestMenuPage() {
+  const tenant = useTenant();
   const [menu, setMenu] = useState<GuestMenu | null>(null);
   const [tables, setTables] = useState<GuestTable[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -41,14 +43,14 @@ export default function GuestMenuPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchMenu()
+    fetchMenu(tenant.slug)
       .then((m) => {
         if (!cancelled) setMenu(m);
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : "Eroare necunoscută.");
       });
-    fetchTables()
+    fetchTables(tenant.slug)
       .then((tt) => {
         if (!cancelled) setTables(tt);
       })
@@ -58,7 +60,7 @@ export default function GuestMenuPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [tenant.slug]);
 
   const t = UI[lang];
   const dishCount = useMemo(

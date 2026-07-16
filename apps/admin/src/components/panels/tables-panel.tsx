@@ -3,10 +3,11 @@
 import type { AdminTable } from "@boca/contracts";
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { closeTable, createTable, deleteTable, listTables } from "@/lib/api";
+import { closeTable, createTable, deleteTable, getSettings, listTables } from "@/lib/api";
 import styles from "./panels.module.css";
 
-// Baked at build (compose passes NEXT_PUBLIC_GUEST_ORIGIN = the guest host).
+// Build-time fallback only — the tenant's registered guest domain (from
+// settings.guestOrigin) wins, so each brand's QR links point at ITS domain.
 const GUEST_ORIGIN = process.env.NEXT_PUBLIC_GUEST_ORIGIN || "";
 
 function escapeHtml(s: string): string {
@@ -25,6 +26,7 @@ export function TablesPanel() {
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [qrTable, setQrTable] = useState<AdminTable | null>(null);
+  const [guestOrigin, setGuestOrigin] = useState(GUEST_ORIGIN);
   // Hi-res canvas mirror of the shown QR — the source for download + print.
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -37,6 +39,14 @@ export function TablesPanel() {
       .then(setTables)
       .catch((err) => setError(err instanceof Error ? err.message : "Nu am putut încărca mesele."))
       .finally(() => setLoading(false));
+    // The tenant's own guest domain (multi-brand) overrides the baked origin.
+    getSettings()
+      .then((s) => {
+        if (s.guestOrigin) setGuestOrigin(s.guestOrigin);
+      })
+      .catch(() => {
+        /* fallback origin stays */
+      });
   }, []);
 
   async function onCreate(e: FormEvent<HTMLFormElement>) {
@@ -87,7 +97,7 @@ export function TablesPanel() {
   }
 
   function tableUrl(slug: string): string {
-    return `${GUEST_ORIGIN}/t/${slug}`;
+    return `${guestOrigin}/t/${slug}`;
   }
 
   async function copy(slug: string) {

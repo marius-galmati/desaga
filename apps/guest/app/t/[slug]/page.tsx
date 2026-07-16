@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BRAND, ro1 } from "@/lib/brand";
 import { Emblem, Seal } from "@/lib/emblem";
-import { fetchMenu, formatLei, TENANT_SLUG } from "@/lib/menu";
+import { fetchMenu, formatLei } from "@/lib/menu";
 import {
   listOrders,
   listPlates,
@@ -22,6 +22,7 @@ import {
   storedToken,
 } from "@/lib/order";
 import { PhotoSlot } from "@/lib/photo";
+import { useTenant } from "@/lib/tenant";
 import styles from "./table.module.css";
 
 type Lang = "ro" | "en";
@@ -103,6 +104,7 @@ function IconFarfurie() {
 export default function TableOrderPage() {
   const params = useParams<{ slug: string }>();
   const qrSlug = params.slug;
+  const tenant = useTenant();
 
   const [session, setSession] = useState<GuestSession | null>(null);
   const [menu, setMenu] = useState<GuestMenu | null>(null);
@@ -130,7 +132,7 @@ export default function TableOrderPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [ses, m] = await Promise.all([startSession(qrSlug), fetchMenu(TENANT_SLUG)]);
+        const [ses, m] = await Promise.all([startSession(qrSlug), fetchMenu(tenant.slug)]);
         if (cancelled) return;
         setSession(ses);
         setMenu(m);
@@ -142,7 +144,7 @@ export default function TableOrderPage() {
     return () => {
       cancelled = true;
     };
-  }, [qrSlug, refresh]);
+  }, [qrSlug, tenant.slug, refresh]);
 
   // Keep orders + plates fresh so kitchen progress and new comparisons appear.
   useEffect(() => {

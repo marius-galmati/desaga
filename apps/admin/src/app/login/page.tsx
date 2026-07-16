@@ -1,7 +1,8 @@
 "use client";
 
+import { hostTenantSchema } from "@boca/contracts";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { Emblem } from "@/design/emblem";
 import { login } from "@/lib/auth";
 import styles from "./login.module.css";
@@ -13,6 +14,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Multi-domain: when this hostname is registered to a tenant, the slug is
+  // resolved automatically and the field hidden; unknown hosts (local dev)
+  // keep the manual field.
+  const [resolvedName, setResolvedName] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/guest/tenant-context")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((raw) => {
+        if (cancelled || !raw) return;
+        const ctx = hostTenantSchema.parse(raw);
+        setTenantSlug(ctx.tenantSlug);
+        setResolvedName(ctx.tenantName);
+      })
+      .catch(() => {
+        /* unresolved host — manual slug stays */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,7 +55,7 @@ export default function LoginPage() {
       <section className={`card ${styles.panel}`}>
         <div className={styles.brand}>
           <Emblem size={40} tone="var(--ochre)" />
-          <span className={styles.brandName}>Desaga</span>
+          <span className={styles.brandName}>{resolvedName ?? "Desaga"}</span>
         </div>
         <p className="eyebrow" style={{ marginTop: 22 }}>
           Panou de administrare
@@ -44,19 +67,21 @@ export default function LoginPage() {
         </p>
 
         <form className={styles.form} onSubmit={onSubmit}>
-          <div className="field">
-            <label className="field-label" htmlFor="tenant">
-              Restaurant
-            </label>
-            <input
-              id="tenant"
-              className="input"
-              value={tenantSlug}
-              onChange={(e) => setTenantSlug(e.target.value)}
-              autoComplete="organization"
-              required
-            />
-          </div>
+          {resolvedName === null ? (
+            <div className="field">
+              <label className="field-label" htmlFor="tenant">
+                Restaurant
+              </label>
+              <input
+                id="tenant"
+                className="input"
+                value={tenantSlug}
+                onChange={(e) => setTenantSlug(e.target.value)}
+                autoComplete="organization"
+                required
+              />
+            </div>
+          ) : null}
           <div className="field">
             <label className="field-label" htmlFor="email">
               Email
