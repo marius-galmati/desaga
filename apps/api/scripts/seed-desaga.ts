@@ -84,6 +84,26 @@ async function main(): Promise<void> {
       )
     ).rows[0]!.id;
 
+    // Multi-domain backfill: register this deployment's public hostnames so
+    // Host-based tenant resolution covers the seeded tenant. Compose passes
+    // the live *_HOST values; absent env (local dev) skips the row.
+    const domainSeeds: { domain: string | undefined; surface: string }[] = [
+      { domain: process.env.SEED_GUEST_DOMAIN, surface: "guest" },
+      { domain: process.env.SEED_ADMIN_DOMAIN, surface: "admin" },
+      { domain: process.env.SEED_STAFF_DOMAIN, surface: "staff" },
+    ];
+    for (const { domain, surface } of domainSeeds) {
+      const host = domain?.trim().toLowerCase();
+      if (!host) continue;
+      await client.query(
+        `insert into tenant_domain (tenant_id, domain, surface)
+         values ($1, $2, $3)
+         on conflict (domain) do update set tenant_id = excluded.tenant_id,
+                                            surface   = excluded.surface`,
+        [tenantId, host, surface],
+      );
+    }
+
     const existingLoc = await client.query<{ id: string }>(
       `select id from location where tenant_id = $1 and name = $2 and archived_at is null`,
       [tenantId, config.locationName],

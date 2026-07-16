@@ -181,6 +181,11 @@ services:
       # Set RESEED_MENU=true in the Dokploy env to replace the menu on a deploy,
       # then REMOVE it. Without this line the flag never reaches the seed.
       RESEED_MENU: ${RESEED_MENU:-}
+      # Multi-domain backfill: register this deployment's hostnames for the
+      # seeded tenant so Host-based tenant resolution covers them.
+      SEED_GUEST_DOMAIN: ${GUEST_HOST:-app.${ROOT_DOMAIN}}
+      SEED_ADMIN_DOMAIN: ${ADMIN_HOST:-admin.${ROOT_DOMAIN}}
+      SEED_STAFF_DOMAIN: ${STAFF_HOST:-staff.${ROOT_DOMAIN}}
     networks:
       - boca-internal
 

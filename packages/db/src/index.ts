@@ -16,6 +16,7 @@ export {
   destroyDbPools,
   resolveQrSlug,
   resolveSessionToken,
+  resolveTenantDomain,
   resolveTenantIdBySlug,
   type TenantTransaction,
   withTenant,

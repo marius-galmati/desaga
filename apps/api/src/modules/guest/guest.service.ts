@@ -7,6 +7,7 @@ import {
   type GuestPlate,
   type GuestSession,
   type GuestTable,
+  type HostTenant,
   type PlaceOrderRequest,
   type ServiceRequestKind,
 } from "@boca/contracts";
@@ -15,6 +16,7 @@ import {
   getSessionEvaluatedPlates,
   resolveQrSlug,
   resolveSessionToken,
+  resolveTenantDomain,
   resolveTenantIdBySlug,
   type TenantTransaction,
   withTenant,
@@ -39,6 +41,19 @@ const GUEST_PERSONAS: readonly { name: string; emoji: string }[] = [
 
 function sha256(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
+}
+
+/**
+ * Bare lowercase hostname out of a Host/X-Forwarded-Host value: first entry of
+ * a proxy list, port stripped, trailing dot dropped. Null when it doesn't look
+ * like a hostname at all.
+ */
+function normalizeHost(raw: string): string | null {
+  const first = raw.split(",")[0]?.trim().toLowerCase() ?? "";
+  const host = first.replace(/:\d+$/, "").replace(/\.$/, "");
+  return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/.test(host)
+    ? host
+    : null;
 }
 
 // Guest-facing result: ok + value, or a status the controller maps to HTTP.
@@ -79,6 +94,36 @@ function warmChips(criterionScores: unknown): string[] {
 @Injectable()
 export class GuestService {
   constructor(private readonly storage: StorageService) {}
+
+  /**
+   * Which tenant serves a public hostname (multi-brand deployments). The
+   * hostname goes through the SECURITY DEFINER resolve_tenant_domain — only
+   * registered domains of live tenants resolve. null = unknown domain.
+   */
+  async getTenantContext(rawHost: string): Promise<HostTenant | null> {
+    const domain = normalizeHost(rawHost);
+    if (!domain) {
+      return null;
+    }
+    const resolved = await resolveTenantDomain(domain);
+    if (!resolved) {
+      return null;
+    }
+    const tenant = await withTenant(resolved.tenantId, (trx) =>
+      trx
+        .selectFrom("tenant")
+        .select(["name"])
+        .where("id", "=", resolved.tenantId)
+        .executeTakeFirst(),
+    );
+    const surface =
+      resolved.surface === "admin" || resolved.surface === "staff" ? resolved.surface : "guest";
+    return {
+      tenantSlug: resolved.tenantSlug,
+      tenantName: tenant?.name ?? resolved.tenantSlug,
+      surface,
+    };
+  }
 
   /**
    * Public menu for a tenant resolved from its URL slug. No principal: the slug

@@ -380,6 +380,9 @@ export const adminSettingsSchema = z.object({
     name: z.string(),
     slug: z.string(),
   }),
+  // The tenant's canonical guest origin (https://<primary guest domain>) —
+  // what QR links print. Null until a guest domain is registered.
+  guestOrigin: z.string().nullable(),
   locations: z.array(adminSettingsLocationSchema),
   stations: z.array(adminStationSchema),
 });

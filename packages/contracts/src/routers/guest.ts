@@ -8,6 +8,7 @@ import {
   guestPlateListSchema,
   guestSessionSchema,
   guestTablesSchema,
+  hostTenantSchema,
   okResultSchema,
   placeOrderRequestSchema,
   serviceRequestBodySchema,
@@ -20,6 +21,15 @@ const c = initContract();
 // the URL slug — no auth. Ordering/session routes (QR device token) nest here
 // next, keeping these route KEYS stable per the namespace note in ./index.ts.
 export const guestContract = c.router({
+  // Which tenant serves the calling hostname (multi-brand deployments). The
+  // host comes from the request headers, so the route needs no params.
+  getTenantContext: {
+    method: "GET",
+    path: "/guest/tenant-context",
+    summary: "Resolve the request's Host header to its tenant",
+    responses: { 200: hostTenantSchema, 404: apiErrorSchema },
+  },
+
   getMenu: {
     method: "GET",
     path: "/guest/:tenantSlug/menu",

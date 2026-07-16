@@ -108,6 +108,18 @@ export const serviceRequestBodySchema = z.object({ kind: serviceRequestKindSchem
 
 export const okResultSchema = z.object({ ok: z.literal(true) });
 
+// --- Tenant context (multi-domain routing) ----------------------------------
+
+// Which tenant serves the calling hostname. Resolved from the request's Host
+// header (never a query param) — the pre-login entry point for all three apps
+// on a multi-brand deployment.
+export const hostTenantSchema = z.object({
+  tenantSlug: z.string(),
+  tenantName: z.string(),
+  surface: z.enum(["guest", "admin", "staff"]),
+});
+export type HostTenant = z.infer<typeof hostTenantSchema>;
+
 // --- Farfuria mea (guest-facing AI comparison) -----------------------------
 
 // A plate the table ordered that was photographed at the pass and scored by the

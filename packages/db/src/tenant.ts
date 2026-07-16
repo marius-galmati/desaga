@@ -93,6 +93,25 @@ export async function resolveTenantIdBySlug(slug: string): Promise<string | null
 }
 
 /**
+ * Sanctioned pre-tenant path for domain routing: maps a public hostname (Host
+ * header) to its tenant via resolve_tenant_domain (SECURITY DEFINER, 0015).
+ * Returns null for an unregistered domain or an archived tenant.
+ */
+export async function resolveTenantDomain(
+  domain: string,
+): Promise<{ tenantId: string; tenantSlug: string; surface: string } | null> {
+  const result = await sql<{
+    tenant_id: string;
+    tenant_slug: string;
+    surface: string;
+  }>`select * from resolve_tenant_domain(${domain})`.execute(getAppDb());
+  const row = result.rows[0];
+  return row
+    ? { tenantId: row.tenant_id, tenantSlug: row.tenant_slug, surface: row.surface }
+    : null;
+}
+
+/**
  * Sanctioned pre-tenant path for a guest QR scan: resolves a table QR slug to
  * its tenant/location/table via resolve_qr_slug (SECURITY DEFINER). Returns null
  * for an unknown/revoked slug or an archived table.

@@ -41,7 +41,13 @@ export type JsonPrimitive = boolean | number | string | null;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
-export type NotScoreableReason = "no_active_tolerance" | "non_scoreable_dish" | "other" | "photo_skipped" | "quality_gate_failed" | "refs_stale";
+export type NotScoreableReason =
+  | "no_active_tolerance"
+  | "non_scoreable_dish"
+  | "other"
+  | "photo_skipped"
+  | "quality_gate_failed"
+  | "refs_stale";
 
 export type Numeric = ColumnType<string, number | string, number | string>;
 
@@ -626,6 +632,15 @@ export interface Tenant {
   updated_at: Generated<Timestamp>;
 }
 
+export interface TenantDomain {
+  created_at: Generated<Timestamp>;
+  domain: string;
+  id: Generated<string>;
+  is_primary: Generated<boolean>;
+  surface: string;
+  tenant_id: string;
+}
+
 export interface ToleranceProfile {
   activated_at: Timestamp | null;
   created_at: Generated<Timestamp>;
@@ -682,5 +697,6 @@ export interface DB {
   table_qr_slug: TableQrSlug;
   table_session: TableSession;
   tenant: Tenant;
+  tenant_domain: TenantDomain;
   tolerance_profile: ToleranceProfile;
 }

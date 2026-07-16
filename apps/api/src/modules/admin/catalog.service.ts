@@ -385,8 +385,18 @@ export class CatalogService {
       .orderBy("name")
       .execute();
     const stations = await this.selectStations(trx, tenantId);
+    // The canonical guest origin (what QR links print) — the tenant's primary
+    // registered guest domain, when one exists.
+    const guestDomain = await trx
+      .selectFrom("tenant_domain")
+      .select(["domain"])
+      .where("tenant_id", "=", tenantId)
+      .where("surface", "=", "guest")
+      .where("is_primary", "=", true)
+      .executeTakeFirst();
     return {
       tenant: { name: tenant.name, slug: tenant.slug },
+      guestOrigin: guestDomain ? `https://${guestDomain.domain}` : null,
       locations: locations.map((l) => ({
         id: l.id,
         name: l.name,

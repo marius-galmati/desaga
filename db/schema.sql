@@ -102,6 +102,21 @@ CREATE TABLE tenant (
 );
 -- RLS: USING (id = current_setting('app.tenant_id')::uuid)
 
+-- Public hostnames a tenant serves (guest/admin/staff). Host -> tenant is a
+-- pre-tenant moment, resolved via SECURITY DEFINER resolve_tenant_domain(text)
+-- (0015) — same sanctioned-bypass pattern as resolve_tenant_slug.
+CREATE TABLE tenant_domain (
+  id         uuid PRIMARY KEY DEFAULT uuid_generate_v7(),
+  tenant_id  uuid NOT NULL REFERENCES tenant(id),
+  domain     citext NOT NULL UNIQUE,          -- bare hostname, no scheme/port
+  surface    text NOT NULL CHECK (surface IN ('guest','admin','staff')),
+  is_primary boolean NOT NULL DEFAULT true,   -- canonical origin per (tenant, surface)
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (tenant_id, id)
+);
+CREATE UNIQUE INDEX uq_tenant_domain_primary
+  ON tenant_domain (tenant_id, surface) WHERE is_primary;
+
 -- Platform operators (Bitup)  deliberately OUTSIDE the tenant model so
 -- tenant_id can stay NOT NULL on all tenant-scoped tables. Only reachable via
 -- the boca_platform DB role / dedicated admin endpoints.

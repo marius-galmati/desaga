@@ -12,9 +12,34 @@ function guestToken(request: RequestWithPrincipal): string {
   return (Array.isArray(raw) ? raw[0] : raw) ?? "";
 }
 
+/**
+ * The public hostname the browser addressed. Requests arrive through Traefik
+ * (sets X-Forwarded-Host) and the Next /api rewrite proxy (forwards it; its own
+ * Host is the internal boca-api alias), so the forwarded header wins.
+ */
+function requestHost(request: RequestWithPrincipal): string {
+  const headers = request.headers as Record<string, string | string[] | undefined>;
+  const forwarded = headers["x-forwarded-host"];
+  const host = headers.host;
+  const pick = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";
+  return pick(forwarded) || pick(host);
+}
+
 @Controller()
 export class GuestController {
   constructor(private readonly guest: GuestService) {}
+
+  @Public()
+  @TsRestHandler(apiContract.guest.getTenantContext)
+  getTenantContext(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.guest.getTenantContext, async () => {
+      const context = await this.guest.getTenantContext(requestHost(request));
+      if (!context) {
+        return { status: 404 as const, body: { message: "unknown domain" } };
+      }
+      return { status: 200 as const, body: context };
+    });
+  }
 
   @Public()
   @TsRestHandler(apiContract.guest.getMenu)
