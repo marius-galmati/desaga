@@ -363,8 +363,10 @@ services:
 
   # ---- platform (Next, super-admin dashboard) --------------------------------
   # Bitup operators only: tenant onboarding, domains, branding. Keep the host
-  # UNPUBLISHED and set PLATFORM_IP_ALLOWLIST to your own IP(s) — the default
-  # 0.0.0.0/0 allows everyone (auth still required, but lock it down).
+  # UNPUBLISHED. Access is gated by the separate platform login; add an IP
+  # restriction at the Dokploy/Traefik layer once the version is confirmed
+  # (v3 = ipallowlist, v2 = ipwhitelist) — a version-wrong middleware silently
+  # drops the router (404), so it is intentionally NOT set here.
   platform:
     build:
       context: ../..
@@ -387,8 +389,6 @@ services:
       - traefik.http.routers.boca-platform.rule=Host(`${PLATFORM_HOST:-platform.${ROOT_DOMAIN}}`)
       - traefik.http.routers.boca-platform.entrypoints=websecure
       - traefik.http.routers.boca-platform.tls.certresolver=letsencrypt
-      - traefik.http.middlewares.boca-platform-ipallow.ipallowlist.sourcerange=${PLATFORM_IP_ALLOWLIST:-0.0.0.0/0}
-      - traefik.http.routers.boca-platform.middlewares=boca-platform-ipallow
       - traefik.http.services.boca-platform.loadbalancer.server.port=3000
 
 volumes:
