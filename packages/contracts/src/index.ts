@@ -10,6 +10,7 @@ export * from "./schemas/common";
 export * from "./schemas/enums";
 export * from "./schemas/evaluation";
 export * from "./schemas/guest";
+export * from "./schemas/platform";
 export * from "./schemas/staff";
 export * from "./schemas/tenancy";
 export * from "./schemas/transitions";

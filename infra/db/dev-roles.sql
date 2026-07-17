@@ -19,12 +19,16 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'boca_worker_login') THEN
     CREATE ROLE boca_worker_login LOGIN PASSWORD 'boca-worker-dev';
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'boca_platform_login') THEN
+    CREATE ROLE boca_platform_login LOGIN PASSWORD 'boca-platform-dev';
+  END IF;
 END
 $$;
 
 -- Membership -> inherited table grants (INHERIT is the role default) and RLS
 -- policies that target boca_app / boca_worker apply to the member login.
-GRANT boca_app    TO boca_app_login;
-GRANT boca_worker TO boca_worker_login;
+GRANT boca_app      TO boca_app_login;
+GRANT boca_worker   TO boca_worker_login;
+GRANT boca_platform TO boca_platform_login;
 -- asSystem() does SET LOCAL ROLE boca_worker, which requires membership:
 -- boca_worker_login is a member of boca_worker (granted above).

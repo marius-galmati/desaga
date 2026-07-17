@@ -16,6 +16,7 @@ import {
 } from "./evaluation";
 import { guestContract } from "./guest";
 import { healthContract } from "./health";
+import { platformContract } from "./platform";
 import { staffContract } from "./staff";
 import { tenancyContract } from "./tenancy";
 
@@ -35,6 +36,7 @@ export const apiContract = c.router({
   staff: staffContract,
   evaluation: evaluationContract,
   admin: adminContract,
+  platform: platformContract,
 });
 
 export {
@@ -51,6 +53,7 @@ export {
   evaluationContract,
   guestContract,
   healthContract,
+  platformContract,
   staffContract,
   tenancyContract,
 };

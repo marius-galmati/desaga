@@ -104,6 +104,20 @@ async function main(): Promise<void> {
       );
     }
 
+    // First platform (super-admin) account for the dashboard — only when the
+    // operator opted in via env. Password applies on first creation only.
+    const platformEmail = process.env.PLATFORM_ADMIN_EMAIL?.trim();
+    const platformPassword = process.env.PLATFORM_ADMIN_PASSWORD;
+    if (platformEmail && platformPassword) {
+      const platformHash = await argon2.hash(platformPassword);
+      await client.query(
+        `insert into platform_admin (email, password_hash, full_name)
+         values ($1, $2, $3)
+         on conflict (email) do update set is_active = true`,
+        [platformEmail, platformHash, "Operator platformă"],
+      );
+    }
+
     // Brand identity — FIRST RUN ONLY (never clobber what the admin edited
     // in-app). Colors stay empty: the CSS defaults already ARE Desaga.
     await client.query(

@@ -36,6 +36,10 @@ x-api-env: &api-env
   DATABASE_URL: postgres://boca_app_login:${APP_DB_PASSWORD}@postgres:5432/boca
   APP_DATABASE_URL: postgres://boca_app_login:${APP_DB_PASSWORD}@postgres:5432/boca
   WORKER_DATABASE_URL: postgres://boca_worker_login:${WORKER_DB_PASSWORD}@postgres:5432/boca
+  # Platform (super-admin) connection — the ONLY role that can create tenants.
+  # Empty until PLATFORM_DB_PASSWORD is set (see .env example); the dashboard
+  # endpoints stay disabled without it.
+  PLATFORM_DATABASE_URL: ${PLATFORM_DB_PASSWORD:+postgres://boca_platform_login:${PLATFORM_DB_PASSWORD}@postgres:5432/boca}
   REDIS_URL: redis://redis:6379
   # Internal endpoint for uploads; public endpoint used ONLY to sign GET URLs the
   # browser fetches (the SigV4 signature binds the Host, so it must be signed
@@ -152,6 +156,8 @@ services:
       DATABASE_URL: postgres://boca:${POSTGRES_PASSWORD}@postgres:5432/boca
       APP_DB_PASSWORD: ${APP_DB_PASSWORD}
       WORKER_DB_PASSWORD: ${WORKER_DB_PASSWORD}
+      # Optional: provisions boca_platform_login for the super-admin dashboard.
+      PLATFORM_DB_PASSWORD: ${PLATFORM_DB_PASSWORD:-}
     networks:
       - boca-internal
 
@@ -186,6 +192,10 @@ services:
       SEED_GUEST_DOMAIN: ${GUEST_HOST:-app.${ROOT_DOMAIN}}
       SEED_ADMIN_DOMAIN: ${ADMIN_HOST:-admin.${ROOT_DOMAIN}}
       SEED_STAFF_DOMAIN: ${STAFF_HOST:-staff.${ROOT_DOMAIN}}
+      # Optional: first platform (super-admin) account for the dashboard.
+      # Password applies on first creation only, like the tenant admin.
+      PLATFORM_ADMIN_EMAIL: ${PLATFORM_ADMIN_EMAIL:-}
+      PLATFORM_ADMIN_PASSWORD: ${PLATFORM_ADMIN_PASSWORD:-}
     networks:
       - boca-internal
 
@@ -350,6 +360,36 @@ services:
       - traefik.http.routers.boca-staff.entrypoints=websecure
       - traefik.http.routers.boca-staff.tls.certresolver=letsencrypt
       - traefik.http.services.boca-staff.loadbalancer.server.port=3000
+
+  # ---- platform (Next, super-admin dashboard) --------------------------------
+  # Bitup operators only: tenant onboarding, domains, branding. Keep the host
+  # UNPUBLISHED and set PLATFORM_IP_ALLOWLIST to your own IP(s) — the default
+  # 0.0.0.0/0 allows everyone (auth still required, but lock it down).
+  platform:
+    build:
+      context: ../..
+      dockerfile: infra/docker/next.Dockerfile
+      args:
+        APP: platform
+    image: boca-platform:latest
+    <<: *restart
+    environment:
+      API_ORIGIN: http://boca-api:3000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - boca-internal
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.boca-platform.rule=Host(`${PLATFORM_HOST:-platform.${ROOT_DOMAIN}}`)
+      - traefik.http.routers.boca-platform.entrypoints=websecure
+      - traefik.http.routers.boca-platform.tls.certresolver=letsencrypt
+      - traefik.http.middlewares.boca-platform-ipallow.ipallowlist.sourcerange=${PLATFORM_IP_ALLOWLIST:-0.0.0.0/0}
+      - traefik.http.routers.boca-platform.middlewares=boca-platform-ipallow
+      - traefik.http.services.boca-platform.loadbalancer.server.port=3000
 
 volumes:
   pg_data:

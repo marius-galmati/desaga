@@ -10,8 +10,9 @@
 -- boca_worker_login (can SET ROLE boca_worker). Idempotent: re-running resets
 -- the passwords. Uses format(%L) so special characters in passwords are safe.
 
-SELECT set_config('boca.app_pwd',    :'app_pwd',    false);
-SELECT set_config('boca.worker_pwd', :'worker_pwd', false);
+SELECT set_config('boca.app_pwd',      :'app_pwd',      false);
+SELECT set_config('boca.worker_pwd',   :'worker_pwd',   false);
+SELECT set_config('boca.platform_pwd', :'platform_pwd', false);
 
 DO $$
 BEGIN
@@ -25,6 +26,17 @@ BEGIN
     EXECUTE format('CREATE ROLE boca_worker_login LOGIN PASSWORD %L', current_setting('boca.worker_pwd'));
   ELSE
     EXECUTE format('ALTER ROLE boca_worker_login LOGIN PASSWORD %L', current_setting('boca.worker_pwd'));
+  END IF;
+
+  -- Platform (super-admin) login — only provisioned when a password was set,
+  -- so deployments that don't use the platform dashboard are unaffected.
+  IF current_setting('boca.platform_pwd') <> '' THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'boca_platform_login') THEN
+      EXECUTE format('CREATE ROLE boca_platform_login LOGIN PASSWORD %L', current_setting('boca.platform_pwd'));
+    ELSE
+      EXECUTE format('ALTER ROLE boca_platform_login LOGIN PASSWORD %L', current_setting('boca.platform_pwd'));
+    END IF;
+    EXECUTE 'GRANT boca_platform TO boca_platform_login';
   END IF;
 END
 $$;

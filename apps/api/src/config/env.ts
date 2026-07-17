@@ -18,6 +18,13 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().min(1),
   WORKER_DATABASE_URL: z.string().min(1).optional(),
+  // Platform (super-admin) connection — boca_platform_login, the only role that
+  // can create tenants. Absent/empty = the platform dashboard endpoints are
+  // disabled (compose passes "" when the operator hasn't opted in).
+  PLATFORM_DATABASE_URL: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.string().min(1).optional(),
+  ),
   // BullMQ queue "ai-score" (producer in the HTTP app, consumer in main.worker).
   REDIS_URL: z.string().min(1).default("redis://127.0.0.1:6379"),
   // MinIO (S3-compatible). Defaults match infra/compose/docker-compose.dev.yml;

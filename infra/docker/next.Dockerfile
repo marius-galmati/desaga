@@ -29,6 +29,7 @@ COPY apps/admin/package.json apps/admin/
 COPY apps/showcase/package.json apps/showcase/
 COPY apps/guest/package.json apps/guest/
 COPY apps/staff/package.json apps/staff/
+COPY apps/platform/package.json apps/platform/
 COPY packages/config/package.json packages/config/
 COPY packages/contracts/package.json packages/contracts/
 COPY packages/db/package.json packages/db/

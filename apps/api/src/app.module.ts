@@ -5,6 +5,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { EvaluationModule } from "./modules/evaluation/evaluation.module";
 import { GuestModule } from "./modules/guest/guest.module";
 import { HealthModule } from "./modules/health/health.module";
+import { PlatformModule } from "./modules/platform/platform.module";
 import { ReferencesModule } from "./modules/references/references.module";
 import { StorageModule } from "./modules/storage/storage.module";
 import { TenancyModule } from "./modules/tenancy/tenancy.module";
@@ -23,6 +24,7 @@ import { TenancyModule } from "./modules/tenancy/tenancy.module";
     EvaluationModule,
     GuestModule,
     AdminModule,
+    PlatformModule,
   ],
 })
 export class AppModule {}
