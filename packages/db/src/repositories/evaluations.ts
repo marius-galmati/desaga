@@ -262,6 +262,11 @@ export interface CompleteEvaluationParams {
   rawEnsemble: unknown;
   ensembleSize: number;
   latencyMs: number;
+  /** Token usage summed across the ensemble runs (null in mock mode). */
+  inputTokens?: number | null;
+  outputTokens?: number | null;
+  /** Provider's real billed cost (USD) when returned, else null. */
+  costUsd?: number | null;
 }
 
 /**
@@ -287,6 +292,9 @@ export async function updateEvaluationCompleted(
       raw_ensemble: JSON.stringify(params.rawEnsemble),
       ensemble_size: params.ensembleSize,
       latency_ms: params.latencyMs,
+      input_tokens: params.inputTokens ?? null,
+      output_tokens: params.outputTokens ?? null,
+      cost_usd: params.costUsd ?? null,
       completed_at: new Date(),
     })
     .where("id", "=", params.evaluationId)

@@ -46,6 +46,10 @@ const envSchema = z.object({
   // alias); the cost-tier decision is deliberate (docs/arhitectura.md).
   ANTHROPIC_API_KEY: optionalNonEmpty,
   EVAL_MODEL: z.string().min(1).default(EVAL_MODEL_DEFAULT),
+  // 32-byte key (hex or base64) that encrypts the provider API key stored from
+  // the platform dashboard (AES-256-GCM). Absent = the dashboard can't store a
+  // key (it stays 503 on save); the evaluator still works from env below.
+  SECRETS_ENCRYPTION_KEY: optionalNonEmpty,
   EVAL_MOCK: z
     .string()
     .optional()

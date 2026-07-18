@@ -153,6 +153,57 @@ export async function resolveSessionToken(
     : null;
 }
 
+/**
+ * Global runtime AI config (ai_settings singleton + ai_model_price). Both tables
+ * carry NO tenant_id and NO RLS, so they are read WITHOUT a tenant context — a
+ * sanctioned non-tenant read alongside the resolvers. The API key ciphertext is
+ * returned verbatim; decryption happens in the API layer (SECRETS_ENCRYPTION_KEY).
+ */
+export async function getAiRuntimeConfig(): Promise<{
+  settings: {
+    provider: string;
+    baseUrl: string | null;
+    model: string | null;
+    apiKeyCiphertext: string | null;
+    apiKeyIv: string | null;
+    apiKeyTag: string | null;
+    apiKeyLast4: string | null;
+  } | null;
+  prices: {
+    model: string;
+    label: string | null;
+    inputPerMillion: number;
+    outputPerMillion: number;
+  }[];
+}> {
+  const db = getAppDb();
+  const settingsRow = await db
+    .selectFrom("ai_settings")
+    .selectAll()
+    .where("singleton", "=", true)
+    .executeTakeFirst();
+  const priceRows = await db.selectFrom("ai_model_price").selectAll().execute();
+  return {
+    settings: settingsRow
+      ? {
+          provider: settingsRow.provider,
+          baseUrl: settingsRow.base_url,
+          model: settingsRow.model,
+          apiKeyCiphertext: settingsRow.api_key_ciphertext,
+          apiKeyIv: settingsRow.api_key_iv,
+          apiKeyTag: settingsRow.api_key_tag,
+          apiKeyLast4: settingsRow.api_key_last4,
+        }
+      : null,
+    prices: priceRows.map((p) => ({
+      model: p.model,
+      label: p.label,
+      inputPerMillion: Number(p.input_per_million),
+      outputPerMillion: Number(p.output_per_million),
+    })),
+  };
+}
+
 /** Closes both pools; call from the app's shutdown hook. */
 export async function destroyDbPools(): Promise<void> {
   await appDb?.destroy();

@@ -104,13 +104,18 @@ export function buildToleranceText(criteria: unknown): string {
 export interface EvaluationRequestInput {
   /** Exact pinned model id (env EVAL_MODEL). */
   model: string;
-  /** Exactly 3 primary reference images, JPEG base64, REF1..REF3 order. */
+  /** 1-5 primary reference images, JPEG base64, REF1..REFn order. */
   referenceImagesB64: readonly string[];
   /** Output of buildToleranceText; empty string allowed in v1. */
   toleranceText: string;
   /** Candidate plate image, JPEG base64. */
   candidateImageB64: string;
 }
+
+const toleranceBlock = (toleranceText: string): string =>
+  toleranceText.trim() === ""
+    ? "TOLERANȚE: (nedefinite — aplică severitate normală pe toate criteriile)"
+    : `TOLERANȚE (per criteriu):\n${toleranceText}`;
 
 /**
  * The exact request shape locked in the architecture:
@@ -124,9 +129,9 @@ export interface EvaluationRequestInput {
 export function buildEvaluationRequest(
   input: EvaluationRequestInput,
 ): Anthropic.Messages.MessageCreateParamsNonStreaming {
-  if (input.referenceImagesB64.length !== 3) {
+  if (input.referenceImagesB64.length < 1 || input.referenceImagesB64.length > 5) {
     throw new Error(
-      `buildEvaluationRequest: expected exactly 3 reference images, got ${input.referenceImagesB64.length}`,
+      `buildEvaluationRequest: expected 1-5 reference images, got ${input.referenceImagesB64.length}`,
     );
   }
 
@@ -135,13 +140,7 @@ export function buildEvaluationRequest(
     content.push({ type: "text", text: `REF${index + 1} — fotografie de referință aprobată:` });
     content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data } });
   });
-  content.push({
-    type: "text",
-    text:
-      input.toleranceText.trim() === ""
-        ? "TOLERANȚE: (nedefinite — aplică severitate normală pe toate criteriile)"
-        : `TOLERANȚE (per criteriu):\n${input.toleranceText}`,
-  });
+  content.push({ type: "text", text: toleranceBlock(input.toleranceText) });
   content.push({ type: "text", text: "CANDIDAT — fotografia farfuriei de evaluat:" });
   content.push({
     type: "image",
@@ -156,5 +155,48 @@ export function buildEvaluationRequest(
     system: [{ type: "text", text: FIXED_RUBRIC, cache_control: { type: "ephemeral" } }],
     output_config: { format: { type: "json_schema", schema: EVALUATION_REPORT_JSON_SCHEMA } },
     messages: [{ role: "user", content }],
+  };
+}
+
+/**
+ * The SAME rubric/layout as an OpenAI-compatible chat request (OpenRouter →
+ * Gemini/DeepSeek/Qwen). System = the byte-stable rubric; user = interleaved
+ * REF images, tolerance, CANDIDAT, ask. Structured output requested via
+ * response_format json_schema; the caller still zod-parses + repairs, so a
+ * provider that ignores the schema is covered.
+ */
+export function buildOpenAiRequest(input: EvaluationRequestInput): {
+  model: string;
+  max_tokens: number;
+  messages: unknown[];
+  response_format: unknown;
+} {
+  if (input.referenceImagesB64.length < 1 || input.referenceImagesB64.length > 5) {
+    throw new Error(
+      `buildOpenAiRequest: expected 1-5 reference images, got ${input.referenceImagesB64.length}`,
+    );
+  }
+  const dataUri = (b64: string) => `data:image/jpeg;base64,${b64}`;
+  const userContent: unknown[] = [];
+  input.referenceImagesB64.forEach((data, index) => {
+    userContent.push({ type: "text", text: `REF${index + 1} — fotografie de referință aprobată:` });
+    userContent.push({ type: "image_url", image_url: { url: dataUri(data) } });
+  });
+  userContent.push({ type: "text", text: toleranceBlock(input.toleranceText) });
+  userContent.push({ type: "text", text: "CANDIDAT — fotografia farfuriei de evaluat:" });
+  userContent.push({ type: "image_url", image_url: { url: dataUri(input.candidateImageB64) } });
+  userContent.push({ type: "text", text: EVAL_ASK });
+
+  return {
+    model: input.model,
+    max_tokens: EVAL_MAX_TOKENS,
+    messages: [
+      { role: "system", content: FIXED_RUBRIC },
+      { role: "user", content: userContent },
+    ],
+    response_format: {
+      type: "json_schema",
+      json_schema: { name: "plating_report", schema: EVALUATION_REPORT_JSON_SCHEMA, strict: true },
+    },
   };
 }

@@ -835,6 +835,9 @@ CREATE TABLE ai_evaluation (
   completed_at          timestamptz,
   purge_after           timestamptz,                  -- retention hook: scores are LONG class
   deleted_at            timestamptz,                  -- soft delete (dashboard); row kept for retention
+  input_tokens          integer,                      -- usage/cost tracking (0018)
+  output_tokens         integer,
+  cost_usd              numeric(12,6),                -- provider real cost, else computed at read
   UNIQUE (tenant_id, id),
   CHECK ((status = 'not_scoreable') = (not_scoreable_reason IS NOT NULL)),
   -- Completed rows must be fully pinned and scored; failures must say why.
@@ -850,6 +853,27 @@ CREATE INDEX ix_ai_eval_tenant_photo ON ai_evaluation (tenant_id, pass_photo_id)
 CREATE INDEX ix_ai_eval_tenant_created ON ai_evaluation (tenant_id, created_at DESC);
 CREATE INDEX ix_ai_eval_queue ON ai_evaluation (status, created_at) WHERE status IN ('queued','running');
 CREATE INDEX ix_ai_eval_tenant_live ON ai_evaluation (tenant_id, created_at DESC) WHERE deleted_at IS NULL;
+
+-- Global runtime AI config (0018) — no tenant_id / no RLS; app+worker read,
+-- platform role writes. API key stored AES-256-GCM encrypted, never returned.
+CREATE TABLE ai_settings (
+  singleton          boolean PRIMARY KEY DEFAULT true CHECK (singleton),
+  provider           text NOT NULL DEFAULT 'anthropic' CHECK (provider IN ('anthropic','openai')),
+  base_url           text,
+  model              text,
+  api_key_ciphertext text,
+  api_key_iv         text,
+  api_key_tag        text,
+  api_key_last4      text,
+  updated_at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE ai_model_price (
+  model              text PRIMARY KEY,
+  label              text,
+  input_per_million  numeric(10,4) NOT NULL DEFAULT 0,
+  output_per_million numeric(10,4) NOT NULL DEFAULT 0,
+  updated_at         timestamptz NOT NULL DEFAULT now()
+);
 
 -- ----------------------------------------------------------------------------
 -- 9. CHEF ATTRIBUTION

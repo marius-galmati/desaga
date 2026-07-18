@@ -208,6 +208,9 @@ export class AiScoreWorker implements OnApplicationShutdown {
         },
         ensembleSize: result.ensembleSize,
         latencyMs: Date.now() - startedAt,
+        inputTokens: result.usage?.inputTokens ?? null,
+        outputTokens: result.usage?.outputTokens ?? null,
+        costUsd: result.usage?.costUsd ?? null,
       }),
     );
     this.logger.log(

@@ -14,6 +14,7 @@ export * from "./repositories/tenancy";
 export {
   asSystem,
   destroyDbPools,
+  getAiRuntimeConfig,
   resolveQrSlug,
   resolveSessionToken,
   resolveTenantDomain,

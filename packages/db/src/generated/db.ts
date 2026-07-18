@@ -83,14 +83,17 @@ export type UserRole = "kitchen_pass" | "management_viewer" | "manager" | "tenan
 
 export interface AiEvaluation {
   completed_at: Timestamp | null;
+  cost_usd: Numeric | null;
   created_at: Generated<Timestamp>;
   criterion_scores: Json | null;
   deleted_at: Timestamp | null;
   ensemble_size: Generated<number>;
   failure_detail: string | null;
   id: Generated<string>;
+  input_tokens: number | null;
   latency_ms: number | null;
   mode: EvalMode;
+  output_tokens: number | null;
   model_id: string;
   not_scoreable_reason: NotScoreableReason | null;
   overall_score: Numeric | null;
@@ -104,6 +107,26 @@ export interface AiEvaluation {
   status: Generated<EvalStatus>;
   tenant_id: string;
   tolerance_profile_id: string | null;
+}
+
+export interface AiSettings {
+  api_key_ciphertext: string | null;
+  api_key_iv: string | null;
+  api_key_last4: string | null;
+  api_key_tag: string | null;
+  base_url: string | null;
+  model: string | null;
+  provider: Generated<string>;
+  singleton: Generated<boolean>;
+  updated_at: Generated<Timestamp>;
+}
+
+export interface AiModelPrice {
+  input_per_million: Generated<Numeric>;
+  label: string | null;
+  model: string;
+  output_per_million: Generated<Numeric>;
+  updated_at: Generated<Timestamp>;
 }
 
 export interface Alert {
@@ -668,6 +691,8 @@ export interface ToleranceProfile {
 
 export interface DB {
   ai_evaluation: AiEvaluation;
+  ai_model_price: AiModelPrice;
+  ai_settings: AiSettings;
   alert: Alert;
   allergen: Allergen;
   app_user: AppUser;
