@@ -110,3 +110,79 @@ export const updatePlatformBrandingRequestSchema = z.object({
   colors: brandColorsSchema,
 });
 export type UpdatePlatformBrandingRequest = z.infer<typeof updatePlatformBrandingRequestSchema>;
+
+// --- AI runtime config + costs (platform-managed) --------------------------
+
+export const aiProviderSchema = z.enum(["anthropic", "openai"]);
+
+export const aiModelPriceSchema = z.object({
+  model: z.string().min(1),
+  label: z.string().nullable(),
+  inputPerMillion: z.number().nonnegative(),
+  outputPerMillion: z.number().nonnegative(),
+});
+export type AiModelPrice = z.infer<typeof aiModelPriceSchema>;
+
+// Read shape — the API key is NEVER returned, only whether one is set + last 4.
+export const aiSettingsSchema = z.object({
+  provider: aiProviderSchema,
+  baseUrl: z.string().nullable(),
+  model: z.string().nullable(),
+  hasKey: z.boolean(),
+  keyLast4: z.string().nullable(),
+  secretsConfigured: z.boolean(), // false => can't store a key yet (env missing)
+  prices: z.array(aiModelPriceSchema),
+});
+export type AiSettings = z.infer<typeof aiSettingsSchema>;
+
+export const updateAiSettingsRequestSchema = z.object({
+  provider: aiProviderSchema,
+  baseUrl: z.string().max(300).nullable(),
+  model: z.string().max(200).nullable(),
+  // Write-only. Omit to keep the stored key; empty string clears it.
+  apiKey: z.string().max(400).optional(),
+});
+export type UpdateAiSettingsRequest = z.infer<typeof updateAiSettingsRequestSchema>;
+
+export const updateAiPricesRequestSchema = z.object({
+  prices: z
+    .array(
+      z.object({
+        model: z.string().min(1).max(200),
+        label: z.string().max(120).nullable(),
+        inputPerMillion: z.number().nonnegative(),
+        outputPerMillion: z.number().nonnegative(),
+      }),
+    )
+    .max(50),
+});
+export type UpdateAiPricesRequest = z.infer<typeof updateAiPricesRequestSchema>;
+
+export const aiCostPeriodSchema = z.enum(["day", "week", "month", "all"]);
+export type AiCostPeriod = z.infer<typeof aiCostPeriodSchema>;
+
+export const aiCostReportSchema = z.object({
+  period: aiCostPeriodSchema,
+  rangeLabel: z.string(),
+  totalCostUsd: z.number(),
+  totalCalls: z.number().int().nonnegative(),
+  byModel: z.array(
+    z.object({
+      model: z.string(),
+      label: z.string().nullable(),
+      calls: z.number().int().nonnegative(),
+      inputTokens: z.number().int().nonnegative(),
+      outputTokens: z.number().int().nonnegative(),
+      costUsd: z.number(),
+    }),
+  ),
+  byTenant: z.array(
+    z.object({
+      tenantId: uuidSchema,
+      name: z.string(),
+      calls: z.number().int().nonnegative(),
+      costUsd: z.number(),
+    }),
+  ),
+});
+export type AiCostReport = z.infer<typeof aiCostReportSchema>;

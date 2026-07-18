@@ -54,6 +54,9 @@ x-api-env: &api-env
   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
   EVAL_MODEL: ${EVAL_MODEL}
   EVAL_MOCK: "false"
+  # Encrypts the provider API key set from the platform dashboard (AES-256-GCM).
+  # Empty => the dashboard can't store keys (evaluator still works from env).
+  SECRETS_ENCRYPTION_KEY: ${SECRETS_ENCRYPTION_KEY:-}
 
 x-restart: &restart
   restart: unless-stopped

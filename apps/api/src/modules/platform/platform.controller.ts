@@ -90,4 +90,48 @@ export class PlatformController {
       return { status: 200 as const, body: result.value };
     });
   }
+
+  @Public()
+  @UseGuards(PlatformAuthGuard)
+  @TsRestHandler(apiContract.platform.getAiSettings)
+  getAiSettings() {
+    return tsRestHandler(apiContract.platform.getAiSettings, async () => {
+      const result = await this.platform.getAiSettings();
+      if (!result.ok) return { status: result.status, body: { message: result.message } };
+      return { status: 200 as const, body: result.value };
+    });
+  }
+
+  @Public()
+  @UseGuards(PlatformAuthGuard)
+  @TsRestHandler(apiContract.platform.updateAiSettings)
+  updateAiSettings() {
+    return tsRestHandler(apiContract.platform.updateAiSettings, async ({ body }) => {
+      const result = await this.platform.updateAiSettings(body);
+      if (!result.ok) return { status: result.status, body: { message: result.message } };
+      return { status: 200 as const, body: result.value };
+    });
+  }
+
+  @Public()
+  @UseGuards(PlatformAuthGuard)
+  @TsRestHandler(apiContract.platform.updateAiPrices)
+  updateAiPrices() {
+    return tsRestHandler(apiContract.platform.updateAiPrices, async ({ body }) => {
+      const result = await this.platform.updateAiPrices(body);
+      if (!result.ok) return { status: result.status, body: { message: result.message } };
+      return { status: 200 as const, body: result.value };
+    });
+  }
+
+  @Public()
+  @UseGuards(PlatformAuthGuard)
+  @TsRestHandler(apiContract.platform.getAiCosts)
+  getAiCosts() {
+    return tsRestHandler(apiContract.platform.getAiCosts, async ({ query }) => {
+      const result = await this.platform.getAiCosts(query.period ?? "month");
+      if (!result.ok) return { status: result.status, body: { message: result.message } };
+      return { status: 200 as const, body: result.value };
+    });
+  }
 }

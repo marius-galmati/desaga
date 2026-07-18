@@ -4,11 +4,18 @@
 
 import {
   type AddPlatformDomainRequest,
+  type AiCostPeriod,
+  type AiCostReport,
+  type AiSettings,
+  aiCostReportSchema,
+  aiSettingsSchema,
   type CreatePlatformTenantRequest,
   type PlatformLoginResponse,
   type PlatformTenant,
   platformLoginResponseSchema,
   platformTenantListSchema,
+  type UpdateAiPricesRequest,
+  type UpdateAiSettingsRequest,
   type UpdatePlatformBrandingRequest,
 } from "@boca/contracts";
 
@@ -119,5 +126,27 @@ export function updateBranding(
     `/platform/tenants/${tenantId}/branding`,
     { method: "PUT", body: JSON.stringify(body) },
     () => undefined,
+  );
+}
+
+export function getAiSettings(): Promise<AiSettings> {
+  return request("/platform/ai/settings", { method: "GET" }, (p) => aiSettingsSchema.parse(p));
+}
+
+export function updateAiSettings(body: UpdateAiSettingsRequest): Promise<AiSettings> {
+  return request("/platform/ai/settings", { method: "PUT", body: JSON.stringify(body) }, (p) =>
+    aiSettingsSchema.parse(p),
+  );
+}
+
+export function updateAiPrices(body: UpdateAiPricesRequest): Promise<AiSettings> {
+  return request("/platform/ai/prices", { method: "PUT", body: JSON.stringify(body) }, (p) =>
+    aiSettingsSchema.parse(p),
+  );
+}
+
+export function getAiCosts(period: AiCostPeriod = "month"): Promise<AiCostReport> {
+  return request(`/platform/ai/costs?period=${period}`, { method: "GET" }, (p) =>
+    aiCostReportSchema.parse(p),
   );
 }

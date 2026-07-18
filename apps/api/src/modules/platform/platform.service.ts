@@ -1,15 +1,21 @@
 import {
   type AddPlatformDomainRequest,
+  type AiCostPeriod,
+  type AiCostReport,
+  type AiSettings,
   brandColorsSchema,
   type CreatePlatformTenantRequest,
   type PlatformBranding,
   type PlatformLoginResponse,
   type PlatformTenant,
+  type UpdateAiPricesRequest,
+  type UpdateAiSettingsRequest,
   type UpdatePlatformBrandingRequest,
 } from "@boca/contracts";
 import { Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
+import { encryptSecret, secretsConfigured } from "../../common/secrets";
 import { createTenant } from "./onboarding";
 import { getPlatformPool, platformDbConfigured } from "./platform-db";
 
@@ -291,4 +297,220 @@ export class PlatformService {
     );
     return { ok: true, value: { ok: true } };
   }
+
+  // --- AI runtime config + costs ------------------------------------------
+
+  private async readAiSettings(): Promise<AiSettings> {
+    const pool = getPlatformPool();
+    const s = await pool.query<{
+      provider: string;
+      base_url: string | null;
+      model: string | null;
+      api_key_ciphertext: string | null;
+      api_key_last4: string | null;
+    }>(
+      `select provider, base_url, model, api_key_ciphertext, api_key_last4
+       from ai_settings where singleton`,
+    );
+    const prices = await pool.query<{
+      model: string;
+      label: string | null;
+      input_per_million: string;
+      output_per_million: string;
+    }>(
+      `select model, label, input_per_million, output_per_million
+       from ai_model_price order by model`,
+    );
+    const row = s.rows[0];
+    return {
+      provider: row?.provider === "openai" ? "openai" : "anthropic",
+      baseUrl: row?.base_url ?? null,
+      model: row?.model ?? null,
+      hasKey: Boolean(row?.api_key_ciphertext),
+      keyLast4: row?.api_key_last4 ?? null,
+      secretsConfigured: secretsConfigured(),
+      prices: prices.rows.map((p) => ({
+        model: p.model,
+        label: p.label,
+        inputPerMillion: Number(p.input_per_million),
+        outputPerMillion: Number(p.output_per_million),
+      })),
+    };
+  }
+
+  async getAiSettings(): Promise<PlatformResult<AiSettings>> {
+    if (!platformDbConfigured()) return NOT_CONFIGURED;
+    return { ok: true, value: await this.readAiSettings() };
+  }
+
+  async updateAiSettings(body: UpdateAiSettingsRequest): Promise<PlatformResult<AiSettings>> {
+    if (!platformDbConfigured()) return NOT_CONFIGURED;
+    const pool = getPlatformPool();
+    if (body.apiKey === undefined) {
+      // Keep the stored key; update provider/base_url/model only.
+      await pool.query(
+        `insert into ai_settings (singleton, provider, base_url, model, updated_at)
+         values (true, $1, $2, $3, now())
+         on conflict (singleton) do update
+           set provider = $1, base_url = $2, model = $3, updated_at = now()`,
+        [body.provider, body.baseUrl, body.model],
+      );
+    } else if (body.apiKey === "") {
+      // Clear the stored key.
+      await pool.query(
+        `insert into ai_settings (singleton, provider, base_url, model,
+             api_key_ciphertext, api_key_iv, api_key_tag, api_key_last4, updated_at)
+         values (true, $1, $2, $3, null, null, null, null, now())
+         on conflict (singleton) do update
+           set provider = $1, base_url = $2, model = $3,
+               api_key_ciphertext = null, api_key_iv = null, api_key_tag = null,
+               api_key_last4 = null, updated_at = now()`,
+        [body.provider, body.baseUrl, body.model],
+      );
+    } else {
+      if (!secretsConfigured()) {
+        return {
+          ok: false,
+          status: 400,
+          message:
+            "Setează SECRETS_ENCRYPTION_KEY (și redeploy) ca să poți stoca chei API din dashboard.",
+        };
+      }
+      const enc = encryptSecret(body.apiKey);
+      await pool.query(
+        `insert into ai_settings (singleton, provider, base_url, model,
+             api_key_ciphertext, api_key_iv, api_key_tag, api_key_last4, updated_at)
+         values (true, $1, $2, $3, $4, $5, $6, $7, now())
+         on conflict (singleton) do update
+           set provider = $1, base_url = $2, model = $3,
+               api_key_ciphertext = $4, api_key_iv = $5, api_key_tag = $6,
+               api_key_last4 = $7, updated_at = now()`,
+        [
+          body.provider,
+          body.baseUrl,
+          body.model,
+          enc.ciphertext,
+          enc.iv,
+          enc.tag,
+          body.apiKey.slice(-4),
+        ],
+      );
+    }
+    return { ok: true, value: await this.readAiSettings() };
+  }
+
+  async updateAiPrices(body: UpdateAiPricesRequest): Promise<PlatformResult<AiSettings>> {
+    if (!platformDbConfigured()) return NOT_CONFIGURED;
+    const pool = getPlatformPool();
+    const client = await pool.connect();
+    try {
+      await client.query("begin");
+      // Replace-all: the editor sends the full list.
+      await client.query("delete from ai_model_price");
+      for (const p of body.prices) {
+        await client.query(
+          `insert into ai_model_price (model, label, input_per_million, output_per_million, updated_at)
+           values ($1, $2, $3, $4, now())`,
+          [p.model.trim(), p.label, p.inputPerMillion, p.outputPerMillion],
+        );
+      }
+      await client.query("commit");
+    } catch (err) {
+      await client.query("rollback").catch(() => {});
+      const detail = err instanceof Error ? err.message : String(err);
+      return {
+        ok: false,
+        status: 400,
+        message: `Salvarea prețurilor a eșuat: ${detail.slice(0, 200)}`,
+      };
+    } finally {
+      client.release();
+    }
+    return { ok: true, value: await this.readAiSettings() };
+  }
+
+  async getAiCosts(period: AiCostPeriod): Promise<PlatformResult<AiCostReport>> {
+    if (!platformDbConfigured()) return NOT_CONFIGURED;
+    const pool = getPlatformPool();
+    const since = period === "all" ? null : new Date(Date.now() - AI_COST_PERIOD_MS[period]);
+    const where = since ? "and e.created_at >= $1" : "";
+    const params = since ? [since] : [];
+    // Real billed cost when present, else tokens x the price sheet.
+    const cost = `coalesce(e.cost_usd,
+      (coalesce(e.input_tokens,0)::numeric / 1000000) * coalesce(p.input_per_million, 0)
+      + (coalesce(e.output_tokens,0)::numeric / 1000000) * coalesce(p.output_per_million, 0))`;
+
+    const byModel = await pool.query<{
+      model: string;
+      label: string | null;
+      calls: number;
+      input_tokens: string;
+      output_tokens: string;
+      cost: string;
+    }>(
+      `select e.model_id as model, max(p.label) as label, count(*)::int as calls,
+              coalesce(sum(e.input_tokens),0)::bigint as input_tokens,
+              coalesce(sum(e.output_tokens),0)::bigint as output_tokens,
+              coalesce(sum(${cost}),0) as cost
+       from ai_evaluation e
+       left join ai_model_price p on p.model = e.model_id
+       where e.status = 'completed' and e.deleted_at is null ${where}
+       group by e.model_id
+       order by cost desc`,
+      params,
+    );
+    const byTenant = await pool.query<{
+      tenant_id: string;
+      name: string;
+      calls: number;
+      cost: string;
+    }>(
+      `select e.tenant_id, t.name, count(*)::int as calls, coalesce(sum(${cost}),0) as cost
+       from ai_evaluation e
+       left join ai_model_price p on p.model = e.model_id
+       join tenant t on t.id = e.tenant_id
+       where e.status = 'completed' and e.deleted_at is null ${where}
+       group by e.tenant_id, t.name
+       order by cost desc`,
+      params,
+    );
+
+    const byModelOut = byModel.rows.map((r) => ({
+      model: r.model,
+      label: r.label,
+      calls: r.calls,
+      inputTokens: Number(r.input_tokens),
+      outputTokens: Number(r.output_tokens),
+      costUsd: Number(r.cost),
+    }));
+    return {
+      ok: true,
+      value: {
+        period,
+        rangeLabel: AI_COST_RANGE_LABEL[period],
+        totalCostUsd: byModelOut.reduce((s, m) => s + m.costUsd, 0),
+        totalCalls: byModelOut.reduce((s, m) => s + m.calls, 0),
+        byModel: byModelOut,
+        byTenant: byTenant.rows.map((r) => ({
+          tenantId: r.tenant_id,
+          name: r.name,
+          calls: r.calls,
+          costUsd: Number(r.cost),
+        })),
+      },
+    };
+  }
 }
+
+const AI_COST_PERIOD_MS: Record<Exclude<AiCostPeriod, "all">, number> = {
+  day: 24 * 60 * 60 * 1000,
+  week: 7 * 24 * 60 * 60 * 1000,
+  month: 30 * 24 * 60 * 60 * 1000,
+};
+
+const AI_COST_RANGE_LABEL: Record<AiCostPeriod, string> = {
+  day: "Ultimele 24 de ore",
+  week: "Ultimele 7 zile",
+  month: "Ultimele 30 de zile",
+  all: "De la început",
+};

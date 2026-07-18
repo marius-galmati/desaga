@@ -14,6 +14,7 @@ import {
   updateBranding,
 } from "@/lib/api";
 import { Emblem } from "@/lib/emblem";
+import { AiCostsPanel, AiSettingsPanel } from "./ai-panels";
 import styles from "./page.module.css";
 
 const SURFACE_LABEL: Record<string, string> = { guest: "Guest", admin: "Admin", staff: "Staff" };
@@ -169,6 +170,9 @@ export default function PlatformPage() {
           </div>
         )}
       </section>
+
+      <AiSettingsPanel onError={setError} onFlash={flash} />
+      <AiCostsPanel onError={setError} />
     </div>
   );
 }

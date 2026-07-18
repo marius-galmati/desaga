@@ -3,11 +3,16 @@ import { z } from "zod";
 import { apiErrorSchema } from "../schemas/common";
 import {
   addPlatformDomainRequestSchema,
+  aiCostPeriodSchema,
+  aiCostReportSchema,
+  aiSettingsSchema,
   createPlatformTenantRequestSchema,
   createPlatformTenantResponseSchema,
   platformLoginRequestSchema,
   platformLoginResponseSchema,
   platformTenantListSchema,
+  updateAiPricesRequestSchema,
+  updateAiSettingsRequestSchema,
   updatePlatformBrandingRequestSchema,
 } from "../schemas/platform";
 
@@ -80,5 +85,32 @@ export const platformContract = c.router({
       200: z.object({ ok: z.literal(true) }),
       ...platformErrors,
     },
+  },
+
+  // --- AI runtime config + costs ------------------------------------------
+  getAiSettings: {
+    method: "GET",
+    path: "/platform/ai/settings",
+    summary: "Active provider/model + price sheet (API key never returned)",
+    responses: { 200: aiSettingsSchema, ...platformErrors },
+  },
+  updateAiSettings: {
+    method: "PUT",
+    path: "/platform/ai/settings",
+    body: updateAiSettingsRequestSchema,
+    responses: { 200: aiSettingsSchema, ...platformErrors },
+  },
+  updateAiPrices: {
+    method: "PUT",
+    path: "/platform/ai/prices",
+    body: updateAiPricesRequestSchema,
+    responses: { 200: aiSettingsSchema, ...platformErrors },
+  },
+  getAiCosts: {
+    method: "GET",
+    path: "/platform/ai/costs",
+    summary: "Cost + usage rollup per model and per tenant for the window",
+    query: z.object({ period: aiCostPeriodSchema.optional() }),
+    responses: { 200: aiCostReportSchema, ...platformErrors },
   },
 });

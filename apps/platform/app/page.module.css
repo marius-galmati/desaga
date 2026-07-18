@@ -210,3 +210,69 @@
   cursor: pointer;
   background: transparent;
 }
+
+/* --- AI settings + costs --- */
+.priceRow {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.8fr 0.8fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.periodChips {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  background: var(--paper-2);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-pill);
+}
+.periodChip {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: 0.4em 0.9em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: transparent;
+  cursor: pointer;
+}
+.periodChipOn {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: var(--shadow-card);
+}
+.costTotal {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-top: 2px;
+}
+.costTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.costTable th {
+  text-align: left;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.costTable td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 0.9rem;
+}
+.costTable tr:last-child td {
+  border-bottom: none;
+}
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
