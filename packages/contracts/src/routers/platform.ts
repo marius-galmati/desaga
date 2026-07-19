@@ -5,6 +5,8 @@ import {
   addPlatformDomainRequestSchema,
   aiCostPeriodSchema,
   aiCostReportSchema,
+  aiModelListSchema,
+  aiProviderSchema,
   aiSettingsSchema,
   createPlatformTenantRequestSchema,
   createPlatformTenantResponseSchema,
@@ -93,6 +95,16 @@ export const platformContract = c.router({
     path: "/platform/ai/settings",
     summary: "Active provider/model + price sheet (API key never returned)",
     responses: { 200: aiSettingsSchema, ...platformErrors },
+  },
+  getAiModels: {
+    method: "GET",
+    path: "/platform/ai/models",
+    summary: "Selectable models for a provider (live vision-capable list + fallback)",
+    query: z.object({
+      provider: aiProviderSchema,
+      baseUrl: z.string().max(300).optional(),
+    }),
+    responses: { 200: aiModelListSchema, ...platformErrors },
   },
   updateAiSettings: {
     method: "PUT",

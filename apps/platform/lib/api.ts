@@ -6,8 +6,11 @@ import {
   type AddPlatformDomainRequest,
   type AiCostPeriod,
   type AiCostReport,
+  type AiModelList,
+  type AiProvider,
   type AiSettings,
   aiCostReportSchema,
+  aiModelListSchema,
   aiSettingsSchema,
   type CreatePlatformTenantRequest,
   type PlatformLoginResponse,
@@ -131,6 +134,14 @@ export function updateBranding(
 
 export function getAiSettings(): Promise<AiSettings> {
   return request("/platform/ai/settings", { method: "GET" }, (p) => aiSettingsSchema.parse(p));
+}
+
+export function getAiModels(provider: AiProvider, baseUrl?: string): Promise<AiModelList> {
+  const qs = new URLSearchParams({ provider });
+  if (baseUrl) qs.set("baseUrl", baseUrl);
+  return request(`/platform/ai/models?${qs.toString()}`, { method: "GET" }, (p) =>
+    aiModelListSchema.parse(p),
+  );
 }
 
 export function updateAiSettings(body: UpdateAiSettingsRequest): Promise<AiSettings> {

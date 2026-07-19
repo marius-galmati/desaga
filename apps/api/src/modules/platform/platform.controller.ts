@@ -104,6 +104,17 @@ export class PlatformController {
 
   @Public()
   @UseGuards(PlatformAuthGuard)
+  @TsRestHandler(apiContract.platform.getAiModels)
+  getAiModels() {
+    return tsRestHandler(apiContract.platform.getAiModels, async ({ query }) => {
+      const result = await this.platform.listAiModels(query.provider, query.baseUrl);
+      if (!result.ok) return { status: result.status, body: { message: result.message } };
+      return { status: 200 as const, body: result.value };
+    });
+  }
+
+  @Public()
+  @UseGuards(PlatformAuthGuard)
   @TsRestHandler(apiContract.platform.updateAiSettings)
   updateAiSettings() {
     return tsRestHandler(apiContract.platform.updateAiSettings, async ({ body }) => {

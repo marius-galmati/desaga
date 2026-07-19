@@ -114,6 +114,7 @@ export type UpdatePlatformBrandingRequest = z.infer<typeof updatePlatformBrandin
 // --- AI runtime config + costs (platform-managed) --------------------------
 
 export const aiProviderSchema = z.enum(["anthropic", "openai"]);
+export type AiProvider = z.infer<typeof aiProviderSchema>;
 
 export const aiModelPriceSchema = z.object({
   model: z.string().min(1),
@@ -134,6 +135,27 @@ export const aiSettingsSchema = z.object({
   prices: z.array(aiModelPriceSchema),
 });
 export type AiSettings = z.infer<typeof aiSettingsSchema>;
+
+// One selectable model in the provider dropdown. Pricing/context are best-effort
+// (present for OpenRouter live results and known Anthropic models, null otherwise).
+export const aiModelOptionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  contextTokens: z.number().int().positive().nullable(),
+  inputPerMillion: z.number().nonnegative().nullable(),
+  outputPerMillion: z.number().nonnegative().nullable(),
+});
+export type AiModelOption = z.infer<typeof aiModelOptionSchema>;
+
+// The dropdown catalog for one provider. `source` = "live" when fetched from the
+// provider, "static" when we fell back to the built-in list; `note` explains why.
+export const aiModelListSchema = z.object({
+  provider: aiProviderSchema,
+  source: z.enum(["live", "static"]),
+  note: z.string().nullable(),
+  models: z.array(aiModelOptionSchema),
+});
+export type AiModelList = z.infer<typeof aiModelListSchema>;
 
 export const updateAiSettingsRequestSchema = z.object({
   provider: aiProviderSchema,

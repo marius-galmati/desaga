@@ -212,6 +212,30 @@
 }
 
 /* --- AI settings + costs --- */
+.modelMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 6px;
+}
+.linkBtn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--vin);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.linkBtn:hover {
+  text-decoration: underline;
+}
+.modelNote {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
 .priceRow {
   display: grid;
   grid-template-columns: 1.4fr 1fr 0.8fr 0.8fr auto;

@@ -2,6 +2,8 @@ import {
   type AddPlatformDomainRequest,
   type AiCostPeriod,
   type AiCostReport,
+  type AiModelList,
+  type AiProvider,
   type AiSettings,
   brandColorsSchema,
   type CreatePlatformTenantRequest,
@@ -15,7 +17,9 @@ import {
 import { Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
-import { encryptSecret, secretsConfigured } from "../../common/secrets";
+import { decryptSecret, encryptSecret, secretsConfigured } from "../../common/secrets";
+import { getEnv } from "../../config/env";
+import { fetchAiModels } from "./ai-models";
 import { createTenant } from "./onboarding";
 import { getPlatformPool, platformDbConfigured } from "./platform-db";
 
@@ -341,6 +345,48 @@ export class PlatformService {
   async getAiSettings(): Promise<PlatformResult<AiSettings>> {
     if (!platformDbConfigured()) return NOT_CONFIGURED;
     return { ok: true, value: await this.readAiSettings() };
+  }
+
+  // Reads the stored provider key (decrypted, if any) to authenticate the live
+  // model-catalog fetch. The OpenRouter /models list is public, so a missing
+  // key still yields a full list there; Anthropic needs a key or falls back.
+  async listAiModels(
+    provider: AiProvider,
+    baseUrl?: string,
+  ): Promise<PlatformResult<AiModelList>> {
+    if (!platformDbConfigured()) return NOT_CONFIGURED;
+    const pool = getPlatformPool();
+    const s = await pool.query<{
+      provider: string;
+      api_key_ciphertext: string | null;
+      api_key_iv: string | null;
+      api_key_tag: string | null;
+    }>(
+      `select provider, api_key_ciphertext, api_key_iv, api_key_tag
+       from ai_settings where singleton`,
+    );
+    const row = s.rows[0];
+    const storedProvider = row?.provider === "openai" ? "openai" : "anthropic";
+    const storedKey =
+      row?.api_key_ciphertext && row.api_key_iv && row.api_key_tag
+        ? decryptSecret({
+            ciphertext: row.api_key_ciphertext,
+            iv: row.api_key_iv,
+            tag: row.api_key_tag,
+          })
+        : null;
+    // Only hand the stored key to a matching provider; Anthropic can also use
+    // the server's ANTHROPIC_API_KEY as a fallback for its live list.
+    let apiKey: string | null = storedProvider === provider ? storedKey : null;
+    if (provider === "anthropic" && !apiKey) {
+      apiKey = getEnv().ANTHROPIC_API_KEY ?? null;
+    }
+    const models = await fetchAiModels({
+      provider,
+      ...(baseUrl ? { baseUrl } : {}),
+      apiKey,
+    });
+    return { ok: true, value: models };
   }
 
   async updateAiSettings(body: UpdateAiSettingsRequest): Promise<PlatformResult<AiSettings>> {

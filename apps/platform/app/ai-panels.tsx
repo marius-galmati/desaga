@@ -1,21 +1,30 @@
 "use client";
 
-import type { AiCostPeriod, AiCostReport, AiModelPrice, AiSettings } from "@boca/contracts";
+import type {
+  AiCostPeriod,
+  AiCostReport,
+  AiModelOption,
+  AiModelPrice,
+  AiSettings,
+} from "@boca/contracts";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
-import { getAiCosts, getAiSettings, updateAiPrices, updateAiSettings } from "@/lib/api";
+import {
+  getAiCosts,
+  getAiModels,
+  getAiSettings,
+  updateAiPrices,
+  updateAiSettings,
+} from "@/lib/api";
 import styles from "./page.module.css";
-
-const MODEL_PRESETS = [
-  "google/gemini-2.5-flash",
-  "google/gemini-2.5-flash-lite",
-  "deepseek/deepseek-chat-v3",
-  "qwen/qwen2.5-vl-72b-instruct",
-  "z-ai/glm-4.5v",
-  "anthropic/claude-sonnet-5",
-];
 
 const usd = (n: number) => `$${n.toFixed(n < 10 ? 4 : 2)}`;
 const int = (n: number) => n.toLocaleString("ro-RO");
+
+// "Gemini 2.5 Flash — $0.30/$2.50 /1M" (price appended only when known).
+function modelLabel(m: AiModelOption): string {
+  if (m.inputPerMillion == null || m.outputPerMillion == null) return m.label;
+  return `${m.label} — $${m.inputPerMillion}/$${m.outputPerMillion} /1M`;
+}
 
 type PriceRow = AiModelPrice & { key: string };
 let priceKeySeq = 0;
@@ -36,6 +45,11 @@ export function AiSettingsPanel({
   const [apiKey, setApiKey] = useState("");
   const [busy, setBusy] = useState(false);
   const [prices, setPrices] = useState<PriceRow[]>([]);
+  const [models, setModels] = useState<AiModelOption[]>([]);
+  const [modelsSource, setModelsSource] = useState<"live" | "static" | null>(null);
+  const [modelsNote, setModelsNote] = useState<string | null>(null);
+  const [modelsLoading, setModelsLoading] = useState(false);
+  const [manualModel, setManualModel] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -53,6 +67,31 @@ export function AiSettingsPanel({
   useEffect(() => {
     void load();
   }, [load]);
+
+  const loadModels = useCallback(async (prov: "anthropic" | "openai", base: string) => {
+    setModelsLoading(true);
+    try {
+      const list = await getAiModels(prov, prov === "openai" ? base : undefined);
+      setModels(list.models);
+      setModelsSource(list.source);
+      setModelsNote(list.note);
+    } catch (err) {
+      setModels([]);
+      setModelsSource(null);
+      setModelsNote(err instanceof Error ? err.message : "Nu am putut încărca lista de modele.");
+    } finally {
+      setModelsLoading(false);
+    }
+  }, []);
+
+  // Reload the dropdown when provider or base URL changes — debounced so typing
+  // a base URL doesn't fire a request per keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      void loadModels(provider, baseUrl);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [provider, baseUrl, loadModels]);
 
   async function saveSettings(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -121,6 +160,39 @@ export function AiSettingsPanel({
     setPrices((rows) => rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   }
 
+  // Copy the selected model's known price into the price table (add or update),
+  // so cost tracking lines up without retyping the slug.
+  function fillSelectedPrice() {
+    const meta = models.find((m) => m.id === model);
+    const input = meta?.inputPerMillion;
+    const output = meta?.outputPerMillion;
+    if (!meta || input == null || output == null) return;
+    setPrices((rows) => {
+      if (rows.some((r) => r.model.trim() === meta.id)) {
+        return rows.map((r) =>
+          r.model.trim() === meta.id
+            ? { ...r, label: meta.label, inputPerMillion: input, outputPerMillion: output }
+            : r,
+        );
+      }
+      return [
+        ...rows,
+        {
+          key: newPriceKey(),
+          model: meta.id,
+          label: meta.label,
+          inputPerMillion: input,
+          outputPerMillion: output,
+        },
+      ];
+    });
+    onFlash("Preț adăugat în tabel — nu uita să salvezi prețurile.");
+  }
+
+  const selectedMeta = models.find((m) => m.id === model);
+  const selectedHasPrice =
+    selectedMeta?.inputPerMillion != null && selectedMeta?.outputPerMillion != null;
+
   return (
     <section className={styles.section}>
       <div className={styles.sectionHead}>
@@ -158,19 +230,58 @@ export function AiSettingsPanel({
             </label>
           ) : null}
           <label className="field">
-            <span className="field-label">Model</span>
-            <input
-              className="input"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              placeholder="google/gemini-2.5-flash"
-              list="ai-model-presets"
-            />
-            <datalist id="ai-model-presets">
-              {MODEL_PRESETS.map((m) => (
-                <option key={m} value={m} />
-              ))}
-            </datalist>
+            <span className="field-label">
+              Model
+              {modelsLoading
+                ? " · se încarcă…"
+                : modelsSource
+                  ? ` · ${models.length} ${modelsSource === "live" ? "live" : "implicite"}`
+                  : ""}
+            </span>
+            {manualModel ? (
+              <input
+                className="input"
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                placeholder={
+                  provider === "openai" ? "ex. google/gemini-2.5-flash" : "ex. claude-sonnet-5"
+                }
+              />
+            ) : (
+              <select className="select" value={model} onChange={(e) => setModel(e.target.value)}>
+                <option value="">— alege un model —</option>
+                {model !== "" && !models.some((m) => m.id === model) ? (
+                  <option value={model}>{model} (curent)</option>
+                ) : null}
+                {models.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {modelLabel(m)}
+                  </option>
+                ))}
+              </select>
+            )}
+            <div className={styles.modelMeta}>
+              <button
+                type="button"
+                className={styles.linkBtn}
+                onClick={() => setManualModel((v) => !v)}
+              >
+                {manualModel ? "↤ Alege din listă" : "Scrie manual"}
+              </button>
+              <button
+                type="button"
+                className={styles.linkBtn}
+                onClick={() => void loadModels(provider, baseUrl)}
+              >
+                ↻ Reîncarcă
+              </button>
+              {selectedHasPrice ? (
+                <button type="button" className={styles.linkBtn} onClick={fillSelectedPrice}>
+                  + Preț în tabel
+                </button>
+              ) : null}
+            </div>
+            {modelsNote ? <span className={styles.modelNote}>{modelsNote}</span> : null}
           </label>
           <label className="field">
             <span className="field-label">
