@@ -1,4 +1,9 @@
-import type { AiModelList, AiModelOption, AiProvider } from "@boca/contracts";
+import {
+  type AiModelList,
+  type AiModelOption,
+  type AiProvider,
+  aiModelOptionSchema,
+} from "@boca/contracts";
 
 // Builds the model dropdown for the platform dashboard. The plating evaluator
 // sends images, so only VISION-capable models are usable — we filter the live
@@ -84,6 +89,20 @@ function round4(n: number): number {
   return Math.round(n * 1e4) / 1e4;
 }
 
+// OpenRouter prices are per-token strings and use "-1" for variable/unknown
+// pricing (auto-routers). Anything not a real, non-negative number => unknown.
+function perMillion(raw?: string): number | null {
+  if (raw === undefined) return null;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return round4(n * 1e6);
+}
+
+// The contract requires a positive int; some entries report 0 or omit it.
+function contextOf(raw?: number): number | null {
+  return typeof raw === "number" && Number.isInteger(raw) && raw > 0 ? raw : null;
+}
+
 export async function fetchAiModels(opts: {
   provider: AiProvider;
   baseUrl?: string | null;
@@ -128,7 +147,8 @@ async function fetchAnthropic(apiKey?: string | null): Promise<AiModelList> {
         contextTokens: null,
         inputPerMillion: ANTHROPIC_PRICE[m.id]?.input ?? null,
         outputPerMillion: ANTHROPIC_PRICE[m.id]?.output ?? null,
-      }));
+      }))
+      .filter((m) => aiModelOptionSchema.safeParse(m).success);
     if (models.length === 0) throw new Error("listă goală");
     return { provider: "anthropic", source: "live", note: null, models };
   } catch (err) {
@@ -169,17 +189,16 @@ async function fetchOpenAi(baseUrl?: string | null, apiKey?: string | null): Pro
       ? rows.filter((m) => m.architecture?.input_modalities?.includes("image"))
       : rows;
     const models = kept
-      .map<AiModelOption>((m) => {
-        const prompt = m.pricing?.prompt ? Number(m.pricing.prompt) : NaN;
-        const completion = m.pricing?.completion ? Number(m.pricing.completion) : NaN;
-        return {
-          id: m.id,
-          label: m.name ?? m.id,
-          contextTokens: m.context_length ?? null,
-          inputPerMillion: Number.isFinite(prompt) ? round4(prompt * 1e6) : null,
-          outputPerMillion: Number.isFinite(completion) ? round4(completion * 1e6) : null,
-        };
-      })
+      .map<AiModelOption>((m) => ({
+        id: m.id,
+        label: m.name ?? m.id,
+        contextTokens: contextOf(m.context_length),
+        inputPerMillion: perMillion(m.pricing?.prompt),
+        outputPerMillion: perMillion(m.pricing?.completion),
+      }))
+      // Safety net: never ship a row the client's schema would reject — one odd
+      // entry must not blank the whole dropdown.
+      .filter((m) => aiModelOptionSchema.safeParse(m).success)
       .sort((a, b) => a.label.localeCompare(b.label, "ro"));
     if (models.length === 0) throw new Error("listă goală");
     return {
