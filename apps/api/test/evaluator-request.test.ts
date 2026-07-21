@@ -93,15 +93,36 @@ describe("buildEvaluationRequest", () => {
     expect(content[6]?.text).toContain("nedefinite");
   });
 
-  it("rejects a reference count other than 3", () => {
-    expect(() =>
-      buildEvaluationRequest({
-        model: "claude-sonnet-5",
-        referenceImagesB64: REFS.slice(0, 2),
-        toleranceText: "",
-        candidateImageB64: "x",
-      }),
-    ).toThrow(/exactly 3 reference images/);
+  it("accepts 1-5 references (per-tenant count) and labels a single REF1", () => {
+    const params = buildEvaluationRequest({
+      model: "claude-sonnet-5",
+      referenceImagesB64: REFS.slice(0, 1),
+      toleranceText: "",
+      candidateImageB64: "x",
+    });
+    const content = params.messages[0]?.content as Array<{ type: string; text?: string }>;
+    expect(content.map((block) => block.type)).toEqual([
+      "text",
+      "image", // REF1 only
+      "text", // tolerance block
+      "text",
+      "image", // CANDIDAT
+      "text", // the ask
+    ]);
+    expect(content[0]?.text).toContain("REF1");
+  });
+
+  it("rejects a reference count outside 1-5", () => {
+    for (const referenceImagesB64 of [[], Array.from({ length: 6 }, () => "eA==")]) {
+      expect(() =>
+        buildEvaluationRequest({
+          model: "claude-sonnet-5",
+          referenceImagesB64,
+          toleranceText: "",
+          candidateImageB64: "x",
+        }),
+      ).toThrow(/expected 1-5 reference images/);
+    }
   });
 });
 

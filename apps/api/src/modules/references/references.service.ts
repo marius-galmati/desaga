@@ -13,6 +13,7 @@ import {
   ensureDefaultToleranceProfile,
   ensureDemoFixtures,
   getActiveReferenceSetForDishVersion,
+  getReferencePhotoCount,
   listDishesWithReferenceStatus,
   type ReferencePhotoInput,
   withTenant,
@@ -116,9 +117,10 @@ export class ReferencesService {
   }
 
   /**
-   * Attach 3-5 uploaded photos as a NEW ACTIVE reference set: draft set with
-   * immutable photo rows (first 3 = primary REF1..REF3, rest = holdout), then
-   * explicit activation (retires the prior active set, clears refs_stale).
+   * Attach 1-5 uploaded photos as a NEW ACTIVE reference set: draft set with
+   * immutable photo rows (first N = primary REF1..REFn per the tenant's
+   * configured reference photo count, rest = holdout), then explicit
+   * activation (retires the prior active set, clears refs_stale).
    */
   async attachReferences(
     principal: Principal,
@@ -166,9 +168,18 @@ export class ReferencesService {
       }
       const fixtures = await ensureDemoFixtures(trx, { tenantId: principal.tenantId, locationId });
 
+      const primaryCount = await getReferencePhotoCount(trx);
+      if (imageKeys.length < primaryCount) {
+        return {
+          ok: false as const,
+          status: 400 as const,
+          message: `at least ${primaryCount} photo(s) required by tenant settings, got ${imageKeys.length}`,
+        };
+      }
+
       const shotAt = new Date();
       const photos: ReferencePhotoInput[] = imageKeys.map((storageKey, index) => ({
-        role: index < 3 ? "primary" : "holdout",
+        role: index < primaryCount ? "primary" : "holdout",
         storageKey,
         captureDeviceId: fixtures.captureDeviceId,
         captureProfileVersion: DEMO_CAPTURE_PROFILE_VERSION,
@@ -186,6 +197,7 @@ export class ReferencesService {
       await activateReferenceSet(trx, {
         referenceSetId: created.referenceSetId,
         approvedBy: principal.userId,
+        requiredPrimaryCount: primaryCount,
       });
       await ensureDefaultToleranceProfile(trx, {
         tenantId: principal.tenantId,

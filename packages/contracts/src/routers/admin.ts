@@ -35,6 +35,7 @@ import {
   updateCategoryRequestSchema,
   updateDishRequestSchema,
   updateLocationRequestSchema,
+  updateQualitySettingsRequestSchema,
   updateStationRequestSchema,
   updateTenantRequestSchema,
 } from "../schemas/admin";
@@ -444,6 +445,13 @@ export const adminContract = c.router({
       401: apiErrorSchema,
       404: apiErrorSchema, // logoMediaId not in this tenant's library
     },
+  },
+  updateQualitySettings: {
+    method: "PATCH",
+    path: "/admin/settings/quality",
+    summary: "Update quality/AI knobs (number of primary reference photos, 1-5)",
+    body: updateQualitySettingsRequestSchema,
+    responses: { 200: adminSettingsSchema, 400: apiErrorSchema, 401: apiErrorSchema },
   },
   updateLocation: {
     method: "PATCH",

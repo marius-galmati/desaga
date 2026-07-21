@@ -14,10 +14,16 @@ import type {
   UpdateBrandingRequest,
   UpdateCategoryRequest,
   UpdateLocationRequest,
+  UpdateQualitySettingsRequest,
   UpdateStationRequest,
   UpdateTenantRequest,
 } from "@boca/contracts";
-import { type TenantTransaction, withTenant } from "@boca/db";
+import {
+  getReferencePhotoCount,
+  type TenantTransaction,
+  upsertReferencePhotoCount,
+  withTenant,
+} from "@boca/db";
 import { Injectable } from "@nestjs/common";
 import * as argon2 from "argon2";
 import { loadBranding } from "../../common/branding";
@@ -382,6 +388,24 @@ export class CatalogService {
     });
   }
 
+  /** Quality/AI knobs owned by the tenant admin (reference photo count 1..5). */
+  async updateQualitySettings(
+    principal: Principal,
+    body: UpdateQualitySettingsRequest,
+  ): Promise<ServiceResult<AdminSettings>> {
+    return withTenant(principal.tenantId, async (trx) => {
+      await upsertReferencePhotoCount(trx, {
+        tenantId: principal.tenantId,
+        referencePhotoCount: body.referencePhotoCount,
+      });
+      const settings = await this.buildSettings(trx, principal.tenantId);
+      if (!settings) {
+        return { ok: false as const, status: 404 as const, message: "tenant not found" };
+      }
+      return { ok: true as const, value: settings };
+    });
+  }
+
   async updateLocation(
     principal: Principal,
     id: string,
@@ -455,6 +479,7 @@ export class CatalogService {
       .where("is_primary", "=", true)
       .executeTakeFirst();
     const branding = await loadBranding(trx, tenantId, this.storage);
+    const referencePhotoCount = await getReferencePhotoCount(trx);
     return {
       tenant: { name: tenant.name, slug: tenant.slug },
       guestOrigin: guestDomain ? `https://${guestDomain.domain}` : null,
@@ -466,6 +491,7 @@ export class CatalogService {
         address: l.address,
       })),
       stations,
+      referencePhotoCount,
     };
   }
 

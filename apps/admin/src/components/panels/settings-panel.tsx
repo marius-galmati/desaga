@@ -13,6 +13,7 @@ import {
   getSettings,
   updateBranding,
   updateLocation,
+  updateQualitySettings,
   updateStation,
   updateTenant,
   uploadMedia,
@@ -78,6 +79,16 @@ export function SettingsPanel() {
         onSaved={(s) => {
           setSettings(s);
           flash("Datele restaurantului au fost salvate.");
+        }}
+        onError={setError}
+      />
+
+      <h3 style={{ margin: "24px 0 12px" }}>Calitate · AI</h3>
+      <QualityBlock
+        settings={settings}
+        onSaved={(s) => {
+          setSettings(s);
+          flash("Setările de calitate au fost salvate.");
         }}
         onError={setError}
       />
@@ -170,6 +181,66 @@ function TenantBlock({
       </div>
       <div className={styles.formActions}>
         <button type="submit" className="btn btn--sm" disabled={busy}>
+          {busy ? "Se salvează…" : "Salvează"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function QualityBlock({
+  settings,
+  onSaved,
+  onError,
+}: {
+  settings: AdminSettings;
+  onSaved: (s: AdminSettings) => void;
+  onError: (m: string) => void;
+}) {
+  const [count, setCount] = useState(settings.referencePhotoCount);
+  const [busy, setBusy] = useState(false);
+
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      onSaved(await updateQualitySettings({ referencePhotoCount: count }));
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Nu am putut salva.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <form className={`card ${styles.block}`} onSubmit={onSubmit}>
+      <h3 style={{ marginBottom: 6 }}>Fotografii de referință per preparat</h3>
+      <p className={styles.tolDesc}>
+        Cu câte fotografii-etalon („primare”) compară AI fiecare farfurie de la pass. Se aplică
+        seturilor de referință create de acum înainte; seturile deja aprobate rămân cu numărul lor.
+      </p>
+      <div className={styles.formGrid}>
+        <label className="field">
+          <span className="field-label">Număr fotografii (1–5)</span>
+          <select
+            className="input"
+            value={count}
+            onChange={(e) => setCount(Number(e.target.value))}
+          >
+            {[1, 2, 3, 4, 5].map((n) => (
+              <option key={n} value={n}>
+                {n === 1 ? "1 fotografie" : `${n} fotografii`}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className={styles.formActions}>
+        <button
+          type="submit"
+          className="btn btn--sm"
+          disabled={busy || count === settings.referencePhotoCount}
+        >
           {busy ? "Se salvează…" : "Salvează"}
         </button>
       </div>

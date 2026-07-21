@@ -71,7 +71,7 @@ CREATE TYPE service_request_kind     AS ENUM ('call_waiter','request_bill');
 CREATE TYPE service_request_status   AS ENUM ('open','acknowledged','escalated','resolved','cancelled');
 CREATE TYPE reference_set_status     AS ENUM ('draft','active','retired');
 CREATE TYPE tolerance_profile_status AS ENUM ('draft','active','retired');
-CREATE TYPE reference_photo_role     AS ENUM ('primary','holdout');   -- 3 primary + 2 holdout, checked at approval
+CREATE TYPE reference_photo_role     AS ENUM ('primary','holdout');   -- N primary (tenant_settings, 1..5) + holdout, checked at approval
 CREATE TYPE capture_mode             AS ENUM ('auto','manual');
 CREATE TYPE photo_upload_status      AS ENUM ('pending','uploaded','failed');
 CREATE TYPE skip_reason              AS ENUM ('rush','tableside','tech','other');
@@ -130,6 +130,17 @@ CREATE TABLE tenant_branding (
   palette       jsonb NOT NULL DEFAULT '{}'::jsonb,
   updated_at    timestamptz NOT NULL DEFAULT now(),
   FOREIGN KEY (tenant_id, logo_media_id) REFERENCES media_asset (tenant_id, id)
+);
+
+-- Per-tenant operational settings (0019). Absent row = app-side defaults.
+-- reference_photo_count = how many PRIMARY reference photos the AI compares
+-- the pass photo against (REF1..REFn); consulted at reference-set creation —
+-- already-pinned sets keep the primaries they were approved with.
+CREATE TABLE tenant_settings (
+  tenant_id             uuid PRIMARY KEY REFERENCES tenant(id),
+  reference_photo_count smallint NOT NULL DEFAULT 3
+    CHECK (reference_photo_count BETWEEN 1 AND 5),
+  updated_at            timestamptz NOT NULL DEFAULT now()
 );
 
 -- Platform operators (Bitup)  deliberately OUTSIDE the tenant model so
@@ -709,8 +720,9 @@ CREATE TABLE reference_set (
 CREATE UNIQUE INDEX uq_reference_set_active
   ON reference_set (tenant_id, dish_version_id) WHERE status = 'active';
 
--- IMMUTABLE rows. Cardinality (3 primary + 2 holdout) enforced at the moment
--- of set activation (app + deferred trigger), not per-row.
+-- IMMUTABLE rows. Cardinality (N primary per tenant_settings.reference_photo_count,
+-- 1..5, + holdout) enforced at the moment of set activation (app + deferred
+-- trigger), not per-row.
 CREATE TABLE reference_photo (
   id                      uuid PRIMARY KEY DEFAULT uuid_generate_v7(),
   tenant_id               uuid NOT NULL REFERENCES tenant(id),

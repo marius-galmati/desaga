@@ -60,8 +60,7 @@ export const SCORING_CRITERIA: readonly ScoringCriterionDef[] = [
     description:
       "All spec elements present, nothing foreign. 5 = everything exactly as specified; " +
       "3 = minor element missing or substituted; 1 = major element missing or foreign object.",
-    descriptionRo:
-      "Toate componentele prevăzute sunt prezente, fără elemente străine pe farfurie.",
+    descriptionRo: "Toate componentele prevăzute sunt prezente, fără elemente străine pe farfurie.",
   },
   {
     key: "arrangement",
@@ -122,7 +121,9 @@ export const SCORING_CRITERIA_COUNT = 6;
 // Bump the version tags whenever the corresponding artifact changes byte-wise.
 
 /** Version tag of the byte-stable FIXED_RUBRIC system prompt. */
-export const PROMPT_VERSION = "v1";
+// v2: rubric made reference-count-neutral (REF1..REFn instead of a hardcoded
+// REF1–REF3) for the per-tenant reference_photo_count setting.
+export const PROMPT_VERSION = "v2";
 
 /** Version tag of the image preprocessing chain (downscale + quality gates). */
 export const PREPROCESSING_VERSION = "v1";
@@ -130,6 +131,13 @@ export const PREPROCESSING_VERSION = "v1";
 // Pinned model id — the cost-tier decision is deliberate; never use a floating
 // alias in code. Runtime override via env EVAL_MODEL.
 export const EVAL_MODEL_DEFAULT = "claude-sonnet-5";
+
+// Per-tenant number of PRIMARY reference photos (REF1..REFn) the AI compares
+// the pass photo against. Stored in tenant_settings.reference_photo_count,
+// editable by each restaurant's admin; absent row = the default.
+export const REFERENCE_PHOTO_COUNT_MIN = 1;
+export const REFERENCE_PHOTO_COUNT_MAX = 5;
+export const REFERENCE_PHOTO_COUNT_DEFAULT = 3;
 
 // BullMQ queue shared by the HTTP enqueuer (apps/api) and main.worker.ts.
 export const EVAL_QUEUE_NAME = "ai-score";

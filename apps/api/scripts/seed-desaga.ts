@@ -134,6 +134,15 @@ async function main(): Promise<void> {
       ],
     );
 
+    // Quality settings — FIRST RUN ONLY (admin-owned knob afterwards).
+    // Desaga scores against a SINGLE reference photo per dish (REF1).
+    await client.query(
+      `insert into tenant_settings (tenant_id, reference_photo_count)
+       values ($1, $2)
+       on conflict (tenant_id) do nothing`,
+      [tenantId, 1],
+    );
+
     const existingLoc = await client.query<{ id: string }>(
       `select id from location where tenant_id = $1 and name = $2 and archived_at is null`,
       [tenantId, config.locationName],

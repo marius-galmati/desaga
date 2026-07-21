@@ -293,7 +293,8 @@ export const referenceSetDetailSchema = z.object({
 export type ReferenceSetDetail = z.infer<typeof referenceSetDetailSchema>;
 
 export const createReferenceSetRequestSchema = z.object({
-  // 3-5 photos, of which >= 3 must be primary (enforced in the service).
+  // 1-5 photos; exactly the tenant's configured referencePhotoCount must be
+  // primary (enforced in the service against tenant_settings).
   photos: z
     .array(
       z.object({
@@ -301,7 +302,7 @@ export const createReferenceSetRequestSchema = z.object({
         role: referencePhotoRoleSchema,
       }),
     )
-    .min(3)
+    .min(1)
     .max(5),
 });
 export type CreateReferenceSetRequest = z.infer<typeof createReferenceSetRequestSchema>;
@@ -387,8 +388,17 @@ export const adminSettingsSchema = z.object({
   branding: tenantBrandingSchema,
   locations: z.array(adminSettingsLocationSchema),
   stations: z.array(adminStationSchema),
+  // How many PRIMARY reference photos (REF1..REFn) the AI compares each pass
+  // photo against. Tenant-admin owned; applies to reference sets created from
+  // now on (already-pinned sets keep the primaries they were approved with).
+  referencePhotoCount: z.number().int().min(1).max(5),
 });
 export type AdminSettings = z.infer<typeof adminSettingsSchema>;
+
+export const updateQualitySettingsRequestSchema = z.object({
+  referencePhotoCount: z.number().int().min(1).max(5),
+});
+export type UpdateQualitySettingsRequest = z.infer<typeof updateQualitySettingsRequestSchema>;
 
 export const updateTenantRequestSchema = z.object({
   name: z.string().min(1),

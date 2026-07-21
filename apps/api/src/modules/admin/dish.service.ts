@@ -8,7 +8,12 @@ import type {
   ToleranceCriteria,
   UpdateDishRequest,
 } from "@boca/contracts";
-import { createReferenceSet, type TenantTransaction, withTenant } from "@boca/db";
+import {
+  createReferenceSet,
+  getReferencePhotoCount,
+  type TenantTransaction,
+  withTenant,
+} from "@boca/db";
 import { Injectable } from "@nestjs/common";
 import type { Principal } from "../../common/principal";
 import { resolveLocationId, type ServiceResult } from "../evaluation/evaluation.service";
@@ -396,14 +401,18 @@ export class DishService {
     body: CreateReferenceSetRequest,
   ): Promise<ServiceResult<ReferenceSetDetail>> {
     const primaryCount = body.photos.filter((p) => p.role === "primary").length;
-    if (primaryCount < 3) {
-      return {
-        ok: false,
-        status: 400,
-        message: `at least 3 primary photos required, got ${primaryCount}`,
-      };
-    }
     return withTenant(principal.tenantId, async (trx) => {
+      // The tenant admin's configured count (tenant_settings, default 3): the
+      // set must carry EXACTLY that many primaries — they are what the AI
+      // compares against (REF1..REFn).
+      const requiredPrimaryCount = await getReferencePhotoCount(trx);
+      if (primaryCount !== requiredPrimaryCount) {
+        return {
+          ok: false as const,
+          status: 400 as const,
+          message: `exactly ${requiredPrimaryCount} primary photo(s) required by tenant settings, got ${primaryCount}`,
+        };
+      }
       const dish = await trx
         .selectFrom("dish")
         .select(["id", "current_version_id"])
@@ -462,8 +471,8 @@ export class DishService {
         })),
       });
 
-      // Activate inline (not @boca/db activateReferenceSet, which demands
-      // exactly 3 primary; this flow allows >= 3): retire the prior active set
+      // Activate inline (primary cardinality already validated above against
+      // the tenant's configured count): retire the prior active set
       // for the version, flip this one active, clear refs_stale.
       await trx
         .updateTable("reference_set")

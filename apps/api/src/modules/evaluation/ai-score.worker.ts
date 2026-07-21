@@ -171,9 +171,11 @@ export class AiScoreWorker implements OnApplicationShutdown {
       // createQueuedEvaluation only enqueues fully pinned rows; belt and braces.
       throw new Error("pinned reference set / tolerance profile missing on a queued row");
     }
-    const primaries = referencePhotos.filter((photo) => photo.role === "primary").slice(0, 3);
-    if (primaries.length !== 3) {
-      throw new Error(`pinned reference set has ${primaries.length} primary photos, expected 3`);
+    // The pinned set defines how many references the model sees (REF1..REFn):
+    // the tenant's reference_photo_count at approval time, 1..5.
+    const primaries = referencePhotos.filter((photo) => photo.role === "primary");
+    if (primaries.length < 1 || primaries.length > 5) {
+      throw new Error(`pinned reference set has ${primaries.length} primary photos, expected 1-5`);
     }
 
     const referenceJpegs = await Promise.all(

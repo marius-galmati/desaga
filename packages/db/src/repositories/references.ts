@@ -2,10 +2,12 @@ import { DEFAULT_TOLERANCE_CRITERIA } from "../criteria";
 import type { ReferencePhotoRole } from "../generated/db";
 import type { TenantTransaction } from "../tenant";
 
-// Production rule is 3 primary + 2 holdout enforced at activation (the
-// deferred trigger from schema.sql is not implemented yet, so the app rule
-// here is the only gate). Demo relaxation: holdouts optional (0..2).
-export const PRIMARY_REFERENCE_COUNT = 3;
+// Production rule is N primary (tenant_settings.reference_photo_count, 1..5)
+// + holdout, enforced at activation (the deferred trigger from schema.sql is
+// not implemented yet, so the app rule here is the only gate). Demo
+// relaxation: holdouts optional (0..2).
+export const PRIMARY_REFERENCE_MIN = 1;
+export const PRIMARY_REFERENCE_MAX = 5;
 export const HOLDOUT_REFERENCE_MAX = 2;
 
 export interface ReferencePhotoInput {
@@ -88,14 +90,16 @@ export interface ActivatedReferenceSet {
 }
 
 /**
- * draft -> active with app-side cardinality gate (exactly 3 primary; holdout
- * optional in demo, max 2). Retires the previously active set for the same
- * dish_version and clears dish.refs_stale when the set binds the dish's
- * current version (trg_refs_stale is not implemented yet — app-maintained).
+ * draft -> active with app-side cardinality gate: exactly
+ * `requiredPrimaryCount` primaries when the caller passes the tenant's
+ * configured count, otherwise 1..5 primaries; holdout optional in demo, max 2.
+ * Retires the previously active set for the same dish_version and clears
+ * dish.refs_stale when the set binds the dish's current version
+ * (trg_refs_stale is not implemented yet — app-maintained).
  */
 export async function activateReferenceSet(
   trx: TenantTransaction,
-  params: { referenceSetId: string; approvedBy: string },
+  params: { referenceSetId: string; approvedBy: string; requiredPrimaryCount?: number },
 ): Promise<ActivatedReferenceSet> {
   const set = await trx
     .selectFrom("reference_set")
@@ -116,9 +120,14 @@ export async function activateReferenceSet(
     .execute();
   const primaryCount = photoRoles.filter((p) => p.role === "primary").length;
   const holdoutCount = photoRoles.filter((p) => p.role === "holdout").length;
-  if (primaryCount !== PRIMARY_REFERENCE_COUNT) {
+  if (params.requiredPrimaryCount !== undefined && primaryCount !== params.requiredPrimaryCount) {
     throw new Error(
-      `activateReferenceSet: set ${set.id} has ${primaryCount} primary photos, expected exactly ${PRIMARY_REFERENCE_COUNT}`,
+      `activateReferenceSet: set ${set.id} has ${primaryCount} primary photos, expected exactly ${params.requiredPrimaryCount}`,
+    );
+  }
+  if (primaryCount < PRIMARY_REFERENCE_MIN || primaryCount > PRIMARY_REFERENCE_MAX) {
+    throw new Error(
+      `activateReferenceSet: set ${set.id} has ${primaryCount} primary photos, expected ${PRIMARY_REFERENCE_MIN}..${PRIMARY_REFERENCE_MAX}`,
     );
   }
   if (holdoutCount > HOLDOUT_REFERENCE_MAX) {
@@ -156,7 +165,7 @@ export async function activateReferenceSet(
 
 /**
  * Enqueue rule (0009): resolve the ACTIVE set for the dish_version PINNED on
- * the order_item. Photos come back sort_order-first so REF1..REF3 labeling is
+ * the order_item. Photos come back sort_order-first so REF1..REFn labeling is
  * stable across ensemble calls.
  */
 export async function getActiveReferenceSetForDishVersion(

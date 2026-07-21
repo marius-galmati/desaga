@@ -19,9 +19,11 @@ const CRITERIA_LINES = SCORING_CRITERIA.map(
  * Fixed system rubric (model-facing, Romanian; criterion descriptions come
  * verbatim from @boca/config so config and prompt cannot drift). Sent as a
  * single system text block with cache_control ephemeral — identical across
- * all ensemble calls and all evaluations of a PROMPT_VERSION.
+ * all ensemble calls and all evaluations of a PROMPT_VERSION. The rubric is
+ * reference-count-neutral: the number of REF images actually attached is the
+ * tenant's configured reference_photo_count, pinned per reference set.
  */
-export const FIXED_RUBRIC = `Ești evaluatorul AI de plating al unui restaurant fine-dining. Compari fotografia CANDIDAT cu fotografiile de referință REF1–REF3 (același preparat, plating aprobat de head chef, același dispozitiv de captură).
+export const FIXED_RUBRIC = `Ești evaluatorul AI de plating al unui restaurant fine-dining. Compari fotografia CANDIDAT cu fotografia sau fotografiile de referință (REF1…REFn, câte sunt furnizate; același preparat, plating aprobat de head chef, același dispozitiv de captură).
 
 Evaluezi EXCLUSIV următoarele 6 criterii vizuale. Excluse intenționat: gust, temperatură, viteză, creativitate.
 
@@ -46,7 +48,7 @@ Reguli:
 
 /** Final user-content instruction block (after all images). */
 export const EVAL_ASK =
-  "Compară CANDIDAT cu REF1–REF3 aplicând rubrica din system și blocul TOLERANȚE. Returnează raportul JSON.";
+  "Compară CANDIDAT cu referințele furnizate (REF1…REFn) aplicând rubrica din system și blocul TOLERANȚE. Returnează raportul JSON.";
 
 /** Follow-up used for the single repair retry after an unparseable output. */
 export const REPAIR_ASK =
@@ -120,7 +122,7 @@ const toleranceBlock = (toleranceText: string): string =>
 /**
  * The exact request shape locked in the architecture:
  * - system: single byte-stable rubric block with cache_control ephemeral;
- * - user content: REF1..REF3 images labeled via interleaved text blocks,
+ * - user content: REF1..REFn images labeled via interleaved text blocks,
  *   tolerance block, CANDIDAT image, then the ask;
  * - structured output ENFORCED via output_config.format json_schema;
  * - thinking disabled (Sonnet 5 accepts disabled; omitting would run adaptive);

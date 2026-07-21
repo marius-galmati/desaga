@@ -1,7 +1,7 @@
 import {
   type GuestMenu,
-  guestMenuSchema,
   type GuestTable,
+  guestMenuSchema,
   guestTablesSchema,
 } from "@boca/contracts";
 

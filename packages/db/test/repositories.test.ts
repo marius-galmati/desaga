@@ -155,15 +155,47 @@ describe("references repository", () => {
     expect(executed[2]?.sql).toContain('insert into "reference_photo"');
   });
 
-  it("activateReferenceSet rejects a draft without exactly 3 primary photos", async () => {
+  it("activateReferenceSet rejects a draft that misses the required primary count", async () => {
     const { trx } = createRecordingTrx([
       { rows: [{ id: "set-1", dish_id: "dish-1", dish_version_id: "ver-1", status: "draft" }] },
       { rows: [{ role: "primary" }, { role: "primary" }] },
     ]);
 
     await expect(
-      activateReferenceSet(trx, { referenceSetId: "set-1", approvedBy: USER }),
+      activateReferenceSet(trx, {
+        referenceSetId: "set-1",
+        approvedBy: USER,
+        requiredPrimaryCount: 3,
+      }),
     ).rejects.toThrow(/2 primary photos, expected exactly 3/);
+  });
+
+  it("activateReferenceSet rejects a draft with zero primary photos", async () => {
+    const { trx } = createRecordingTrx([
+      { rows: [{ id: "set-1", dish_id: "dish-1", dish_version_id: "ver-1", status: "draft" }] },
+      { rows: [{ role: "holdout" }] },
+    ]);
+
+    await expect(
+      activateReferenceSet(trx, { referenceSetId: "set-1", approvedBy: USER }),
+    ).rejects.toThrow(/0 primary photos, expected 1..5/);
+  });
+
+  it("activateReferenceSet accepts a single primary photo (per-tenant count 1)", async () => {
+    const { trx } = createRecordingTrx([
+      { rows: [{ id: "set-3", dish_id: "dish-1", dish_version_id: "ver-1", status: "draft" }] },
+      { rows: [{ role: "primary" }] },
+      { numAffectedRows: 1n }, // retire previous active
+      { numAffectedRows: 1n }, // activate this draft
+      { numAffectedRows: 1n }, // dish.refs_stale = false
+    ]);
+
+    const activated = await activateReferenceSet(trx, {
+      referenceSetId: "set-3",
+      approvedBy: USER,
+      requiredPrimaryCount: 1,
+    });
+    expect(activated.referenceSetId).toBe("set-3");
   });
 
   it("activateReferenceSet retires the old set, activates, and clears refs_stale", async () => {

@@ -135,6 +135,18 @@ export class AdminCatalogController {
     });
   }
 
+  @TsRestHandler(apiContract.admin.updateQualitySettings)
+  updateQualitySettings(@Req() request: RequestWithPrincipal) {
+    return tsRestHandler(apiContract.admin.updateQualitySettings, async ({ body }) => {
+      const principal = requirePrincipal(request);
+      const result = await this.catalog.updateQualitySettings(principal, body);
+      if (!result.ok) {
+        return { status: result.status, body: { message: result.message } };
+      }
+      return { status: 200 as const, body: result.value };
+    });
+  }
+
   @TsRestHandler(apiContract.admin.updateLocation)
   updateLocation(@Req() request: RequestWithPrincipal) {
     return tsRestHandler(apiContract.admin.updateLocation, async ({ params, body }) => {

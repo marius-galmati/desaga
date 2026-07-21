@@ -75,6 +75,7 @@ import {
   type UpdateCategoryRequest,
   type UpdateDishRequest,
   type UpdateLocationRequest,
+  type UpdateQualitySettingsRequest,
   type UpdateStationRequest,
   type UpdateTenantRequest,
   type UploadMediaResponse,
@@ -395,6 +396,12 @@ export function updateBranding(body: UpdateBrandingRequest): Promise<AdminSettin
 
 export function updateTenant(body: UpdateTenantRequest): Promise<AdminSettings> {
   return requestJson("/admin/tenant", jsonInit("PATCH", body), (p) => adminSettingsSchema.parse(p));
+}
+
+export function updateQualitySettings(body: UpdateQualitySettingsRequest): Promise<AdminSettings> {
+  return requestJson("/admin/settings/quality", jsonInit("PATCH", body), (p) =>
+    adminSettingsSchema.parse(p),
+  );
 }
 
 export function updateLocation(id: string, body: UpdateLocationRequest): Promise<AdminSettings> {

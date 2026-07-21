@@ -7,7 +7,13 @@ import type {
   ReferenceSetDetail,
 } from "@boca/contracts";
 import { useCallback, useEffect, useState } from "react";
-import { createReferenceSet, getReferenceSet, listCategories, listDishes } from "@/lib/api";
+import {
+  createReferenceSet,
+  getReferenceSet,
+  getSettings,
+  listCategories,
+  listDishes,
+} from "@/lib/api";
 import { Dropzone } from "../uploader";
 import { DishSelect } from "./dish-select";
 import styles from "./panels.module.css";
@@ -34,14 +40,17 @@ export function ReferencesPanel() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  // Tenant-configured number of primary reference photos (default until loaded).
+  const [refCount, setRefCount] = useState(3);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([listDishes(), listCategories()])
-      .then(([d, c]) => {
+    Promise.all([listDishes(), listCategories(), getSettings()])
+      .then(([d, c, s]) => {
         if (cancelled) return;
         setDishes(d);
         setCategories(c);
+        setRefCount(s.referencePhotoCount);
         setSelectedId((prev) => prev ?? d[0]?.id ?? null);
       })
       .catch((err) => {
@@ -78,7 +87,7 @@ export function ReferencesPanel() {
 
   const primaryCount = candidates.filter((c) => c.role === "primary").length;
   const canSubmit =
-    candidates.length >= 3 && candidates.length <= 5 && primaryCount >= 3 && !saving;
+    candidates.length >= refCount && candidates.length <= 5 && primaryCount === refCount && !saving;
 
   async function submit() {
     if (!selectedId) return;
@@ -106,9 +115,10 @@ export function ReferencesPanel() {
           <span className="eyebrow eyebrow--ink">Standard aur · AI</span>
           <h1>Seturi de referință</h1>
           <p className={styles.intro}>
-            Farfuriile-etalon față de care AI compară montajul de la pass. 3–5 fotografii, dintre
-            care cel puțin 3 „primare”. Fotografiază cu același dispozitiv ca la pass — aceeași
-            lentilă, aceeași lumină.
+            Farfuriile-etalon față de care AI compară montajul de la pass.{" "}
+            {refCount === 1 ? "O fotografie „primară”" : `${refCount} fotografii „primare”`} (setare
+            din Setări · Calitate AI), plus opțional holdout, până la 5 în total. Fotografiază cu
+            același dispozitiv ca la pass — aceeași lentilă, aceeași lumină.
           </p>
         </div>
       </div>
@@ -186,8 +196,11 @@ export function ReferencesPanel() {
               <div>
                 <h3>{set ? "Reîncarcă setul" : "Creează setul"}</h3>
                 <p className={styles.tolDesc}>
-                  Încarcă 3–5 fotografii și marchează cel puțin 3 ca „primare”. Setul nou devine
-                  activ; cel vechi rămâne arhivat, legat de evaluările deja făcute.
+                  Încarcă{" "}
+                  {refCount === 1 ? "cel puțin o fotografie" : `cel puțin ${refCount} fotografii`}{" "}
+                  (maxim 5) și marchează exact {refCount} ca{" "}
+                  {refCount === 1 ? "„primară”" : "„primare”"}. Setul nou devine activ; cel vechi
+                  rămâne arhivat, legat de evaluările deja făcute.
                 </p>
               </div>
             </div>
@@ -197,11 +210,20 @@ export function ReferencesPanel() {
               title="Încarcă fotografii pentru set"
               hint="JPEG, PNG sau WebP, până la 15 MB."
               onUploaded={(asset) =>
-                setCandidates((prev) =>
-                  prev.length >= 5
-                    ? prev
-                    : [...prev, { mediaId: asset.mediaId, url: asset.url, role: "primary" }],
-                )
+                setCandidates((prev) => {
+                  if (prev.length >= 5) return prev;
+                  // Default new uploads to primary until the configured count
+                  // is reached, then to holdout.
+                  const primaries = prev.filter((c) => c.role === "primary").length;
+                  return [
+                    ...prev,
+                    {
+                      mediaId: asset.mediaId,
+                      url: asset.url,
+                      role: primaries < refCount ? "primary" : "holdout",
+                    },
+                  ];
+                })
               }
               onError={(m) => setError(m)}
             />
@@ -256,7 +278,9 @@ export function ReferencesPanel() {
                 </div>
                 <p className="faint" style={{ marginTop: 12, fontSize: "0.84rem" }}>
                   {candidates.length} fotografii · {primaryCount} primare
-                  {canSubmit ? "" : " — sunt necesare 3–5 fotografii, minim 3 primare."}
+                  {canSubmit
+                    ? ""
+                    : ` — sunt necesare maxim 5 fotografii, exact ${refCount} ${refCount === 1 ? "primară" : "primare"}.`}
                 </p>
               </>
             ) : null}

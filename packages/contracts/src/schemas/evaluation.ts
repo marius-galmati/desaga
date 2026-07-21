@@ -180,8 +180,9 @@ export const createDemoDishResponseSchema = z.object({
 export type CreateDemoDishResponse = z.infer<typeof createDemoDishResponseSchema>;
 
 export const attachReferencesRequestSchema = z.object({
-  // 3-5 previously uploaded photo keys; attach order = sort_order.
-  imageKeys: z.array(photoKeySchema).min(3).max(5),
+  // 1-5 previously uploaded photo keys; attach order = sort_order. The first
+  // N (= the tenant's configured referencePhotoCount) become primary.
+  imageKeys: z.array(photoKeySchema).min(1).max(5),
 });
 export type AttachReferencesRequest = z.infer<typeof attachReferencesRequestSchema>;
 

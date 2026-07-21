@@ -56,7 +56,7 @@ boca/
 │   ├── admin/                     # Next.js web
 │   │   └── app/(dashboard)/
 │   │       ├── menu/              # CMS: dish/dish_version, câmpuri RO/EN, stații, badge refs_stale
-│   │       ├── photos/            # bibliotecă foto, aprobare reference_set (3+2 holdout), autorare toleranțe
+│   │       ├── photos/            # bibliotecă foto, aprobare reference_set (N primare per tenant_settings, 1–5, + holdout), autorare toleranțe
 │   │       ├── staffing/          # roster ture, hartă stații, plan de sală/secțiuni, ciclu de viață QR mese
 │   │       ├── quality/           # dashboards, calibrare shadow, porți go-live, drift
 │   │       ├── coaching/          # rapoarte, semnătură manager, confirmare/contestare bucătar

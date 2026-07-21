@@ -350,10 +350,7 @@ export class PlatformService {
   // Reads the stored provider key (decrypted, if any) to authenticate the live
   // model-catalog fetch. The OpenRouter /models list is public, so a missing
   // key still yields a full list there; Anthropic needs a key or falls back.
-  async listAiModels(
-    provider: AiProvider,
-    baseUrl?: string,
-  ): Promise<PlatformResult<AiModelList>> {
+  async listAiModels(provider: AiProvider, baseUrl?: string): Promise<PlatformResult<AiModelList>> {
     if (!platformDbConfigured()) return NOT_CONFIGURED;
     const pool = getPlatformPool();
     const s = await pool.query<{

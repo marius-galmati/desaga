@@ -676,6 +676,12 @@ export interface TenantDomain {
   tenant_id: string;
 }
 
+export interface TenantSettings {
+  reference_photo_count: Generated<number>;
+  tenant_id: string;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface ToleranceProfile {
   activated_at: Timestamp | null;
   created_at: Generated<Timestamp>;
@@ -736,5 +742,6 @@ export interface DB {
   tenant: Tenant;
   tenant_branding: TenantBranding;
   tenant_domain: TenantDomain;
+  tenant_settings: TenantSettings;
   tolerance_profile: ToleranceProfile;
 }
